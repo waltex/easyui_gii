@@ -1,0 +1,3 @@
+
+curl -X GET -S http://localhost/easyui_gii/api/test_api
+

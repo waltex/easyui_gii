@@ -1,0 +1,6 @@
+body {
+    font: 100% sans-serif;
+}
+.datagrid-header-row, .datagrid-row{
+    height:22px;
+}

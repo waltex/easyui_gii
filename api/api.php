@@ -1,7 +1,7 @@
 <?php
 
 if (function_exists('xdebug_disable')) {
-    xdebug_disable();
+    //xdebug_disable();
 }
 
 require '../vendor/autoload.php';
@@ -20,7 +20,9 @@ $app->add(new \SlimJson\Middleware(array(
 $app->get('/test_api', 'test_api'); // test api
 $app->get('/test_mailer', 'test_mailer'); //test func mailer x invio mail
 
+
 $app->run();
+
 
 SvuotaLog();
 
@@ -96,6 +98,7 @@ function test_api() {
     }
 }
 
+
 function test_mailer() {
     mail2("waltex@libero.it", "oggetto", "<h1>corpo</h1>", ["files_" => ["TEST_API.txt", "api.log"], "isHTML_" => true, "setFrom_" => "walter.cardelli@labbondanza.it"]);
     //mail2("walter.cardelli@labbondanza.it", "oggetto", "<h1>corpo</h1>", ["files_" => ["TEST_API.txt", "api.log"], "isHTML_" => true, "setFrom_" => "walter.cardelli@labbondanza.it"]);
@@ -120,6 +123,7 @@ function test_mailer() {
       , ["files" => [$file_local]]);
      */
 }
+
 /**
  *
  * @param type $mail

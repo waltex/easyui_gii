@@ -1,6 +1,6 @@
 {
     "name": "EasyuiGii",
-    "description": "Api per query to db and for create template",
+    "description": "Code generator for framework jquery easyui and backend api slim framework",
     "license": "MIT",
     "authors": [
         {

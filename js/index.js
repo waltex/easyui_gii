@@ -18,13 +18,21 @@ $(document).ready(function () {
         }
     }
     addTab('welcome', 'welcome.html', 'icon-edit');
-    addTab('welcome2', 'welcome.html', 'icon-edit');
-
+    //addTab('welcome2', 'welcome.html', 'icon-edit');
     var menu = '<a id="bt_menu">Crea</a>';
     $('#layout_main').layout('panel', 'center').panel({title: 'Easyui Gii - Code Generetor   ' + menu})
-    $('#bt_menu').menubutton({
-        iconCls: 'icon-edit',
-        menu: '#mm1',
-        height: '15px',
+    $("#includeMenu").load("menu.html", function () {
+        $('#bt_menu').menubutton({
+            iconCls: 'icon-edit',
+            menu: '#mm1',
+            height: '15px',
+        });
+        $('#dg_create').on('click', function () {
+            console.log('create');
+        });
     });
+
+
+
+
 });
