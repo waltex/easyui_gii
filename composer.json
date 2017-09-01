@@ -1,0 +1,15 @@
+{
+    "name": "EasyuiGii",
+    "description": "Api per query to db and for create template",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Walter Cardelli",
+            "email": "waltex@libero.it"
+        }
+    ],
+    "require": {
+        "slim/slim": "^2.0",
+        "dogancelik/slim-json": "^0.4.0"
+    }
+}
