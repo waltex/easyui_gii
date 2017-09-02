@@ -2,14 +2,37 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <meta name="keywords" content="jquery,ui,easy,easyui,web">
-        <title>Visualizzazione Timing Volantino</title>
-        <link rel="import" href="asset.php">
+        <title>Easyui Gii Creator Home Page</title>
+        <link rel="import" href="asset.html">
+        <script src="js/translate.js" type="text/javascript"></script>
+        <script src="js/index.js" type="text/javascript"></script>
+
     </head>
     <body id="layout_main" class="easyui-layout" data-option="fit:true">
         <div id="content" title="Easyui Gii - Code Generetor" data-options="region:'center'" style="fit:true">
             <div id="tab" class="easyui-tabs" data-options="fit:true"></div>
-            <div id="includeMenu"></div>
+            <div id="mm1" style="width:150px;">
+                <div id="dg_create" data-options="iconCls:'icon-database'">Datagrid</div>
+                <div data-options="iconCls:'icon-redo'">Redo</div>
+                <div class="menu-sep"></div>
+                <div>Cut</div>
+                <div>Copy</div>
+                <div>Paste</div>
+                <div class="menu-sep"></div>
+                <div>
+                    <span>Toolbar</span>
+                    <div>
+                        <div>Address</div>
+                        <div>Link</div>
+                        <div>Navigation Toolbar</div>
+                        <div>Bookmark Toolbar</div>
+                        <div class="menu-sep"></div>
+                        <div>New Toolbar...</div>
+                    </div>
+                </div>
+                <div data-options="iconCls:'icon-remove'">Delete</div>
+                <div>Select All</div>
+            </div>
         </div>
 
     </body>

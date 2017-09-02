@@ -1,5 +1,6 @@
-$(document).ready(function () {
-    function addTab(title, url, icon) {
+
+function init_app() {
+    function addTab(title, url, icon, opt) {
         var new_url;
         new_url = url;
         if ($('#tab').tabs('exists', title)) {
@@ -17,22 +18,17 @@ $(document).ready(function () {
             });
         }
     }
-    addTab('welcome', 'welcome.html', 'icon-edit');
+    addTab('welcome', 'welcome.html', 'icon-edit', null);
     //addTab('welcome2', 'welcome.html', 'icon-edit');
-    var menu = '<a id="bt_menu">Crea</a>';
+    var menu = '<a id="bt_menu">' + T("Creates") + '</a>';
     $('#layout_main').layout('panel', 'center').panel({title: 'Easyui Gii - Code Generetor   ' + menu})
-    $("#includeMenu").load("menu.html", function () {
-        $('#bt_menu').menubutton({
-            iconCls: 'icon-edit',
-            menu: '#mm1',
-            height: '15px',
-        });
-        $('#dg_create').on('click', function () {
-            console.log('create');
-        });
+    $('#bt_menu').menubutton({
+        iconCls: 'icon-edit',
+        menu: '#mm1',
+        height: '15px',
+    });
+    $('#dg_create').on('click', function () {
+        addTab('datagrid', 'dg_create.html', 'icon-edit', null);
     });
 
-
-
-
-});
+}

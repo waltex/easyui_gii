@@ -9,6 +9,7 @@
         }
     ],
     "require": {
+        "php": ">=5.4.0",
         "slim/slim": "^2.0",
         "dogancelik/slim-json": "^0.4.0"
     }
