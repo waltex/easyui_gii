@@ -19,6 +19,9 @@ $app->add(new \SlimJson\Middleware(array(
 
 $app->get('/test_api', 'test_api'); // test api
 $app->get('/test_mailer', 'test_mailer'); //test func mailer x invio mail
+$app->get('/test_translate', 'test_translate'); //test func mailer x invio mail
+
+$app->get('/auto/translate', 'auto_translate'); //translate language
 
 
 $app->run();
@@ -302,5 +305,38 @@ function mail2($mail_to, $oggetto, $testo, $opt = null) {
         error_log(LogTime() . ' errore invio mail: ' . $mail->ErrorInfo . PHP_EOL, 3, 'error.log');
     } else {
         //echo 'Message has been sent';
+    }
+}
+
+function test_translate() {
+    $tr = new \Stichoza\GoogleTranslate\TranslateClient(); // Default is from 'auto' to 'en'
+    $tr->setSource('en'); // Translate from English
+    $tr->setTarget('it'); // Translate to Georgian
+    echo $tr->translate('Hello World!');
+}
+
+function auto_translate() {
+ 
+
+
+    try {
+        $app = Slim\Slim::getInstance();
+        include 'api_setup.php';
+
+        $value = $app->request->params('value'); // Param from Post user
+
+        $tr = new \Stichoza\GoogleTranslate\TranslateClient(); // Default is from 'auto' to 'en'
+        $tr->setSource('en'); // Translate from English
+        $tr->setTarget('it'); // Translate to Georgian
+        $value_t = $tr->translate($value); //value trnslated
+
+        $file = "../language/en2it.json";
+        file_put_contents($file, json_encode([$value => $value_t]));
+
+
+        //$app->render(200, ['success' => true, 'msg' => 'Hello']);
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
     }
 }

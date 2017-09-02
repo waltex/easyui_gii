@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Stichoza\\GoogleTranslate\\' => array($vendorDir . '/stichoza/google-translate-php/src'),
     'SlimJson' => array($vendorDir . '/dogancelik/slim-json'),
     'Slim' => array($vendorDir . '/slim/slim'),
 );
