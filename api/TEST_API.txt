@@ -1,3 +1,5 @@
 
 curl -X GET -S http://localhost/easyui_gii/api/test_api
 
+
+curl -X POST -S --data "value=hello" http://localhost/easyui_gii/api/auto/translate

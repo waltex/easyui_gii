@@ -1,6 +1,10 @@
 {
-    "path_out": "/out",
-    "language debug": true,
-    "language to translate": "it",
-    "auto translate": true
+    "language debug": false,
+    "language debug error": "*E*",
+    "language debug success": "**",
+    "language from translate": "it",
+    "language to translate": "en",
+    "language default": "it",
+    "auto translate": true,
+    "path_out": "/out"
 }

@@ -21,7 +21,7 @@ $app->get('/test_api', 'test_api'); // test api
 $app->get('/test_mailer', 'test_mailer'); //test func mailer x invio mail
 $app->get('/test_translate', 'test_translate'); //test func mailer x invio mail
 
-$app->get('/auto/translate', 'auto_translate'); //translate language
+$app->post('/auto/translate', 'auto_translate'); //translate language
 
 
 $app->run();
@@ -84,7 +84,6 @@ function SvuotaLog() {
     }
 }
 
-
 /**
  * Test Api
  */
@@ -100,7 +99,6 @@ function test_api() {
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
     }
 }
-
 
 function test_mailer() {
     mail2("waltex@libero.it", "oggetto", "<h1>corpo</h1>", ["files_" => ["TEST_API.txt", "api.log"], "isHTML_" => true, "setFrom_" => "walter.cardelli@labbondanza.it"]);
@@ -316,25 +314,41 @@ function test_translate() {
 }
 
 function auto_translate() {
- 
+
 
 
     try {
         $app = Slim\Slim::getInstance();
         include 'api_setup.php';
 
-        $value = $app->request->params('value'); // Param from Post user
+        $value = $app->request->params('value'); // Param keyword to translate
+
+
+        $file = "../app_setting.json";
+        $imp = file_get_contents($file);
+        $ar_file = json_decode($imp, true);
+        $lang2from = $ar_file["language from translate"];
+        $lang2to = $ar_file["language to translate"];
+
 
         $tr = new \Stichoza\GoogleTranslate\TranslateClient(); // Default is from 'auto' to 'en'
-        $tr->setSource('en'); // Translate from English
-        $tr->setTarget('it'); // Translate to Georgian
+        $tr->setSource($lang2from); // Translate from English
+        $tr->setTarget($lang2to); // Translate to Georgian
         $value_t = $tr->translate($value); //value trnslated
 
-        $file = "../language/en2it.json";
-        file_put_contents($file, json_encode([$value => $value_t]));
 
 
-        //$app->render(200, ['success' => true, 'msg' => 'Hello']);
+
+        $file = "../language/$lang2from" . "2" . "$lang2to.json";
+        if (!file_exists($file)) {
+            file_put_contents($file, json_encode([]));
+        }
+        $imp = file_get_contents($file);
+        $ar_file = json_decode($imp, true);
+        $ar_out = array_merge($ar_file, [$value => $value_t]);
+        file_put_contents($file, json_encode($ar_out));
+
+        $app->render(200, [$value => $value_t]);
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
