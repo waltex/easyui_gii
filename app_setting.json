@@ -6,5 +6,5 @@
     "language to translate": "en",
     "language default": "it",
     "auto translate": true,
-    "path_out": "/out"
+    "path output generated app": "/out"
 }

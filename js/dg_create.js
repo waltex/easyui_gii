@@ -1,8 +1,9 @@
 
 function init_app() {
     $('#tb_out').textbox({
-        value: g_param.path_out,
-        label: T("percorso app"),
-        prompt: T("digita qui...")
+        with : 250,
+        value: g_param["path output generated app"],
+        label: T("percorso app:"), //path app
+        prompt: T("digita qui...")//type here
     });
 }
