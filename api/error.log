@@ -42,3 +42,5 @@ Sat Sep 02, 2017 22:11:58 () file_get_contents(../language/en2it.json): failed t
 Sat Sep 02, 2017 22:12:27 () file_get_contents(../language/en2it.json): failed to open stream: No such file or directory
 Sat Sep 02, 2017 22:12:51 () file_get_contents(../language/en2it.json): failed to open stream: No such file or directory
 Sat Sep 02, 2017 22:14:17 () Undefined variable: file
+Sun Sep 03, 2017 17:21:21 () Undefined variable: value_t
+Sun Sep 03, 2017 17:25:12 () Undefined variable: value_t

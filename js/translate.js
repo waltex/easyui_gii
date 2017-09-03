@@ -11,6 +11,11 @@ var g_param;
 $(document).ready(function () {
     $.getJSON('app_setting.json', {_: new Date().getTime()}, function (data) {
         g_param = data;
+        //only translate framemork jquiery easyui
+        $.getScript('lib/easyui_1.5.1/locale/easyui-lang-' + g_param["language default"] + '.js')
+                .fail(function (jqxhr, settings, exception) {
+                    $.getScript('lib/easyui_1.5.1/locale/easyui-lang-en.js')
+                });
         //find all language json dictionary
         $.getJSON('language/' + g_param["language from translate"] + '2' + g_param["language to translate"] + '.json', {_: new Date().getTime()})
                 .done(function (data) {
