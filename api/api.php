@@ -327,12 +327,17 @@ function auto_translate() {
         $lang2from = $ar_file["language from translate"];
         $lang2to = $ar_file["language to translate"];
 
+        /*
+          //ex "stichoza/google-translate-php": "~3.2",
+          $tr = new \Stichoza\GoogleTranslate\TranslateClient(); // Default is from 'auto' to 'en'
+          $tr->setSource($lang2from); // Translate from English
+          $tr->setTarget($lang2to); // Translate to Georgian
+          $value_t = $tr->translate($value); //value trnslated
+         */
 
-        $tr = new \Stichoza\GoogleTranslate\TranslateClient(); // Default is from 'auto' to 'en'
-        $tr->setSource($lang2from); // Translate from English
-        $tr->setTarget($lang2to); // Translate to Georgian
-        $value_t = $tr->translate($value); //value trnslated
 
+        $trans = new \Statickidz\GoogleTranslate();
+        $value_t = $trans->translate($lang2from, $lang2to, $value);
 
 
 
