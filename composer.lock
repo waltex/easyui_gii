@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "db590e4389ee68b4a5f8d32384d988f8",
-    "content-hash": "6e0857802529d06f1ac0b37d63b7c3b1",
+    "hash": "f46502cf046fd3022262aa7978f3f96f",
+    "content-hash": "798b3c715b4bae54f28ac486bc35de3e",
     "packages": [
         {
             "name": "dogancelik/slim-json",
@@ -386,7 +386,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4.0"
+        "php": ">=5.5.0"
     },
     "platform-dev": [],
     "platform-overrides": {

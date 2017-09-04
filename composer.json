@@ -1,5 +1,5 @@
 {
-    "name": "EasyuiGii",
+    "name": "Easyui Gii",
     "description": "Code generator for framework jquery easyui and backend api slim framework",
     "license": "MIT",
     "authors": [
@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.5.0",
         "slim/slim": "^2.0",
         "dogancelik/slim-json": "^0.4.0",
         "stichoza/google-translate-php": "~3.2"
