@@ -1,13 +1,26 @@
 function init_app() {
-    $('#dg_set').datagrid({
+    var dg1_tb = ['-', {
+            text: T('Salva'),
+            iconCls: 'icon-save',
+            handler: function () {
+                $('#dg_set').edatagrid('saveRow');
+            }
+        }, '-'];
+    $('#dg_set').edatagrid({
         url: 'api/dg/setting/read',
-        //fit: true,
+        updateUrl: 'api/dg/setting/save',
+        border: false,
+        toolbar: dg1_tb,
+        fit: true,
         striped: true,
+        singleSelect: true,
         fitColumns: true,
         columns: [[
-                {field: 'name', title: T('Parametro'), width: 100},
-                {field: 'val', title: T('Valore'), width: 100},
+                {field: 'name', title: T('Parametro'), formatter: function (value, row, index) {
+                        return (!g_param["language debug"]) ? T(value) : value;//transalte only dubug off
+                    }},
+                {field: 'val', title: T('Valore'), editor: "text"},
             ]]
     });
-
+    $('#dg_set').datagrid('enableFilter');
 }
