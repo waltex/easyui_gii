@@ -23,6 +23,7 @@ $app->get('/test_translate', 'test_translate'); //test func mailer x invio mail
 
 $app->post('/auto/translate', 'auto_translate'); //translate language
 $app->post('/dg/setting/read', 'setting_read'); //read data app_setting.json
+$app->post('/dg/setting/save', 'setting_save'); //save data app_setting.json
 
 $app->run();
 
@@ -357,6 +358,8 @@ function auto_translate() {
     }
 }
 
+/** json setting read
+ */
 function setting_read() {
     try {
         $app = Slim\Slim::getInstance();
@@ -371,6 +374,30 @@ function setting_read() {
         }
 
         $app->render(200, $ar_out);
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
+    }
+}
+
+
+/** json setting save
+ */
+function setting_save() {
+    try {
+        $app = Slim\Slim::getInstance();
+        include 'api_setup.php';
+
+        $name = $app->request->params('name');
+        $val = $app->request->params('val');
+
+
+        $file = "../app_setting.json";
+        $imp = file_get_contents($file);
+        $ar_file = json_decode($imp, true);
+        
+        $ar_file[$name] = $val;
+        file_put_contents($file, json_encode($ar_file));
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
