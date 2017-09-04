@@ -14,14 +14,13 @@ function init_app() {
                         title_open = title + "_" + i;
                         (!$('#tab').tabs('exists', title_open)) ? new_title = true : false;
                     }
-                    console.log(title_open);
-                    addTab_sub(title_open, url, opt);//new tab clone
+                    addTab_sub(T(title_open), url, opt);//new tab clone
                 } else {
                     $('#tab').tabs('select', title_open);
                 }
             });
         } else {
-            addTab_sub(title_open, url, opt);// new tab
+            addTab_sub(T(title_open), url, opt);// new tab
         }
     }
     function addTab_sub(title, url, opt) {
@@ -54,7 +53,7 @@ function init_app() {
         addTab('crud', 'dg_crud.html', null);
     });
     $('#dg_set').on('click', function () {
-        addTab('settings', 'settings.html', null);
+        addTab('impostazioni', 'settings.html', null);
     });
 
     //$('#dg_set').html(label);

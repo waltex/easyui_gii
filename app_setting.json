@@ -1,10 +1,1 @@
-{
-    "language debug": true,
-    "language debug error": "*E*",
-    "language debug success": "*",
-    "language from translate": "it",
-    "language to translate": "en",
-    "language default": "it",
-    "auto translate": true,
-    "path output generated app": "/out"
-}
+{"language debug":false,"language debug error":"*E*","language debug success":"*","language from translate":"it","language to translate":"en","language default":"it","auto translate":true,"percorso del codice generato":"\/out"}

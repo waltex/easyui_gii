@@ -395,9 +395,11 @@ function setting_save() {
         $file = "../app_setting.json";
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);
-        
         $ar_file[$name] = $val;
-        file_put_contents($file, json_encode($ar_file));
+        $return = json_encode($ar_file);
+        $return = str_replace(':"true"', ':true', $return);
+        $return = str_replace(':"false"', ':false', $return);
+        file_put_contents($file, $return);
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
