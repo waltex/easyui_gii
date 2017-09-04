@@ -13,5 +13,10 @@
         "slim/slim": "^2.0",
         "dogancelik/slim-json": "^0.4.0",
         "stichoza/google-translate-php": "~3.2"
+    },
+    "config": {
+        "platform": {
+            "php": "5.5.0"
+        }
     }
 }
