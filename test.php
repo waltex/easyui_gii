@@ -29,4 +29,21 @@ $ob->color = "red";
 $test = $ob->color;
 $color = $ob->what_color();
 
+class MyClass {
+
+    // proprietà
+    public $a = 10;
+    public $b = 20;
+
+    // metodi
+    public function sayHello() {
+        echo "Hello! " . $this->a . " " . $this->b;
+    }
+
+}
+
+$myClass_1 = new MyClass();
+$test = $myClass_1->a;
+
+
 $stop = 1;
