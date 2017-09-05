@@ -42,7 +42,7 @@ function init_app() {
 
     addTab('welcome', 'welcome.html', null);
     //addTab('welcome2', 'welcome.html', 'icon-edit');
-    var menu = '<a id="bt_menu">' + T("crea") + '</a>'; //create
+    var menu = '<a id="bt_menu">' + T("Menu") + '</a>'; //create
     $('#layout_main').layout('panel', 'center').panel({title: 'Easyui Gii - Code Generetor 1.0   ' + menu})
     $('#bt_menu').menubutton({
         iconCls: 'icon-edit',
