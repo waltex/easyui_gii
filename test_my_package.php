@@ -11,6 +11,5 @@ $table_name = "test1";
 $opt = [];
 
 $crud = new \easyuigii\easyuigii($app_name, $app_folder, $table_name, $opt);
+$crud->test();
 
-//$crud = new crud($app_name, $app_folder, $table_name, $opt);
-$crud->render();

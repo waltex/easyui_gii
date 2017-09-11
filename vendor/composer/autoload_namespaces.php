@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'easyuigii' => array($baseDir . '/src'),
+    'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'SlimJson' => array($vendorDir . '/dogancelik/slim-json'),
     'Slim' => array($vendorDir . '/slim/slim'),
 );

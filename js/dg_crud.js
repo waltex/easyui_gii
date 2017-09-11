@@ -1,7 +1,7 @@
 var g_debug
 var g_keydown
 function init_app() {
-    $('#tb_name_app').textbox({
+    $('#tb_app_name').textbox({
         required: true,
         label: T("Nome app:"), //path app
         prompt: T("digita qui..."), //type here
@@ -11,41 +11,31 @@ function init_app() {
             //$('#tb_out').textbox('setValue', val);
         }
     });
-    /*
-     $('#tb_name_app').textbox('textbox').bind('keydown', function (e) {
-     g_debug = e;
-     if ((e.keyCode >= 32) & (e.keyCode <= 126)) {
-     var val = $('#tb_out').textbox('getValue') + e.key;
-     $('#tb_out').textbox('setValue', val);
-     }
-     });
-     */
-
-    $('#tb_name_app').textbox('textbox').bind('keydown', function (e) {
+    $('#tb_app_name').textbox('textbox').bind('keydown', function (e) {
         var $this = $(this);
         window.setTimeout(function () {
-            g_debug = e;
-            console.log($this.val() + '--' + $this.val().length);
+            //g_debug = e;
+            //console.log($this.val() + '--' + $this.val().length);
             var add = $this.val();
             if (add.length == 1) {
-                var val = $('#tb_out').textbox('getValue');
+                var val = $('#tb_app_folder').textbox('getValue');
                 g_keydown = val
                 add = val + add;
             } else {
                 add = g_keydown + add;
             }
-            $('#tb_out').textbox('setValue', add);
+            $('#tb_app_folder').textbox('setValue', add);
         }, 0);
     });
 
-    $('#tb_out').textbox({
+    $('#tb_app_folder').textbox({
         value: g_param["percorso del codice generato"],
         required: true,
         label: T("Percorso app:"), //path app
         prompt: T("digita qui..."), //type here
         labelPosition: 'top',
     });
-    $('#tb_table').textbox({
+    $('#tb_table_name').textbox({
         label: T("Nome tabella:"), //path app
         required: true,
         prompt: T("digita qui..."), //type here
@@ -62,12 +52,15 @@ function init_app() {
         (hide) ? $('#p_crud').panel('expand', true) : $('#p_crud').panel('collapse', true);
     });
     $('#bt_gencode').on('click', function () {
-        var validate = $('#tb_name_app, #tb_out, #tb_table').textbox('isValid');
+        var validate = $('#tb_app_name, #tb_app_folder, #tb_table_name').textbox('isValid');
         if (validate){
             $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
                 if (r) {
+                    var app_name = $('#tb_app_name').textbox('getValue');
+                    var app_folder = $('#tb_app_folder').textbox('getValue');
+                    var table_name = $('#tb_table_name').textbox('getValue');
                     $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
-                    $.post('api/dg/crud/generate')
+                    $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name, opt: null})
                             .done(function (data) {
                                 $.messager.progress('close');
                                 if (data.success) {
@@ -84,7 +77,7 @@ function init_app() {
             });
         }
         else {
-            $.messager.alert(T('attenzione'), T('compilare tutti i campi'), 'warning');
+            $.messager.alert(T('attenzione'), T('compilare tutti i campi correttamente'), 'warning');
         }
     });
 

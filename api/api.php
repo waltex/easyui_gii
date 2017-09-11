@@ -411,12 +411,9 @@ function setting_save() {
  * code generator for crud
  */
 function crud_generate() {
-
-    $app = Slim\Slim::getInstance();
+    try {
+        $app = Slim\Slim::getInstance();
     include 'api_setup.php';
-    //include '../lib/EasyuiGii/crud/crud.php';
-    include '../lib/EasyuiGii/autoload.php';
-
 
 
     $app_name = $app->request->params('app_name');
@@ -424,6 +421,12 @@ function crud_generate() {
     $table_name = $app->request->params('table_name');
     $opt = $app->request->params('opt');
 
-    $crud = new EasyuiGii\crud($app_name, $app_folder, $table_name, $opt);
-    $crud->render();
+    $crud = new \easyuigii\easyuigii($app_name, $app_folder, $table_name, $opt);
+    $crud->buildAppCrud();
+
+        $app->render(200, ['success' => true, 'msg' => "eseguito"]);
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
+    }
 }
