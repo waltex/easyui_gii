@@ -12,14 +12,14 @@ function init_app() {
         }
     });
     /*
-    $('#tb_name_app').textbox('textbox').bind('keydown', function (e) {
-        g_debug = e;
-        if ((e.keyCode >= 32) & (e.keyCode <= 126)) {
-            var val = $('#tb_out').textbox('getValue') + e.key;
-            $('#tb_out').textbox('setValue', val);
-        }
-    });
-    */
+     $('#tb_name_app').textbox('textbox').bind('keydown', function (e) {
+     g_debug = e;
+     if ((e.keyCode >= 32) & (e.keyCode <= 126)) {
+     var val = $('#tb_out').textbox('getValue') + e.key;
+     $('#tb_out').textbox('setValue', val);
+     }
+     });
+     */
 
     $('#tb_name_app').textbox('textbox').bind('keydown', function (e) {
         var $this = $(this);
@@ -62,24 +62,30 @@ function init_app() {
         (hide) ? $('#p_crud').panel('expand', true) : $('#p_crud').panel('collapse', true);
     });
     $('#bt_gencode').on('click', function () {
-        $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
-            if (r) {
-                $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
-                $.post('api/dg/crud/generate')
-                        .done(function (data) {
-                            $.messager.progress('close');
-                            if (data.success) {
-                                $.messager.alert(T('Eseguito'), data.msg, 'info');
-                            } else {
-                                $.messager.alert(T('errore'), data.msg, 'error');
-                            }
-                        })
-                        .fail(function () {
-                            $.messager.progress('close');
-                            $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
-                        });
-            }
-        });
+        var validate = $('#tb_name_app, #tb_out, #tb_table').textbox('isValid');
+        if (validate){
+            $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
+                if (r) {
+                    $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
+                    $.post('api/dg/crud/generate')
+                            .done(function (data) {
+                                $.messager.progress('close');
+                                if (data.success) {
+                                    $.messager.alert(T('Eseguito'), data.msg, 'info');
+                                } else {
+                                    $.messager.alert(T('errore'), data.msg, 'error');
+                                }
+                            })
+                            .fail(function () {
+                                $.messager.progress('close');
+                                $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                            });
+                }
+            });
+        }
+        else {
+            $.messager.alert(T('attenzione'), T('compilare tutti i campi'), 'warning');
+        }
     });
 
 }
