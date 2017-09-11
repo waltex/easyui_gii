@@ -12,7 +12,8 @@
         "php": ">=5.4.0",
         "slim/slim": "^2.0",
         "dogancelik/slim-json": "^0.4.0",
-        "statickidz/php-google-translate-free": "^1.0"
+        "statickidz/php-google-translate-free": "^1.0",
+        "twig/twig": "~1.0"
     },
     "autoload": {
         "psr-0": {
