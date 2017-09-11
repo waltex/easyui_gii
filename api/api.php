@@ -24,6 +24,7 @@ $app->get('/test_translate', 'test_translate'); //test func mailer x invio mail
 $app->post('/auto/translate', 'auto_translate'); //translate language
 $app->post('/dg/setting/read', 'setting_read'); //read data app_setting.json
 $app->post('/dg/setting/save', 'setting_save'); //save data app_setting.json
+$app->post('/dg/crud/generate', 'crud_generate'); //generate code for crud
 
 $app->run();
 
@@ -404,4 +405,25 @@ function setting_save() {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
     }
+}
+
+/**
+ * code generator for crud
+ */
+function crud_generate() {
+
+    $app = Slim\Slim::getInstance();
+    include 'api_setup.php';
+    //include '../lib/EasyuiGii/crud/crud.php';
+    include '../lib/EasyuiGii/autoload.php';
+
+
+
+    $app_name = $app->request->params('app_name');
+    $app_folder = $app->request->params('app_folder');
+    $table_name = $app->request->params('table_name');
+    $opt = $app->request->params('opt');
+
+    $crud = new EasyuiGii\crud($app_name, $app_folder, $table_name, $opt);
+    $crud->render();
 }

@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'easyuigii' => array($baseDir . '/src'),
     'SlimJson' => array($vendorDir . '/dogancelik/slim-json'),
     'Slim' => array($vendorDir . '/slim/slim'),
 );

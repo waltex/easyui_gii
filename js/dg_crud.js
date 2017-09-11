@@ -55,10 +55,34 @@ function init_app() {
         title: T("Altri Parametri"),
     });
 
-    $('#bt_runcode').linkbutton({text: T('Esegui')});
+    $('#bt_gencode').linkbutton({text: T('Genera il codice')});
     // expand and collapse on click
     $('#p_crud').panel('header').click(function () {
         var hide = $($('#p_crud').panel('body')[0]).css('display') == 'none';
         (hide) ? $('#p_crud').panel('expand', true) : $('#p_crud').panel('collapse', true);
     });
+    $('#bt_gencode').on('click', function () {
+        $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
+            if (r) {
+                $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
+                $.post('api/dg/crud/generate')
+                        .done(function (data) {
+                            $.messager.progress('close');
+                            if (data.success) {
+                                $.messager.alert(T('Eseguito'), data.msg, 'info');
+                            } else {
+                                $.messager.alert(T('errore'), data.msg, 'error');
+                            }
+                        })
+                        .fail(function () {
+                            $.messager.progress('close');
+                            $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                        });
+            }
+        });
+    });
+
 }
+
+
+

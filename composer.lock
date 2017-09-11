@@ -4,6 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+    "hash": "f1d2370aeb1ed3c8eb458c2e95d05802",
     "content-hash": "16329ae9d98085d883b04a9212486c43",
     "packages": [
         {
@@ -48,7 +49,7 @@
                 "slim",
                 "view"
             ],
-            "time": "2015-09-15T22:55:20+00:00"
+            "time": "2015-09-15 22:55:20"
         },
         {
             "name": "slim/slim",
@@ -95,7 +96,7 @@
                 "rest",
                 "router"
             ],
-            "time": "2017-01-07T12:21:41+00:00"
+            "time": "2017-01-07 12:21:41"
         },
         {
             "name": "statickidz/php-google-translate-free",
@@ -154,7 +155,7 @@
                 "translate",
                 "translator"
             ],
-            "time": "2017-02-07T08:52:25+00:00"
+            "time": "2017-02-07 08:52:25"
         }
     ],
     "packages-dev": [],
