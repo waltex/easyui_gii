@@ -381,7 +381,6 @@ function setting_read() {
     }
 }
 
-
 /** json setting save
  */
 function setting_save() {
@@ -413,16 +412,16 @@ function setting_save() {
 function crud_generate() {
     try {
         $app = Slim\Slim::getInstance();
-    include 'api_setup.php';
+        include 'api_setup.php';
 
 
-    $app_name = $app->request->params('app_name');
-    $app_folder = $app->request->params('app_folder');
-    $table_name = $app->request->params('table_name');
-    $opt = $app->request->params('opt');
-
-    $crud = new \easyuigii\easyuigii($app_name, $app_folder, $table_name, $opt);
-    $crud->buildAppCrud();
+        $app_name = $app->request->params('app_name');
+        $app_folder = $app->request->params('app_folder');
+        $table_name = $app->request->params('table_name');
+        $opt = $app->request->params('opt');
+        
+        $crud = new \easyuigii($app_name, $app_folder, $table_name, $opt);
+        $crud->buildAppCrud();
 
         $app->render(200, ['success' => true, 'msg' => "eseguito"]);
     } catch (Exception $e) {

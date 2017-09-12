@@ -52,8 +52,11 @@ function init_app() {
         (hide) ? $('#p_crud').panel('expand', true) : $('#p_crud').panel('collapse', true);
     });
     $('#bt_gencode').on('click', function () {
-        var validate = $('#tb_app_name, #tb_app_folder, #tb_table_name').textbox('isValid');
-        if (validate){
+        var validate = true;
+        (!$('#tb_app_name').textbox('isValid')) ? validate = false : false;
+        (!$('#tb_app_folder').textbox('isValid')) ? validate = false : false;
+        (!$('#tb_table_name').textbox('isValid')) ? validate = false : false;
+        if (validate) {
             $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
                 if (r) {
                     var app_name = $('#tb_app_name').textbox('getValue');
