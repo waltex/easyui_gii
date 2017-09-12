@@ -13,16 +13,17 @@ class easyuigii {
      * @param array $opt additional option
      */
     function __construct($app_name, $app_folder, $table_name, $opt) {
+        $this->script_path = str_replace('src/easyuigii', '', str_replace('\\', '/', __DIR__)); //apllication path
         $this->app_name = $app_name;
-        $this->app_folder = $app_folder;
+        $this->app_folder = $_SERVER['DOCUMENT_ROOT'] . "/" . $app_folder; //code path output
         $this->table_name = $table_name;
     }
 
     /** folder create and file
      */
     public function buildAppCrud() {
+        $dir = $this->app_folder;
         //folder create
-        $dir = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder;
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true); //create folder
         } else {
@@ -37,10 +38,9 @@ class easyuigii {
         file_put_contents($file, $html); //write generated html
 
         $zip = new ZipArchive;
-        //$zip_file = __DIR__ . "/src/template/base/lib.zip";
-        $zip_file = dirname(__FILE__) . 'easyui_gii/src/template/base/lib.zip';
+        $zip_file = $this->script_path . '/src/template/base/lib.zip';
         $file = $zip->open($zip_file);
-        $zip->extractTo($dir . "/");
+        $zip->extractTo($dir);
         $zip->close();
     }
 
@@ -50,7 +50,7 @@ class easyuigii {
      * remove empty dir
      * @param string $dir directory
      */
-    static function rrmdir($dir) {
+    private function rrmdir($dir) {
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
@@ -65,6 +65,7 @@ class easyuigii {
             rmdir($dir);
         }
     }
+
 
     // metodi
     public function test() {
