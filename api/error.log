@@ -70,3 +70,50 @@ Mon Sep 11, 2017 17:40:31 (cw00011) Unknown: Invalid or unitialized Zip object
 Mon Sep 11, 2017 17:40:44 (cw00011) Unknown: Invalid or unitialized Zip object
 Mon Sep 11, 2017 17:42:03 (cw00011) Unknown: Invalid or unitialized Zip object
 Tue Sep 12, 2017 11:23:07 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 11:36:33 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 11:44:36 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 11:50:50 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 11:52:04 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:02:38 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:04:00 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:07:53 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:08:43 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:12:21 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:12:58 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:16:45 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:16:59 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:21:47 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:23:48 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:28:18 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:29:52 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:32:27 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:33:20 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:36:41 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:37:10 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:38:58 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:40:07 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:41:21 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:45:04 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:46:30 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:47:18 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:48:29 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:50:36 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:51:07 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:52:22 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:53:14 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:54:09 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:55:17 (cw00011) Unknown: Invalid or unitialized Zip object
+Tue Sep 12, 2017 12:57:37 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Directory not empty
+Tue Sep 12, 2017 14:28:27 (cw00011) Undefined variable: rar_file
+Tue Sep 12, 2017 14:39:36 (cw00011) include(C:\xampp\htdocs\easyui_gii/src/easyuigii/easyuigii.php): failed to open stream: No such file or directory
+Tue Sep 12, 2017 15:00:45 (cw00011) ZipArchive::extractTo(): Invalid or unitialized Zip object
+Tue Sep 12, 2017 16:42:11 (cw00011) Unable to find template "{{body}}" (looked into: C:/xampp/htdocs/easyui_gii//src/template) in "base/index.html" at line 9.
+Tue Sep 12, 2017 16:45:24 (cw00011) Unable to find template "{{body}}" (looked into: C:/xampp/htdocs/easyui_gii//src/template) in "base/index.html" at line 9.
+Tue Sep 12, 2017 16:51:07 (cw00011) A hash key must be a quoted string, a number, a name, or an expression enclosed in parentheses (unexpected token "punctuation" of value "{".
+Tue Sep 12, 2017 16:56:20 (cw00011) Unable to find template "~ body ~" (looked into: C:/xampp/htdocs/easyui_gii//src/template).
+Tue Sep 12, 2017 16:56:53 (cw00011) A hash key must be a quoted string, a number, a name, or an expression enclosed in parentheses (unexpected token "punctuation" of value "{".
+Tue Sep 12, 2017 16:57:35 (cw00011) Unable to find template "{{body}}" (looked into: C:/xampp/htdocs/easyui_gii//src/template).
+Tue Sep 12, 2017 17:06:27 (cw00011) Unable to find template " crud/body.crud.html " (looked into: C:/xampp/htdocs/easyui_gii//src/template).
+Tue Sep 12, 2017 17:08:07 (cw00011) Unexpected token "operator" of value "~".
+Tue Sep 12, 2017 17:23:37 (cw00011) Unable to find template "{{url_body}}" (looked into: C:/xampp/htdocs/easyui_gii//src/template).
+Tue Sep 12, 2017 17:24:16 (cw00011) Arguments must be separated by a comma. Unexpected token "name" of value "url_body" ("punctuation" expected with value ",").

@@ -16,7 +16,7 @@
         "twig/twig": "~1.0"
     },
     "autoload": {
-        "classmap": ["src/easyuigii/easyuigii.php"]
+        "classmap": ["src/class/easyuigii.php"]
     },
     "config": {
         "platform": {

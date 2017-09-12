@@ -67,7 +67,12 @@ function init_app() {
                             .done(function (data) {
                                 $.messager.progress('close');
                                 if (data.success) {
-                                    $.messager.alert(T('Eseguito'), data.msg, 'info');
+                                    $.messager.confirm(T('conferma'), T('E\' stata creata applicazione, vuoi eseguirla?'), function (r) {
+                                        if (r) {
+                                            var url = window.location.protocol + '//' + window.location.host + '/' + app_folder + '/index.html';
+                                            parent.addTab(app_name, url, null);
+                                        }
+                                    });
                                 } else {
                                     $.messager.alert(T('errore'), data.msg, 'error');
                                 }

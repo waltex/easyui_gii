@@ -13,7 +13,7 @@ class easyuigii {
      * @param array $opt additional option
      */
     function __construct($app_name, $app_folder, $table_name, $opt) {
-        $this->script_path = str_replace('src/easyuigii', '', str_replace('\\', '/', __DIR__)); //apllication path
+        $this->script_path = str_replace('src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
         $this->app_name = $app_name;
         $this->app_folder = $_SERVER['DOCUMENT_ROOT'] . "/" . $app_folder; //code path output
         $this->table_name = $table_name;
@@ -23,28 +23,48 @@ class easyuigii {
      */
     public function buildAppCrud() {
         $dir = $this->app_folder;
-        //folder create
+        $this->create_folder($dir);
+
+        //build template
+        $loader = new Twig_Loader_Filesystem($this->script_path . '/src/template');
+        $twig = new Twig_Environment($loader);
+        $prefix = 20; // prefix id es. #dg1 #tb1
+        $html = $twig->render('base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $prefix));
+        $file = $dir . "/index.html";
+        file_put_contents($file, $html); //write generated html
+        
+
+        $zip_file = $this->script_path . '/src/template/base/lib.zip';
+        $this->unzip($zip_file, $dir);
+        $zip_file = $this->script_path . '/src/template/base/root.zip';
+        $this->unzip($zip_file, $dir);
+        $zip_file = $this->script_path . '/src/template/base/css.zip';
+        $this->unzip($zip_file, $dir);
+    }
+
+    /** create folder
+     * @param type $dir directory
+     */
+    private function create_folder($dir) {
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true); //create folder
         } else {
             $this->rrmdir($dir); //empty
             mkdir($dir, 0777, true); //create folder and folder below
         }
-        //build template
-        $loader = new Twig_Loader_Filesystem('../src/template');
-        $twig = new Twig_Environment($loader);
-        $html = $twig->render('crud.html', array('test' => 'Fabien'));
-        $file = $dir . "/index.htm";
-        file_put_contents($file, $html); //write generated html
+    }
 
+
+/** exract zip file to folder
+     * @param string $zip_file zip file
+     * @param string $dir directory to extract
+     */
+    private function unzip($zip_file, $dir) {
         $zip = new ZipArchive;
-        $zip_file = $this->script_path . '/src/template/base/lib.zip';
         $file = $zip->open($zip_file);
         $zip->extractTo($dir);
         $zip->close();
     }
-
-
 
     /**
      * remove empty dir
