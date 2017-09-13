@@ -3,26 +3,22 @@
 //namespace easyuigii;
 
 class easyuigii {
-    // proprietà
-    //public $a = 10;
+
+    public $app_name = "";
+    public $app_folder = "";
+    public $table_name = "";
 
     /**
-     * @param string $name_app name application
-     * @param string $folder_app path outuput code generated
-     * @param string $table_name  table name
-     * @param array $opt additional option
      */
-    function __construct($app_name, $app_folder, $table_name, $opt) {
+    function __construct() {
         $this->script_path = str_replace('src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
-        $this->app_name = $app_name;
-        $this->app_folder = $_SERVER['DOCUMENT_ROOT'] . "/" . $app_folder; //code path output
-        $this->table_name = $table_name;
+        $this->app_path = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder; //code path output
     }
 
     /** folder create and file
      */
     public function buildAppCrud() {
-        $dir = $this->app_folder;
+        $dir = $this->app_path;
         $this->create_folder($dir);
 
         //build template
@@ -46,12 +42,14 @@ class easyuigii {
      * @param type $dir directory
      */
     private function create_folder($dir) {
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true); //create folder
-        } else {
-            $this->rrmdir($dir); //empty
-            mkdir($dir, 0777, true); //create folder and folder below
-        }
+        /**
+          if (!is_dir($dir)) {
+          mkdir($dir, 0777, true); //create folder
+          } else {
+          $this->rrmdir($dir); //empty
+          mkdir($dir, 0777, true); //create folder and folder below
+          }
+         */
     }
 
 

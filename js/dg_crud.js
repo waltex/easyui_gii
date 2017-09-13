@@ -63,7 +63,7 @@ function init_app() {
                     var app_folder = $('#tb_app_folder').textbox('getValue');
                     var table_name = $('#tb_table_name').textbox('getValue');
                     $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
-                    $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name, opt: null})
+                    $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name})
                             .done(function (data) {
                                 $.messager.progress('close');
                                 if (data.success) {

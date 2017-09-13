@@ -117,3 +117,5 @@ Tue Sep 12, 2017 17:06:27 (cw00011) Unable to find template " crud/body.crud.htm
 Tue Sep 12, 2017 17:08:07 (cw00011) Unexpected token "operator" of value "~".
 Tue Sep 12, 2017 17:23:37 (cw00011) Unable to find template "{{url_body}}" (looked into: C:/xampp/htdocs/easyui_gii//src/template).
 Tue Sep 12, 2017 17:24:16 (cw00011) Arguments must be separated by a comma. Unexpected token "name" of value "url_body" ("punctuation" expected with value ",").
+Wed Sep 13, 2017 10:37:12 (cw00011) Missing argument 4 for easyuigii::__construct(), called in C:\xampp\htdocs\easyui_gii\api\api.php on line 423 and defined
+Wed Sep 13, 2017 10:57:25 (cw00011) unlink(C:/xampp/htdocs//app_yii/.git/objects/08/1eab6c8a6a2e33a4f2c7612da0de79e2fa6811): Permission denied
