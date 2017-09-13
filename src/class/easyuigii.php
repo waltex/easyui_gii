@@ -49,6 +49,8 @@ class easyuigii {
                 $this->rrmdir($dir); //delete file
                 mkdir($dir, 0777, true); //create folder and folder below
             }
+        } else {
+            throw new Exception('Percorso erratto');
         }
     }
 
