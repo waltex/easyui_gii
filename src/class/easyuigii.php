@@ -12,13 +12,12 @@ class easyuigii {
      */
     function __construct() {
         $this->script_path = str_replace('src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
-        $this->app_path = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder; //code path output
     }
 
     /** folder create and file
      */
     public function buildAppCrud() {
-        $dir = $this->app_path;
+        $dir = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder; //code path output
         $this->create_folder($dir);
 
         //build template
@@ -28,7 +27,7 @@ class easyuigii {
         $html = $twig->render('base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $prefix));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
-        
+
 
         $zip_file = $this->script_path . '/src/template/base/lib.zip';
         $this->unzip($zip_file, $dir);
@@ -38,22 +37,22 @@ class easyuigii {
         $this->unzip($zip_file, $dir);
     }
 
-    /** create folder
+    /** create folder if not exists or delete file
      * @param type $dir directory
      */
     private function create_folder($dir) {
-        /**
-          if (!is_dir($dir)) {
-          mkdir($dir, 0777, true); //create folder
-          } else {
-          $this->rrmdir($dir); //empty
-          mkdir($dir, 0777, true); //create folder and folder below
-          }
-         */
+        $ck = basename($dir);
+        if ($ck != 'htdocs') {
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true); //create folder
+            } else {
+                $this->rrmdir($dir); //delete file
+                mkdir($dir, 0777, true); //create folder and folder below
+            }
+        }
     }
 
-
-/** exract zip file to folder
+    /** exract zip file to folder
      * @param string $zip_file zip file
      * @param string $dir directory to extract
      */
@@ -83,7 +82,6 @@ class easyuigii {
             rmdir($dir);
         }
     }
-
 
     // metodi
     public function test() {
