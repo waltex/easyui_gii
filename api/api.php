@@ -414,16 +414,14 @@ function crud_generate() {
         $app = Slim\Slim::getInstance();
         include 'api_setup.php';
 
+        $crud = new easyuigii;
+        $crud->app_name = $app->request->params('app_name');
+        $crud->app_folder = $app->request->params('app_folder');
+        $crud->table_name = $app->request->params('table_name');
 
-        $app_name = $app->request->params('app_name');
-        $app_folder = $app->request->params('app_folder');
-        $table_name = $app->request->params('table_name');
-        $opt = $app->request->params('opt');
-        
-        $crud = new easyuigii($app_name, $app_folder, $table_name, $opt);
-        $url = $crud->buildAppCrud();
+        $crud->buildAppCrud();
 
-        $app->render(200, ['success' => true, 'msg' => "eseguito", "url" => $url]);
+        $app->render(200, ['success' => true, 'msg' => "eseguito"]);
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
