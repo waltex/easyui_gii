@@ -50,7 +50,7 @@ class easyuigii {
 
 
         $html = $twig->render('crud/index.crud.js', array('n' => $this->htmlPrefix));
-        $file = $dir . "/js/index.js";
+        $file = $dir . "/js/index_app.js";
         file_put_contents($file, $html); //write generated html
     }
 
