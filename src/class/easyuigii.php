@@ -4,9 +4,10 @@
 
 class easyuigii {
 
-    public $app_name = "";
-    public $app_folder = "";
+    public $app_name = "demo";
+    public $app_folder = "demo";
     public $table_name = "";
+    public $htmlPrefix = "2";
 
     /**
      */
@@ -20,11 +21,11 @@ class easyuigii {
         $dir = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder; //code path output
         $this->create_folder($dir);
 
-        //build template
+        //build template html
         $loader = new Twig_Loader_Filesystem($this->script_path . '/src/template');
         $twig = new Twig_Environment($loader);
-        $prefix = 20; // prefix id es. #dg1 #tb1
-        $html = $twig->render('base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $prefix));
+
+        $html = $twig->render('base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $this->htmlPrefix));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
 
@@ -35,6 +36,12 @@ class easyuigii {
         $this->unzip($zip_file, $dir);
         $zip_file = $this->script_path . '/src/template/base/css.zip';
         $this->unzip($zip_file, $dir);
+        $this->create_folder($dir . '/js');
+
+
+        $html = $twig->render('crud/index.crud.js', array('n' => $this->htmlPrefix));
+        $file = $dir . "/js/index.js";
+        file_put_contents($file, $html); //write generated html
     }
 
     /** create folder if not exists or delete file
@@ -50,7 +57,7 @@ class easyuigii {
                 mkdir($dir, 0777, true); //create folder and folder below
             }
         } else {
-            throw new Exception('Percorso erratto');
+            throw new Exception($this->T('Percorso erratto')); //Erratic Path
         }
     }
 
@@ -88,6 +95,44 @@ class easyuigii {
     // metodi
     public function test() {
         echo "test class ";
+    }
+
+    /** translator function
+     * @param type $value text to translate
+     * @return type
+     */
+    public function T($value) {
+        $file = $this->script_path . "app_setting.json";
+        $imp = file_get_contents($file);
+        $ar_file = json_decode($imp, true);
+        $lang2from = $ar_file["language from translate"];
+        $lang2to = $ar_file["language to translate"];
+        $langDefault = $ar_file["language default"];
+
+
+
+        $file = $this->script_path . "language/$lang2from" . "2" . "$lang2to.json";
+        //write file if not exists
+        if (!file_exists($file)) {
+            file_put_contents($file, json_encode([]));
+        }
+
+
+        $imp = file_get_contents($file);
+        $ar_file = json_decode($imp, true);
+
+        //translate and add to dictionary if not exists
+        if (!array_key_exists($value, $ar_file)) {
+            $trans = new \Statickidz\GoogleTranslate();
+            $value_t = $trans->translate($lang2from, $lang2to, $value);
+
+            $ar_out = array_merge($ar_file, [$value => $value_t]);
+            file_put_contents($file, json_encode($ar_out));
+        } else {
+            $value_t = $ar_file[$value]; //get translation from dictionary file
+        }
+
+        return ($langDefault == $lang2from) ? $value : $value_t;
     }
 
 }

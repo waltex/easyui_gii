@@ -119,3 +119,9 @@ Tue Sep 12, 2017 17:23:37 (cw00011) Unable to find template "{{url_body}}" (look
 Tue Sep 12, 2017 17:24:16 (cw00011) Arguments must be separated by a comma. Unexpected token "name" of value "url_body" ("punctuation" expected with value ",").
 Wed Sep 13, 2017 10:37:12 (cw00011) Missing argument 4 for easyuigii::__construct(), called in C:\xampp\htdocs\easyui_gii\api\api.php on line 423 and defined
 Wed Sep 13, 2017 10:57:25 (cw00011) unlink(C:/xampp/htdocs//app_yii/.git/objects/08/1eab6c8a6a2e33a4f2c7612da0de79e2fa6811): Permission denied
+Wed Sep 13, 2017 17:51:00 (cw00011) Percorso erratto
+Wed Sep 13, 2017 17:51:23 (cw00011) Percorso erratto
+Thu Sep 14, 2017 11:13:43 (cw00011) Unknown: failed to open stream: No such file or directory
+Thu Sep 14, 2017 11:14:46 (cw00011) Unknown: failed to open stream: No such file or directory
+Thu Sep 14, 2017 11:15:56 (cw00011) Unknown: failed to open stream: No such file or directory
+Thu Sep 14, 2017 12:09:29 (cw00011) Erratic path
