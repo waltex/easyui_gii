@@ -125,3 +125,10 @@ Thu Sep 14, 2017 11:13:43 (cw00011) Unknown: failed to open stream: No such file
 Thu Sep 14, 2017 11:14:46 (cw00011) Unknown: failed to open stream: No such file or directory
 Thu Sep 14, 2017 11:15:56 (cw00011) Unknown: failed to open stream: No such file or directory
 Thu Sep 14, 2017 12:09:29 (cw00011) Erratic path
+Thu Sep 14, 2017 14:16:15 (cw00011) Unknown "T" tag.
+Thu Sep 14, 2017 14:31:36 (cw00011) Unexpected ")".
+Thu Sep 14, 2017 14:37:25 (cw00011) Unclosed "(".
+Thu Sep 14, 2017 15:19:12 (cw00011) Unknown "escapee" filter. Did you mean "escape"?
+Thu Sep 14, 2017 15:20:30 (cw00011) Unexpected "}".
+Thu Sep 14, 2017 15:20:53 (cw00011) An exception has been thrown during the rendering of a template ("Missing argument 3 for twig_convert_encoding(), called in C:\xampp\htdocs\easyui_gii\vendor\twig\twig\lib\Twig\Environment.php(462) : eval()'d code on line 113 and defined").
+Thu Sep 14, 2017 15:41:38 (cw00011) Unclosed "(".

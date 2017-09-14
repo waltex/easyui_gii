@@ -7,7 +7,7 @@ class easyuigii {
     public $app_name = "demo";
     public $app_folder = "demo";
     public $table_name = "";
-    public $htmlPrefix = "2";
+    public $htmlPrefix = "1";
 
     /**
      */
@@ -24,6 +24,16 @@ class easyuigii {
         //build template html
         $loader = new Twig_Loader_Filesystem($this->script_path . '/src/template');
         $twig = new Twig_Environment($loader);
+        //Transalte Tamplate with Function T - Very Super
+        $function = new Twig_SimpleFunction('T', function ($value) {
+            return $this->T($value);
+        });
+        $twig->addFunction($function);
+        $function = new Twig_SimpleFunction('F', function ($value) {
+            return $value;
+        });
+        $twig->addFunction($function);
+
 
         $html = $twig->render('base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $this->htmlPrefix));
         $file = $dir . "/index.html";

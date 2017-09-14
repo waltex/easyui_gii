@@ -1,9 +1,10 @@
 <table id="dg{{n}}" class="easyui-datagrid"></table>
 <div id="tb{{n}}" style="display: none">
-    <a id="dg{{n}}_reload" href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true">Ricarica</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('addRow')">Inserisci</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('destroyRow')">Elimina</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('saveRow')">Salva</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('cancelRow')">Annulla</a>
-    <a id="dg{{n}}_export" class="easyui-linkbutton"  data-options="iconCls:'icon-excel1',plain:true">Esporta</a>
+    <a id="dg{{n}}_reload" href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true">{{T('Ricarica')}}</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('addRow')">{{T('Inserisci')}}</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('destroyRow')">{{T('Elimina')}}</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('saveRow')">{{T('Salva')}}</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('cancelRow')">{{T('Annulla')}}</a>
+    <a id="dg{{n}}_export" class="easyui-linkbutton"  data-options="iconCls:'icon-excel1',plain:true">{{T('Esporta')}}</a>
 </div>
+
