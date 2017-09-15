@@ -133,3 +133,35 @@ Thu Sep 14, 2017 15:20:30 (cw00011) Unexpected "}".
 Thu Sep 14, 2017 15:20:53 (cw00011) An exception has been thrown during the rendering of a template ("Missing argument 3 for twig_convert_encoding(), called in C:\xampp\htdocs\easyui_gii\vendor\twig\twig\lib\Twig\Environment.php(462) : eval()'d code on line 113 and defined").
 Thu Sep 14, 2017 15:41:38 (cw00011) Unclosed "(".
 Fri Sep 15, 2017 9:45:25 (cw00011) Unable to find template "base/index.html" (looked into: C:/xampp/htdocs/easyui_gii//src/template).
+Fri Sep 15, 2017 10:00:21 (cw00011) Undefined variable: dir
+Fri Sep 15, 2017 11:13:12 (cw00011) Unknown: failed to open stream: No such file or directory
+Fri Sep 15, 2017 11:14:39 (cw00011) Unknown: failed to open stream: No such file or directory
+Fri Sep 15, 2017 11:18:04 (cw00011) Unknown: failed to open stream: No such file or directory
+Fri Sep 15, 2017 11:18:26 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:20:23 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:22:37 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:23:03 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:23:11 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:31:06 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:37:25 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:39:39 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:42:43 (cw00011) Unknown: failed to open stream: No such file or directory
+Fri Sep 15, 2017 11:42:46 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:44:53 (cw00011) Unknown: failed to open stream: No such file or directory
+Fri Sep 15, 2017 11:46:11 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:47:07 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:48:00 (cw00011) An exception has been thrown during the rendering of a template ("file_get_contents(C:/xampp/htdocs/easyui_giiapp_setting.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:49:04 (cw00011) An exception has been thrown during the rendering of a template ("file_put_contents(C:/xampp/htdocs/easyui_giilanguage/it2en.json): failed to open stream: No such file or directory").
+Fri Sep 15, 2017 11:50:28 (cw00011) Unknown: failed to open stream: No such file or directory
+Fri Sep 15, 2017 11:51:30 (cw00011) Unknown: failed to open stream: No such file or directory
+Fri Sep 15, 2017 11:53:23 (cw00011) Unknown: failed to open stream: No such file or directory
+Fri Sep 15, 2017 11:55:43 (cw00011) file_get_contents(C:/xampp/htdocs/easyui_gii/src/template/base/api/api_1_fn.php): failed to open stream: No such file or directory
+Fri Sep 15, 2017 12:02:39 (cw00011) copy(): The second argument to copy() function cannot be a directory
+Fri Sep 15, 2017 12:03:58 (cw00011) Unknown: The second argument to copy() function cannot be a directory
+Fri Sep 15, 2017 12:38:25 (cw00011) Undefined variable: file_fn_to
+Fri Sep 15, 2017 13:00:25 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission denied
+Fri Sep 15, 2017 13:00:40 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission denied
+Fri Sep 15, 2017 13:00:49 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission denied
+Fri Sep 15, 2017 13:01:21 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission denied
+Fri Sep 15, 2017 13:01:38 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission denied
+Fri Sep 15, 2017 13:01:53 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission denied

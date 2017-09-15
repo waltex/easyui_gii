@@ -13,7 +13,7 @@ class easyuigii {
     /**
      */
     function __construct() {
-        $this->script_path = str_replace('src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
+        $this->script_path = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
     }
 
     /** folder create and file
@@ -23,7 +23,8 @@ class easyuigii {
         $this->create_folder($dir);
 
         //build template html
-        $loader = new Twig_Loader_Filesystem($this->script_path . $this->template_root_path);
+        $root_template = $this->script_path . $this->template_root_path;
+        $loader = new Twig_Loader_Filesystem($root_template);
         $twig = new Twig_Environment($loader);
         //Transalte Tamplate with Function T - Very Super
         $function = new Twig_SimpleFunction('T', function ($value) {
@@ -33,13 +34,51 @@ class easyuigii {
 
         $this->set_template_base($dir); // set template base
 
-        $html = $twig->render('base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $this->htmlPrefix));
+        //create page js and html
+        $html = $twig->render('/base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $this->htmlPrefix));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
 
-        $html = $twig->render('crud/index.crud.js', array('n' => $this->htmlPrefix));
+        $html = $twig->render('/crud/index.crud.js', array('n' => $this->htmlPrefix));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $html); //write generated html
+        
+        //create api
+        $this->set_api_base($dir);
+    }
+
+    /** create api with only base function
+     * @param type $dir directory app
+     */
+    private function set_api_base($dir) {
+        $file1_api = $this->script_path . $this->template_base_path . "/api/api_1_declare.php";
+        $api_declare = file_get_contents($file1_api);
+
+        $file2_api = $this->script_path . $this->template_base_path . "/api/api_2_fn.php";
+        $api_fn = str_replace("<?php", "", file_get_contents($file2_api));
+
+        $api = $api_declare . PHP_EOL . $api_fn;
+        $file = $dir . "/api/api.php";
+        $this->create_folder($dir . "/api");
+        file_put_contents($file, $api); //write api
+
+        $this->copy_api_base($dir); //copy function and htaccess
+    }
+
+    /** copy file api base function and htaccess
+     * @param type $dir directory app
+     */
+    private function copy_api_base($dir) {
+        $file_htaccess = $this->script_path . $this->template_base_path . "/api/.htaccess";
+        $file_htaccess_to = $dir . "/api/.htaccess";
+        copy($file_htaccess, $file_htaccess_to);
+
+        $file_fn_api = $this->script_path . $this->template_base_path . "/api/fn_api.php";
+        $file_fn_api_to = $dir . "/api/fn_api.php";
+        copy($file_fn_api, $file_fn_api_to);
+
+        $zip_file = $this->script_path . $this->template_base_path . '/api/vendor.zip';
+        $this->unzip($zip_file, $dir . "/api");
     }
 
     /** copy file (css, js, ....) for template base
@@ -114,7 +153,7 @@ class easyuigii {
      * @return type
      */
     public function T($value) {
-        $file = $this->script_path . "app_setting.json";
+        $file = $this->script_path . "/app_setting.json";
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);
         $lang2from = $ar_file["language from translate"];
@@ -123,7 +162,7 @@ class easyuigii {
 
 
 
-        $file = $this->script_path . "language/$lang2from" . "2" . "$lang2to.json";
+        $file = $this->script_path . "/language/$lang2from" . "2" . "$lang2to.json";
         //write file if not exists
         if (!file_exists($file)) {
             file_put_contents($file, json_encode([]));
