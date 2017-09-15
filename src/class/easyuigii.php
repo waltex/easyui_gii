@@ -3,7 +3,8 @@
 //namespace easyuigii;
 
 class easyuigii {
-
+    private $template_base_path = "/src/template/base";
+    private $template_root_path = "/src/template";
     public $app_name = "demo";
     public $app_folder = "demo";
     public $table_name = "";
@@ -22,36 +23,37 @@ class easyuigii {
         $this->create_folder($dir);
 
         //build template html
-        $loader = new Twig_Loader_Filesystem($this->script_path . '/src/template');
+        $loader = new Twig_Loader_Filesystem($this->script_path . $this->template_root_path);
         $twig = new Twig_Environment($loader);
         //Transalte Tamplate with Function T - Very Super
         $function = new Twig_SimpleFunction('T', function ($value) {
             return $this->T($value);
         });
         $twig->addFunction($function);
-        $function = new Twig_SimpleFunction('F', function ($value) {
-            return $value;
-        });
-        $twig->addFunction($function);
 
+        $this->set_template_base($dir); // set template base
 
         $html = $twig->render('base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $this->htmlPrefix));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
 
-
-        $zip_file = $this->script_path . '/src/template/base/lib.zip';
-        $this->unzip($zip_file, $dir);
-        $zip_file = $this->script_path . '/src/template/base/root.zip';
-        $this->unzip($zip_file, $dir);
-        $zip_file = $this->script_path . '/src/template/base/css.zip';
-        $this->unzip($zip_file, $dir);
-        $zip_file = $this->script_path . '/src/template/base/js.zip';
-        $this->unzip($zip_file, $dir);
-
         $html = $twig->render('crud/index.crud.js', array('n' => $this->htmlPrefix));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $html); //write generated html
+    }
+
+    /** copy file (css, js, ....) for template base
+     * @param type $dir directory app
+     */
+    private function set_template_base($dir) {
+        $zip_file = $this->script_path . $this->template_base_path . '/lib.zip';
+        $this->unzip($zip_file, $dir);
+        $zip_file = $this->script_path . $this->template_base_path . '/root.zip';
+        $this->unzip($zip_file, $dir);
+        $zip_file = $this->script_path . $this->template_base_path . '/css.zip';
+        $this->unzip($zip_file, $dir);
+        $zip_file = $this->script_path . $this->template_base_path . '/js.zip';
+        $this->unzip($zip_file, $dir);
     }
 
     /** create folder if not exists or delete file
