@@ -46,11 +46,11 @@ class easyuigii {
         $this->unzip($zip_file, $dir);
         $zip_file = $this->script_path . '/src/template/base/css.zip';
         $this->unzip($zip_file, $dir);
-        $this->create_folder($dir . '/js');
-
+        $zip_file = $this->script_path . '/src/template/base/js.zip';
+        $this->unzip($zip_file, $dir);
 
         $html = $twig->render('crud/index.crud.js', array('n' => $this->htmlPrefix));
-        $file = $dir . "/js/index_app.js";
+        $file = $dir . "/js/index.js";
         file_put_contents($file, $html); //write generated html
     }
 

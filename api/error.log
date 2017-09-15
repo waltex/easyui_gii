@@ -132,3 +132,4 @@ Thu Sep 14, 2017 15:19:12 (cw00011) Unknown "escapee" filter. Did you mean "esca
 Thu Sep 14, 2017 15:20:30 (cw00011) Unexpected "}".
 Thu Sep 14, 2017 15:20:53 (cw00011) An exception has been thrown during the rendering of a template ("Missing argument 3 for twig_convert_encoding(), called in C:\xampp\htdocs\easyui_gii\vendor\twig\twig\lib\Twig\Environment.php(462) : eval()'d code on line 113 and defined").
 Thu Sep 14, 2017 15:41:38 (cw00011) Unclosed "(".
+Fri Sep 15, 2017 9:45:25 (cw00011) Unable to find template "base/index.html" (looked into: C:/xampp/htdocs/easyui_gii//src/template).
