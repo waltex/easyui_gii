@@ -17,5 +17,3 @@ $app->add(new \SlimJson\Middleware(array(
     'json.cors' => true
 )));
 
-//$app->get('/test_api', 'test_api'); // test api
-

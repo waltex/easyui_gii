@@ -42,22 +42,34 @@ class easyuigii {
         $html = $twig->render('/crud/index.crud.js', array('n' => $this->htmlPrefix));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $html); //write generated html
-        
+
+
+        $ApiUrl = $this->setApiName("/crud/test", "crud_test");
         //create api
-        $this->set_api_base($dir);
+        $this->set_api_base($dir, $ApiUrl);
+    }
+
+    /** set api name
+     *
+     * @param type $url endpoint url
+     * @param type $fn function associate to api
+     * @return type string
+     */
+    private function setApiName($url, $fn) {
+        return '$' . "app->post('$url', '$fn'); ";
     }
 
     /** create api with only base function
      * @param type $dir directory app
      */
-    private function set_api_base($dir) {
+    private function set_api_base($dir, $ApiUrl) {
         $file1_api = $this->script_path . $this->template_base_path . "/api/api_1_declare.php";
         $api_declare = file_get_contents($file1_api);
 
         $file2_api = $this->script_path . $this->template_base_path . "/api/api_2_fn.php";
         $api_fn = str_replace("<?php", "", file_get_contents($file2_api));
 
-        $api = $api_declare . PHP_EOL . $api_fn;
+        $api = $api_declare . PHP_EOL . $ApiUrl . PHP_EOL . $api_fn;
         $file = $dir . "/api/api.php";
         $this->create_folder($dir . "/api");
         file_put_contents($file, $api); //write api
@@ -77,8 +89,8 @@ class easyuigii {
         $file_fn_api_to = $dir . "/api/fn_api.php";
         copy($file_fn_api, $file_fn_api_to);
 
-        $zip_file = $this->script_path . $this->template_base_path . '/api/vendor.zip';
-        $this->unzip($zip_file, $dir . "/api");
+        $zip_file = $this->script_path . $this->template_base_path . '/vendor.zip';
+        $this->unzip($zip_file, $dir . "/");
     }
 
     /** copy file (css, js, ....) for template base
