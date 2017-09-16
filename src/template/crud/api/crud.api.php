@@ -11,7 +11,7 @@
         if ($command == 'SELECT') {
 
             $sql = "
-                SELECT * FROM ABB_CRUD
+                {{sql|raw}}
                 ";
 
             if ($debug) {
@@ -25,8 +25,9 @@
 
             oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
 
-            $app->response()->body(jsonpWrap(json_encode($data)));
-        }
+            $app->response()->body(json_encode($data));
+
+    }
 
         if ($command == 'DELETE') {
 //ATTENZIONE SOLO IN  QUESTO CASO MI RITORNA MINUSCOLO

@@ -6,9 +6,10 @@ class easyuigii {
 
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
-    public $app_name = "demo";
-    public $app_folder = "demo";
+    public $app_name = "";
+    public $app_folder = "";
     public $table_name = "";
+    public $dateFormat = "DD-MM-YYYY";
     public $htmlPrefix = "1";
     public $ApiUrl = "/crud/ABB_CRUD";
     public $ApiFn = "crud_ABB_CRUD";
@@ -52,17 +53,58 @@ class easyuigii {
         $this->set_api_base($dir, $ApiUrl, $fnApi); //create file api
     }
 
+    /** create sql string
+     *
+     * @return type string
+     */
+    private function getSelectFromTable() {
+        $app = Slim\Slim::getInstance();
+        include 'api_setup.php';
+        $table = $this->table_name;
+        $sql = "
+                SELECT * FROM $table
+                ";
+
+        ($debug) ? error_log(LogTime() . ' Sql, get column field: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log') : false;
+
+        $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+        $db = oci_parse($conn, $sql);
+        $rs = oci_execute($db);
+
+        $ncols = oci_num_fields($db);
+
+        for ($i = 1; $i <= $ncols; $i++) {
+            $col_name = oci_field_name($db, $i);
+            $col_name_w_a = "A." . $col_name;
+            $col_type = oci_field_type($db, $i);
+            if ($col_type == "DATE") {
+                $col_name_w_a = $this->formatDateSelect($col_name_w_a, $col_name);
+            }
+            $strComma = ($i < $ncols) ? ", " : "";
+            $strCol.=$col_name_w_a . $strComma;
+        }
+        $strSql = "SELECT $strCol FROM $table A";
+        return $strSql;
+    }
+
+    private function formatDateSelect($col_name_w_a, $col_name) {
+        return "TO_CHAR($col_name_w_a,'" . $this->dateFormat . "') $col_name";
+    }
+
     /** get string code  fn CrudBase
      *
      * @param type $fn_name
      */
     private function getApiFn_Crud($fn_name) {
-        $dir = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder; //code path output
+
+        $sql = $this->getSelectFromTable();
+
         //build template html
         $root_template = $this->script_path . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);
         $twig = new Twig_Environment($loader);
-        $php = $twig->render('/crud/api/crud.api.php', array('ApiFnName' => $fn_name));
+
+        $php = $twig->render('/crud/api/crud.api.php', array('ApiFnName' => $fn_name, "sql" => $sql));
         $php = str_replace("<?php", "", $php);
         return $php;
     }
