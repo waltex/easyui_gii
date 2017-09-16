@@ -41,12 +41,12 @@ class easyuigii {
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
 
-        $html = $twig->render('/crud/index.crud.js', array('n' => $this->htmlPrefix));
+        $html = $twig->render('/crud/index.crud.js', array('n' => $this->htmlPrefix, 'apiUrl' => $this->ApiUrl));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $html); //write generated html
 
 
-        $ApiUrl = $this->getApiName($this->ApiUrl, $this->ApiFn); //create code url api + function
+        $ApiUrl = $this->getApiName($this->ApiUrl . "/:command", $this->ApiFn); //create code url api + function
         $fnApi = $this->getApiFn_Crud($this->ApiFn); //template redered api function
         //create api
         $this->set_api_base($dir, $ApiUrl, $fnApi); //create file api
@@ -109,6 +109,10 @@ class easyuigii {
 
         $zip_file = $this->script_path . $this->template_base_path . '/vendor.zip';
         $this->unzip($zip_file, $dir . "/");
+
+        $file_api_setup = $this->script_path . $this->template_base_path . "/api/api_setup.php";
+        $file_api_setup_to = $dir . "/api/api_setup.php";
+        copy($file_api_setup, $file_api_setup_to);
     }
 
     /** copy file (css, js, ....) for template base

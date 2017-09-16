@@ -270,3 +270,4 @@ Sat Sep 16, 2017 16:10:49 () Unable to find template "/crud/api/crud.api1.php" (
 Sat Sep 16, 2017 16:22:19 () Unable to find template "/crud/api/crud.ap2.php" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).
 Sat Sep 16, 2017 16:24:02 () Unable to find template "/crud/api/crud.api2.php" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).
 Sat Sep 16, 2017 16:40:38 () Unable to find template "/crud/api/crud.api.php.twig" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).
+Sat Sep 16, 2017 17:29:06 () Unexpected "}".

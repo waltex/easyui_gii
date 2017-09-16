@@ -13,7 +13,7 @@ $(document).ready(function () {
             border: false,
             toolbar: '#tb{{n}}',
             title: '√',
-            url: 'api/XXX',
+            url: 'api{{apiUrl}}/SELECT',
             saveUrl: 'api/XXX',
             updateUrl: 'api/xxx',
             destroyUrl: 'api/xx',
