@@ -1,0 +1,23 @@
+Sat Sep 16, 2017 13:26:35 ()  Sql lista pv combo abb. 
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 13:29:31 ()  Sql test oci
+                        SELECT  'ok' from dual
+                
+Sat Sep 16, 2017 13:33:18 ()  Sql test oci
+                        SELECT  'ok' from dual
+                
+Sat Sep 16, 2017 13:34:39 ()  Sql test oci
+                        SELECT  'ok' from dual
+                
+Sat Sep 16, 2017 13:36:57 ()  Sql test oci
+                        SELECT  'ok' from dual
+                
+Sat Sep 16, 2017 14:35:44 ()  Sql test oci
+                        SELECT  'ok' from dual
+                

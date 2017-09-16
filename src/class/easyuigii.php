@@ -3,12 +3,15 @@
 //namespace easyuigii;
 
 class easyuigii {
+
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
     public $app_name = "demo";
     public $app_folder = "demo";
     public $table_name = "";
     public $htmlPrefix = "1";
+    public $ApiUrl = "/crud/ABB_CRUD";
+    public $ApiFn = "crud_ABB_CRUD";
 
     /**
      */
@@ -33,7 +36,6 @@ class easyuigii {
         $twig->addFunction($function);
 
         $this->set_template_base($dir); // set template base
-
         //create page js and html
         $html = $twig->render('/base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $this->htmlPrefix));
         $file = $dir . "/index.html";
@@ -44,32 +46,48 @@ class easyuigii {
         file_put_contents($file, $html); //write generated html
 
 
-        $ApiUrl = $this->setApiName("/crud/test", "crud_test");
+        $ApiUrl = $this->getApiName($this->ApiUrl, $this->ApiFn); //create code url api + function
+        $fnApi = $this->getApiFn_Crud($this->ApiFn); //template redered api function
         //create api
-        $this->set_api_base($dir, $ApiUrl);
+        $this->set_api_base($dir, $ApiUrl, $fnApi); //create file api
     }
 
-    /** set api name
+    /** get string code  fn CrudBase
+     *
+     * @param type $fn_name
+     */
+    private function getApiFn_Crud($fn_name) {
+        $dir = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder; //code path output
+        //build template html
+        $root_template = $this->script_path . $this->template_root_path;
+        $loader = new Twig_Loader_Filesystem($root_template);
+        $twig = new Twig_Environment($loader);
+        $php = $twig->render('/crud/api/crud.api.php', array('ApiFnName' => $fn_name));
+        $php = str_replace("<?php", "", $php);
+        return $php;
+    }
+
+    /** get string code  api name
      *
      * @param type $url endpoint url
      * @param type $fn function associate to api
      * @return type string
      */
-    private function setApiName($url, $fn) {
+    private function getApiName($url, $fn) {
         return '$' . "app->post('$url', '$fn'); ";
     }
 
     /** create api with only base function
      * @param type $dir directory app
      */
-    private function set_api_base($dir, $ApiUrl) {
+    private function set_api_base($dir, $ApiUrl, $fnApi) {
         $file1_api = $this->script_path . $this->template_base_path . "/api/api_1_declare.php";
         $api_declare = file_get_contents($file1_api);
 
         $file2_api = $this->script_path . $this->template_base_path . "/api/api_2_fn.php";
         $api_fn = str_replace("<?php", "", file_get_contents($file2_api));
 
-        $api = $api_declare . PHP_EOL . $ApiUrl . PHP_EOL . $api_fn;
+        $api = $api_declare . PHP_EOL . $ApiUrl . PHP_EOL . $api_fn . PHP_EOL . $fnApi; //create File Api
         $file = $dir . "/api/api.php";
         $this->create_folder($dir . "/api");
         file_put_contents($file, $api); //write api

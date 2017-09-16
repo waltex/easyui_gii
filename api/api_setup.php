@@ -1,5 +1,9 @@
 <?php
-$APP_NAME = 'SCRIPT';
+$debug = true;
+$debug_log_mb = 10; //max megabyte logs, -1 no limite
+$api_log_mb = 10; //max megabyte logs, -1 no limite
+$error_log_mb = 20; //max megabyte logs, -1 no limite
+
 
 $db1_user = 'root';
 $db1_psw = '';
@@ -17,20 +21,10 @@ $db3_psw = 'EXPLORER';
 
 $db4_user = 'CENPROD';
 $db4_psw = 'CENPROD';
-//$db4_user = 'CENTEST';
-//$db4_psw = 'CENTEST';
-//$db4_GOLD = $GOLDPROD; Vedi in fondo
 
 $db5_user = 'STKPROD';
 $db5_psw = 'STKPROD';
 
-//Driver={SQL Server};Server=192.168.1.9;Database=abb;
-
-$db6_abb = 'Driver={SQL Server};Server=192.168.1.9;Database=abb;';
-$db6_camidb = 'Driver={SQL Server};Server=192.168.1.9;Database=camidb;';
-$db6_sqlserver = $db6_camidb;
-$db6_user = 'coge';
-$db6_psw = 'carlotta';
 
 
 $db7_abb = 'Driver={SQL Server};Server=192.168.1.9;Database=abb;charset=UTF-8';
@@ -48,27 +42,7 @@ $db9_inaz = 'Driver={SQL Server};Server=192.168.20.136;Database=PORTALE;charset=
 $db9_user = 'userHR';
 $db9_psw = 'iride';
 
-$ip_active_directory = "192.168.20.101"; //old 192.168.1.101
 
-$debug = true;
-$debug_log_mb = 10; //max megabyte logs, -1 no limite
-$api_log_mb = 10; //max megabyte logs, -1 no limite
-$error_log_mb = 20; //max megabyte logs, -1 no limite
-//$var_k = 7; // x Sql
-
-$mail_log = "walter.cardelli@labbondanza.it";
-
-
-//api mailer, ostituisce la funzione nativa "mail" con "mail2" di php usando api mailer;
-//mittente predefinito,
-$mailer_from = "ced@labbondanza.it";
-$mailer_Host = 'smtp.office365.com'; //smtp1.example.com;smtp2.example.com';  // Specify main and backup SMTP servers
-$mailer_SMTPAuth = true;                                     // Enable SMTP authentication
-$mailer_Username = 'alertprg@labbondanza.it';                // SMTP username
-$mailer_Password = 'Smtp.Acce$$1';                           // SMTP password
-$mailer_SMTPSecure = null; //'tls';                          // Enable TLS encryption, `ssl` also accepted
-$mailer_Port = 25;                                           // TCP port to connect to
-$mailer_SMTPDebug = null; //3 debug
 
 
 $explorer = '

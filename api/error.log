@@ -166,3 +166,107 @@ Fri Sep 15, 2017 13:01:21 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission 
 Fri Sep 15, 2017 13:01:38 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission denied
 Fri Sep 15, 2017 13:01:53 (cw00011) rmdir(C:/xampp/htdocs/out/crud): Permission denied
 Fri Sep 15, 2017 21:56:07 () mkdir(): Permission denied
+Sat Sep 16, 2017 0:26:01 () unlink(/Applications/XAMPP/xamppfiles/htdocs/out/crud/.DS_Store): Permission denied
+Sat Sep 16, 2017 0:48:36 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 0:51:38 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 0:56:59 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 0:57:33 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 0:59:04 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 1:01:02 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 1:07:05 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 1:13:27 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 1:14:25 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 1:21:36 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 1:22:16 ()  Sql lista pv combo abb.  
+
+                        SELECT  SITO ID,SITO || ' - ' || SITO_DESC TEXT from ABB_SITO_PV
+                        UNION
+                        SELECT 99 ID,'99 - PDV TEST' TEXT FROM DUAL
+                        UNION
+                        SELECT -1 ID,'TUTTI I PV' TEXT FROM DUAL
+                        ORDER BY ID
+                
+Sat Sep 16, 2017 16:10:49 () Unable to find template "/crud/api/crud.api1.php" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).
+Sat Sep 16, 2017 16:22:19 () Unable to find template "/crud/api/crud.ap2.php" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).
+Sat Sep 16, 2017 16:24:02 () Unable to find template "/crud/api/crud.api2.php" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).
+Sat Sep 16, 2017 16:40:38 () Unable to find template "/crud/api/crud.api.php.twig" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).
