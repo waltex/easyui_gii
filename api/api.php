@@ -156,7 +156,7 @@ function crud_generate() {
         $crud->app_folder = $app->request->params('app_folder');
         $crud->table_name = $app->request->params('table_name');
 
-        $crud->buildAppCrud();
+        $crud->build_app_crud();
 
         $app->render(200, ['success' => true, 'msg' => "eseguito"]);
     } catch (Exception $e) {

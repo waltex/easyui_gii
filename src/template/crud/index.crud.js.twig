@@ -12,8 +12,8 @@ $(document).ready(function () {
         $('#dg{{n}}').edatagrid({
             border: false,
             toolbar: '#tb{{n}}',
-            title: '√',
-            url: 'api{{apiUrl}}/SELECT',
+            title: '{{title}}',
+            url: 'api{{api_url}}/SELECT',
             saveUrl: 'api/XXX',
             updateUrl: 'api/xxx',
             destroyUrl: 'api/xx',
@@ -48,8 +48,8 @@ $(document).ready(function () {
                     {field: 'ID_CLONE', title: 'Fase<br>Duplicata', formatter: mycheck},
                 ]],
                 #}
-        {{columns}}
-        });
+                {{col_crud|raw}}
+                });
         $('#dg{{n}}').datagrid('enableFilter');
     }
 
