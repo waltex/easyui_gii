@@ -91,11 +91,13 @@ class easyuigii {
         }
 
         if (in_array($col, ['ID'])) {
-            return "{field: '$col', title: '$col', $with sortable: true}," . PHP_EOL;
+            $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
+            return $ck . "{field: '$col', title: '$col', $with sortable: true}," . PHP_EOL;
         }
 
         if (in_array($col, $this->dg_cols_ck)) {
-            return "{field: '$col', title: '$col', $with sortable: true}," . PHP_EOL;
+            //{field: 'ID_CLONE', title: 'Fase<br>Duplicata', formatter: mycheck},
+            return "{field: '$col', title: '$col', editor: {type: 'checkbox', options: {formatter: mycheck,required: true}}}," . PHP_EOL;
         }
 
         if (in_array($type, ['VARCHAR2', 'VARCHAR'])) {
