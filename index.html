@@ -9,36 +9,29 @@
 
     </head>
     <body id="layout_main" class="easyui-layout" data-option="fit:true">
-        <div id="content" data-options="region:'center'" style="fit:true">
-            <div id="tab" class="easyui-tabs" data-options="fit:true"></div>
-            <div id="mm_app" style="width:150px;">
-                <div id="dg_crud" data-options="iconCls:'icon-database'">Crud Datagrid</div>
-                <div class="menu-sep"></div>
-                <div id="dg_set" data-options="iconCls:'icon-setting-mini'">Impostazioni</div>
-                <div>Copy</div>
-                <div>Paste</div>
-                <div class="menu-sep"></div>
-                <div>
-                    <span>Toolbar</span>
-                    <div>
-                        <div>Address</div>
-                        <div>Link</div>
-                        <div>Navigation Toolbar</div>
-                        <div>Bookmark Toolbar</div>
-                        <div class="menu-sep"></div>
-                        <div>New Toolbar...</div>
-                    </div>
-                </div>
-                <div data-options="iconCls:'icon-remove'">Delete</div>
-                <div>Select All</div>
-            </div>
-            <div id="mm_tab">
-                <div>Welcome</div>
-                <div>Help Contents</div>
-                <div data-options="iconCls:'icon-search'">Search</div>
-                <div>Dynamic Help</div>
-            </div>
+        <div title="Easyui - Code Generator" data-options="region:'center',fit:true" >
+            <div id="tab_app" class="easyui-tabs" data-options="fit:true"></div>
+        </div>
 
+        <div id="mm_app" style="width:150px;">
+            <div id="dg_crud" data-options="iconCls:'icon-database'">Crud Datagrid</div>
+            <div class="menu-sep"></div>
+            <div id="dg_set" data-options="iconCls:'icon-setting-mini'">Impostazioni</div>
+            <div>Paste</div>
+            <div class="menu-sep"></div>
+            <div>
+                <span id="mm_app_gen">apri app generate</span><!-- open app generated -->
+                <div>
+                    <div>Address</div>
+                    <div>Link</div>
+                    <div>Navigation Toolbar</div>
+                    <div>Bookmark Toolbar</div>
+                    <div class="menu-sep"></div>
+                    <div>New Toolbar...</div>
+                </div>
+            </div>
+            <div data-options="iconCls:'icon-remove'">Delete</div>
+            <div>Select All</div>
         </div>
 
     </body>
