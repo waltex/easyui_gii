@@ -276,3 +276,5 @@ Sat Sep 16, 2017 19:58:32 () oci_execute(): ORA-00942: table or view does not ex
 Sat Sep 16, 2017 19:59:24 () oci_field_name() expects parameter 1 to be resource, null given
 Sat Sep 16, 2017 21:10:27 () oci_connect(): ORA-12170: TNS:Connect timeout occurred
 Sun Sep 17, 2017 14:03:28 () rmdir(/Applications/XAMPP/xamppfiles/htdocs/out/crud): Directory not empty
+Sun Sep 17, 2017 14:35:50 () Unable to find template "/base/index.html.twig" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).
+Sun Sep 17, 2017 14:36:55 () Unable to find template "crud/body.crud.html" (looked into: /Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template).

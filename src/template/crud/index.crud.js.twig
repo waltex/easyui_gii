@@ -26,7 +26,7 @@ $(document).ready(function () {
             remoteSort: false,
             multiSort: false,
             autoRowHeight: false, //For Speed refresh
-            editorHeight: 32,
+            //editorHeight: 32,
             destroyMsg: {
                 norecord: {// when no record is selected
                     title: "{{T('Attenzione')}}",
@@ -39,13 +39,16 @@ $(document).ready(function () {
             },
             onError: function (index, row) {
                 $.messager.alert("{{T('Contattare assistenza')}}", row.msg, 'error');
-            },
-            columns: [[
+                },
+                {#
+                columns: [[
                     {field: 'SEQ', title: 'Ord', width: '25px', editor: {type: 'numberbox', options: {required: true}}, sortable: true},
                     {field: 'DTIN', title: 'Data Inizio', width: 90, editor: {type: 'datebox', options: {formatter: myformatter_d_it, parser: myparser_d_it, required: true}}, sortable: true},
                     {field: 'DTFI', title: 'Data Fine', width: 90, editor: {type: 'datebox', options: {formatter: myformatter_d_it, parser: myparser_d_it, required: true}}, sortable: true},
                     {field: 'ID_CLONE', title: 'Fase<br>Duplicata', formatter: mycheck},
                 ]],
+                #}
+        {{columns}}
         });
         $('#dg{{n}}').datagrid('enableFilter');
     }

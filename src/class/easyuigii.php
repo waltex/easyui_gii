@@ -38,11 +38,11 @@ class easyuigii {
 
         $this->set_template_base($dir); // set template base
         //create page js and html
-        $html = $twig->render('/base/index.html', array('url_body' => 'crud/body.crud.html', 'n' => $this->htmlPrefix));
+        $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig', 'n' => $this->htmlPrefix));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
 
-        $html = $twig->render('/crud/index.crud.js', array('n' => $this->htmlPrefix, 'apiUrl' => $this->ApiUrl));
+        $html = $twig->render('/crud/index.crud.js.twig', array('n' => $this->htmlPrefix, 'apiUrl' => $this->ApiUrl));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $html); //write generated html
 
@@ -104,7 +104,7 @@ class easyuigii {
         $loader = new Twig_Loader_Filesystem($root_template);
         $twig = new Twig_Environment($loader);
 
-        $php = $twig->render('/crud/api/crud.api.php', array('ApiFnName' => $fn_name, "sql" => $sql));
+        $php = $twig->render('/crud/api/crud.api.php.twig', array('ApiFnName' => $fn_name, "sql" => $sql));
         $php = str_replace("<?php", "", $php);
         return $php;
     }
