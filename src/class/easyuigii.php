@@ -7,6 +7,7 @@ class easyuigii {
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
     private $ar_col_type = []; // for tamplate crud
+    private $language_default = ''; // es. en it ....
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
@@ -22,6 +23,11 @@ class easyuigii {
 
     function __construct() {
         $this->script_path = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
+
+        $file = $this->script_path . "/app_setting.json";
+        $imp = file_get_contents($file);
+        $ar_file = json_decode($imp, true);
+        $this->language_default = $ar_file["language default"];
     }
 
     /** folder create and file
@@ -40,8 +46,13 @@ class easyuigii {
         });
         $twig->addFunction($function);
 
-        $this->set_template_base($dir); // set template base
-        //
+        $this->copy_file_framework($dir); // copy file/folder framework
+        //create asset template
+        $html = $twig->render('/base/asset.html.twig', array(
+            'language_default' => $this->language_default
+        ));
+        $file = $dir . "/asset.html";
+        file_put_contents($file, $html); //write generated html
         //create page js and html
         $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig'
             , 'n' => $this->html_prefix
@@ -61,7 +72,7 @@ class easyuigii {
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
         //create api
-        $this->set_api_base($dir, $api_url, $fn_api); //create file api
+        $this->set_api($dir, $api_url, $fn_api); //create file api
     }
 
     private function get_template_js_crud() {
@@ -192,10 +203,13 @@ class easyuigii {
         return '$' . "app->post('$url', '$fn'); ";
     }
 
-    /** create api with only base function
-     * @param type $dir directory app
+    /** create rest api
+     *
+     * @param type $dir directory api
+     * @param type $api_url string rest api url
+     * @param type $fn_api string rest functions
      */
-    private function set_api_base($dir, $api_url, $fn_api) {
+    private function set_api($dir, $api_url, $fn_api) {
         $file1_api = $this->script_path . $this->template_base_path . "/api/api_1_declare.php";
         $api_declare = file_get_contents($file1_api);
 
@@ -204,44 +218,59 @@ class easyuigii {
 
         $api = $api_declare . PHP_EOL . $api_url . PHP_EOL . $api_fn . PHP_EOL . $fn_api; //create File Api
         $file = $dir . "/api/api.php";
-        $this->create_folder($dir . "/api");
         file_put_contents($file, $api); //write api
-
-        $this->copy_api_base($dir); //copy function and htaccess
     }
 
-    /** copy file api base function and htaccess
-     * @param type $dir directory app
+
+
+    /** copy file to directory
+     * @param type $ar_files array files es. [[full_path_file_from, dir_to],[full_path_file_from, dir_to]....]
+
      */
-    private function copy_api_base($dir) {
-        $file_htaccess = $this->script_path . $this->template_base_path . "/api/.htaccess";
-        $file_htaccess_to = $dir . "/api/.htaccess";
-        copy($file_htaccess, $file_htaccess_to);
-
-        $file_fn_api = $this->script_path . $this->template_base_path . "/api/fn_api.php";
-        $file_fn_api_to = $dir . "/api/fn_api.php";
-        copy($file_fn_api, $file_fn_api_to);
-
-        $zip_file = $this->script_path . $this->template_base_path . '/vendor.zip';
-        $this->unzip($zip_file, $dir . "/");
-
-        $file_api_setup = $this->script_path . $this->template_base_path . "/api/api_setup.php";
-        $file_api_setup_to = $dir . "/api/api_setup.php";
-        copy($file_api_setup, $file_api_setup_to);
+    function copy_files_to_dir($ar_files) {
+        try {
+            foreach ($ar_files as $file) {
+                $from = $file[0];
+                $to = $file[1] . basename($file[0]);
+                copy($from, $to);
+            }
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
-    /** copy file (css, js, ....) for template base
+    /** copy file (css, js, ....) for app
      * @param type $dir directory app
      */
-    private function set_template_base($dir) {
-        $zip_file = $this->script_path . $this->template_base_path . '/lib.zip';
-        $this->unzip($zip_file, $dir);
-        $zip_file = $this->script_path . $this->template_base_path . '/root.zip';
-        $this->unzip($zip_file, $dir);
-        $zip_file = $this->script_path . $this->template_base_path . '/css.zip';
-        $this->unzip($zip_file, $dir);
-        $zip_file = $this->script_path . $this->template_base_path . '/js.zip';
-        $this->unzip($zip_file, $dir);
+    private function copy_file_framework($dir) {
+        try {
+            $this->create_folder($dir . "/api");
+
+            $zip_file = $this->script_path . $this->template_base_path . '/lib.zip';
+            $this->unzip($zip_file, $dir);
+            $zip_file = $this->script_path . $this->template_base_path . '/css.zip';
+            $this->unzip($zip_file, $dir);
+            $zip_file = $this->script_path . $this->template_base_path . '/js.zip';
+            $this->unzip($zip_file, $dir);
+
+
+            $zip_file = $this->script_path . $this->template_base_path . '/vendor.zip';
+            $this->unzip($zip_file, $dir . "/");
+
+            $template_path = $this->script_path . $this->template_base_path;
+            $ar_files = [
+                [$template_path . "/LICENSE", $dir . "/"],
+                [$template_path . "/composer.json", $dir . "/"],
+                [$template_path . "/api/.htaccess", $dir . "/api/"],
+                [$template_path . "/api/fn_api.php", $dir . "/api/"],
+                [$template_path . "/api/api_setup.php", $dir . "/api/"],
+            ];
+            $this->copy_files_to_dir($ar_files, $dir);
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     /** create folder recursive and delete file if exists

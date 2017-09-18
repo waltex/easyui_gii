@@ -307,3 +307,62 @@ Mon Sep 18, 2017 11:32:34 easyuigii.php:153 - Undefined variable: strCol
 Mon Sep 18, 2017 11:40:04 easyuigii.php:153 - Undefined variable: strCol
 Mon Sep 18, 2017 11:40:04 easyuigii.php:153 - Undefined variable: strCol
 
+Mon Sep 18, 2017 21:08:18 easyuigii.php:135 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+Mon Sep 18, 2017 21:08:18easyuigii.php:135 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+
+Mon Sep 18, 2017 21:09:38 easyuigii.php:135 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+Mon Sep 18, 2017 21:09:38easyuigii.php:135 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+
+Mon Sep 18, 2017 21:41:44ZipArchive::extractTo(): Invalid or unitialized Zip object
+Mon Sep 18, 2017 21:43:36 easyuigii.php:330 - ZipArchive::extractTo(): Invalid or unitialized Zip object
+Mon Sep 18, 2017 21:43:36easyuigii.php:330 - ZipArchive::extractTo(): Invalid or unitialized Zip object
+
+Mon Sep 18, 2017 21:45:18 easyuigii.php:330 - ZipArchive::extractTo(): Invalid or unitialized Zip object
+Mon Sep 18, 2017 21:45:18 easyuigii.php:334 - easyuigii.php:330 - ZipArchive::extractTo(): Invalid or unitialized Zip object
+
+Mon Sep 18, 2017 21:45:18easyuigii.php:334 - easyuigii.php:330 - ZipArchive::extractTo(): Invalid or unitialized Zip object
+
+
+Mon Sep 18, 2017 21:45:56 easyuigii.php:329 - ZipArchive::extractTo(): Invalid or unitialized Zip object
+Mon Sep 18, 2017 21:45:56easyuigii.php:329 - ZipArchive::extractTo(): Invalid or unitialized Zip object
+
+Mon Sep 18, 2017 21:53:20 easyuigii.php:146 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+Mon Sep 18, 2017 21:53:20easyuigii.php:146 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+
+Mon Sep 18, 2017 22:08:50copy(/Applications/XAMPP/xamppfiles/htdocs/easyui_gii/src/template/base/composer): failed to open stream: No such file or directory
+Mon Sep 18, 2017 22:18:56 easyuigii.php:250 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+Mon Sep 18, 2017 22:18:56easyuigii.php:250 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+Mon Sep 18, 2017 22:20:09 easyuigii.php:250 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+Mon Sep 18, 2017 22:20:09easyuigii.php:250 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+Mon Sep 18, 2017 22:21:41 easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+Mon Sep 18, 2017 22:21:41 easyuigii.php:255 - easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+Mon Sep 18, 2017 22:21:42easyuigii.php:255 - easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+
+Mon Sep 18, 2017 22:23:05 easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+Mon Sep 18, 2017 22:23:05 easyuigii.php:255 - easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+Mon Sep 18, 2017 22:23:05easyuigii.php:255 - easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+
+Mon Sep 18, 2017 22:23:34 easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+Mon Sep 18, 2017 22:23:34 easyuigii.php:255 - easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+Mon Sep 18, 2017 22:23:34easyuigii.php:255 - easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+
+Mon Sep 18, 2017 22:23:54 easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+Mon Sep 18, 2017 22:23:54 easyuigii.php:255 - easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+Mon Sep 18, 2017 22:23:54easyuigii.php:255 - easyuigii.php:251 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+
+Mon Sep 18, 2017 22:26:14 easyuigii.php:252 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+Mon Sep 18, 2017 22:26:14 easyuigii.php:256 - easyuigii.php:252 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+Mon Sep 18, 2017 22:26:14easyuigii.php:256 - easyuigii.php:252 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
+
+
