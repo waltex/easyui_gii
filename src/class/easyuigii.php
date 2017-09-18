@@ -7,7 +7,7 @@ class easyuigii {
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
     private $ar_col_type = []; // for tamplate crud
-    private $language_default = ''; // es. en it ....
+    private $language_default = ''; // form asset template
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
