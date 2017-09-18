@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Easyui Gii Creator Home Page</title>
+        <link rel="import" href="asset.html">
+        <script src="js/translate.js" type="text/javascript"></script>
+        <script src="js/index.js" type="text/javascript"></script>
+
+    </head>
+    <body id="layout_main" class="easyui-layout" data-option="fit:true">
+        <div title="Easyui - Code Generator" data-options="region:'center',fit:true" >
+            <div id="tab_app" class="easyui-tabs" data-options="fit:true"></div>
+        </div>
+
+        <div id="mm_app" style="width:150px;">
+            <div id="dg_crud" data-options="iconCls:'icon-database'">Crud Datagrid</div>
+            <div class="menu-sep"></div>
+            <div id="dg_set" data-options="iconCls:'icon-setting-mini'">Impostazioni</div>
+            <div>Paste</div>
+            <div class="menu-sep"></div>
+            <div>
+                <span id="mm_app_gen">apri app generate</span><!-- open app generated -->
+                <div>
+                    <div>Address</div>
+                    <div>Link</div>
+                    <div>Navigation Toolbar</div>
+                    <div>Bookmark Toolbar</div>
+                    <div class="menu-sep"></div>
+                    <div>New Toolbar...</div>
+                </div>
+            </div>
+            <div data-options="iconCls:'icon-remove'">Delete</div>
+            <div>Select All</div>
+        </div>
+
+    </body>
+</html>
