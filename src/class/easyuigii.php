@@ -121,36 +121,43 @@ class easyuigii {
      * @return type string
      */
     private function get_select_from_table() {
-        $app = Slim\Slim::getInstance();
-        include 'api_setup.php';
-        $table = $this->table_name;
-        $sql = "
+        try {
+
+            $app = Slim\Slim::getInstance();
+            include 'api_setup.php';
+            $table = $this->table_name;
+            $sql = "
                 SELECT * FROM $table
                 ";
 
-        ($debug) ? error_log(LogTime() . ' Sql, get column field: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log') : false;
+            ($debug) ? error_log(LogTime() . ' Sql, get column field: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log') : false;
 
-        $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
-        $db = oci_parse($conn, $sql);
-        $rs = oci_execute($db);
+            $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $db = oci_parse($conn, $sql);
+            $rs = oci_execute($db);
 
-        $ncols = oci_num_fields($db);
+            $ncols = oci_num_fields($db);
 
-        $this->ar_col_type = [];
-        for ($i = 1; $i <= $ncols; $i++) {
-            $col_name = oci_field_name($db, $i);
-            $col_name_w_a = "A." . $col_name;
-            $col_type = oci_field_type($db, $i);
-            array_push($this->ar_col_type, [$col_name => $col_type]);
-            //$this->ar_col_type[] = [$col_name => $col_type]; //save type col
-            if ($col_type == "DATE") {
-                $col_name_w_a = $this->format_date_select($col_name_w_a, $col_name);
+            $this->ar_col_type = [];
+            $strCol = "";
+            for ($i = 1; $i <= $ncols; $i++) {
+                $col_name = oci_field_name($db, $i);
+                $col_name_w_a = "A." . $col_name;
+                $col_type = oci_field_type($db, $i);
+                array_push($this->ar_col_type, [$col_name => $col_type]);
+                //$this->ar_col_type[] = [$col_name => $col_type]; //save type col
+                if ($col_type == "DATE") {
+                    $col_name_w_a = $this->format_date_select($col_name_w_a, $col_name);
+                }
+                $strComma = ($i < $ncols) ? ", " : "";
+                $strCol.=$col_name_w_a . $strComma;
             }
-            $strComma = ($i < $ncols) ? ", " : "";
-            $strCol.=$col_name_w_a . $strComma;
+            $strSql = "SELECT $strCol FROM $table A";
+            return $strSql;
+        } catch (Exception $e) {
+            error_log(LogTime() . message_err($e), 3, 'error.log');
+            throw new Exception(message_err($e));
         }
-        $strSql = "SELECT $strCol FROM $table A";
-        return $strSql;
     }
 
     private function format_date_select($col_name_w_a, $col_name) {

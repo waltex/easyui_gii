@@ -23,19 +23,9 @@ function jsonpWrap($jsonp) {
 
 //Log
 function logTime() {
-    include 'api_setup.php';
-    if (session_status() !== PHP_SESSION_ACTIVE) {
-        session_start();
-    }
-    $user = "";
-    if (isset($_SESSION['user' . "_$APP_NAME"])) {
-        $user = $_SESSION['user' . "_$APP_NAME"];
-        //$user = str_replace("$APP_NAME_", "", $user);
-    }
-    // close the session
-    session_write_close();
-    return date("D M d, Y G:i:s", time()) . " (" . $user . ") ";
+    return date("D M d, Y G:i:s", time());
 }
+
 
 /** Svuota i log in base alle impostazioni
  *
