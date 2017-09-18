@@ -155,7 +155,7 @@ class easyuigii {
             $strSql = "SELECT $strCol FROM $table A";
             return $strSql;
         } catch (Exception $e) {
-            error_log(LogTime() . message_err($e), 3, 'error.log');
+            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
             throw new Exception(message_err($e));
         }
     }
