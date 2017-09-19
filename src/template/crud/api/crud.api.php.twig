@@ -80,8 +80,9 @@
         }
 
         if ($command == 'INSERT') {
-
-            $NOME_CATEGORIA = $app->request->params('NOME_CATEGORIA'); // Param from Post user
+             
+            {# $NOME_CATEGORIA = $app->request->params('NOME_CATEGORIA'); // Param from Post user #}
+            {{param_api|raw}}
 
             $sql = "
                         DECLARE

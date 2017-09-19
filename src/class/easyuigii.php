@@ -117,35 +117,36 @@ class easyuigii {
      */
     private function get_js_crud_col($col, $type) {
         $with = "";
+        $colt = $this->T($col); //translate
         if ($this->dg_col_px_auto) {
-            $px = (strlen($col) * 15) . "px";
+            $px = (strlen($colt) * 15) . "px";
             $with = "width: '$px',";
         }
 
         if (in_array($col, [$this->primary_key])) {
             $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
-            return $ck . "{field: '$col', title: '$col', $with sortable: true}," . PHP_EOL;
+            return $ck . "{field: '$col', title: '$colt', $with sortable: true}," . PHP_EOL;
         }
 
         if (in_array($col, $this->dg_cols_ck)) {
             //{field: 'ID_CLONE', title: 'Fase<br>Duplicata', formatter: mycheck},
-            return "{field: '$col', title: '$col', editor: {type: 'checkbox', options: {formatter: mycheck,required: true}}}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', editor: {type: 'checkbox', options: {formatter: mycheck,required: true}}}," . PHP_EOL;
         }
 
         if (in_array($type, ['VARCHAR2', 'VARCHAR'])) {
-            return "{field: '$col', title: '$col', $with editor: {type: 'textbox', options: {required: true}}, sortable: true}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', $with editor: {type: 'textbox', options: {required: true}}, sortable: true}," . PHP_EOL;
         }
         if (in_array($type, ['NUMBER'])) {
             $with = "width: '50px',";
-            return "{field: '$col', title: '$col', $with editor: {type: 'numberbox', options: {required: true}}, sortable: true}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', $with editor: {type: 'numberbox', options: {required: true}}, sortable: true}," . PHP_EOL;
         }
         if (in_array($type, ['DATE'])) {
             $with = "width: '100px',";
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
             $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
-            return "{field: '$col', title: '$col', $with editor: {type: 'datebox', options: { $date_format required: true}}, sortable: true}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', $with editor: {type: 'datebox', options: { $date_format required: true}}, sortable: true}," . PHP_EOL;
         }
-        return "{field: '$col', title: '$col', $with editor: {type: '??$type??', options: {required: true}}, sortable: true}," . PHP_EOL;
+        return "{field: '$col', title: '$colt', $with editor: {type: '??$type??', options: {required: true}}, sortable: true}," . PHP_EOL;
     }
 
     /** create sql string
@@ -246,8 +247,8 @@ class easyuigii {
      */
     private function get_api_fn_crud($api_fn_name) {
 
-        $sql = $this->get_select_from_table();
-
+        $sql = $this->get_select_from_table(); //for template
+        $param_api = $this->get_param_api_for_insert(); //for template
         //build template html
         $root_template = $this->script_path . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);
@@ -258,9 +259,31 @@ class easyuigii {
             , 'sql' => $sql
             , 'tabella' => $this->table_name
             , 'id' => $this->primary_key
+            , 'param_api' => $param_api
         ));
         $php = str_replace("<?php", "", $php);
         return $php;
+    }
+
+    /** es . $ID = $app->request->params('ID'); // Param from Post user
+     */
+    private function get_param_api_for_insert() {
+        try {
+            $code = "";
+            $ar = $this->ar_col_type;
+            while ($row = current($ar)) {
+                $key = key($row);
+                $value = $row[$key];
+                if ($key != $this->primary_key) {
+                    $code.= "\$$key = \$app->request->params('$key'); // Param from Post user" . PHP_EOL;
+                }
+                next($ar);
+            }
+            return $code;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     /** get string code  api name
@@ -290,8 +313,6 @@ class easyuigii {
         $file = $dir . "/api/api.php";
         file_put_contents($file, $api); //write api
     }
-
-
 
     /** copy file to directory
      * @param type $ar_files array files es. [[full_path_file_from, dir_to],[full_path_file_from, dir_to]....]
