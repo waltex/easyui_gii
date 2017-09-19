@@ -185,7 +185,7 @@ class easyuigii {
                     $ncol+=1;
                     array_push($this->ar_col_type, [$col_name => $col_type]);
                     if ($col_type == "DATE") {
-                        $col_name_w_a = $this->format_date_select($col_name_w_a, $col_name);
+                        $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
                     }
                     $strComma = ($ncol > 1) ? ", " : "";
                     $str_col_w_a.=$strComma . $col_name_w_a; //list col with alias
@@ -244,8 +244,25 @@ class easyuigii {
         }
     }
 
-    private function format_date_select($col_name_w_a, $col_name) {
-        return "TO_CHAR($col_name_w_a,'" . $this->date_format . "') $col_name";
+    /** to_char with date
+     *
+     * @param type $field field
+     * @param type $col_name name column
+     * @return type string es. (A.FIELD1,'YYYY-MM-DD') FIELD1
+     */
+    private function format_date_to_char($filed, $col_name) {
+        return "TO_CHAR($filed,'" . $this->date_format . "') $col_name";
+    }
+
+
+        /** to_char with date
+     *
+     * @param type $field field
+   
+     * @return type string es. (:FIELD1,'YYYY-MM-DD')
+     */
+    private function format_date_to_char2($filed) {
+        return "TO_CHAR($filed,'" . $this->date_format . "')";
     }
 
     /** get string code  fn CrudBase
@@ -303,12 +320,16 @@ class easyuigii {
         $ar = $this->ar_col_type;
         while ($row = current($ar)) {
             $col_name = key($row);
-            $type = $row[$key];
+            $col_type = $row[$col_name];
             if ($this->primary_key != $col_name) {
                 if (!in_array($col_name, $this->cols_table_skip)) {
                     $ncol+=1;
                     $str_comma = ($ncol > 1) ? ", " : "";
-                    $str_col.=$str_comma . ':' . $col_name; //list col -> :field1, :field2
+                    $col_name = ":" . $col_name;
+                    if ($col_type == "DATE") {
+                        $col_name = $this->format_date_to_char2($col_name);
+                    }
+                    $str_col.=$str_comma . $col_name; //list col -> :field1, :field2
                 }
             }
             next($ar);
