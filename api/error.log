@@ -366,3 +366,13 @@ Mon Sep 18, 2017 22:26:14 easyuigii.php:256 - easyuigii.php:252 - copy(/Applicat
 Mon Sep 18, 2017 22:26:14easyuigii.php:256 - easyuigii.php:252 - copy(/Applications/XAMPP/xamppfiles/htdocs/out/crud/api/.htaccess): failed to open stream: No such file or directory
 
 
+Tue Sep 19, 2017 16:12:13(null)() expects parameter 1 to be array, string given
+Tue Sep 19, 2017 16:46:32 easyuigii.php:222 - oci_execute(): ORA-00936: missing expression
+Tue Sep 19, 2017 16:46:32easyuigii.php:222 - oci_execute(): ORA-00936: missing expression
+
+Tue Sep 19, 2017 16:48:49 Unknown:0 - Unknown: ORA-00936: missing expression
+Tue Sep 19, 2017 16:48:49Unknown:0 - Unknown: ORA-00936: missing expression
+
+Tue Sep 19, 2017 16:49:46 Unknown:0 - Undefined index: COLUMN_NAME
+Tue Sep 19, 2017 16:49:46Unknown:0 - Undefined index: COLUMN_NAME
+

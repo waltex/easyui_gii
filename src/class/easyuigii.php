@@ -7,7 +7,7 @@ class easyuigii {
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
     private $ar_col_type = []; // for tamplate crud
-    private $primary_key = 'ID2';
+    private $primary_key = ""; // auto find from table structure
     private $language_default = ''; // form asset template
     public $app_name = "";
     public $app_folder = "";
@@ -31,9 +31,15 @@ class easyuigii {
         $this->language_default = $ar_file["language default"];
     }
 
+    function on_begin_crud() {
+        $this->primary_key = $this->get_primary_key();
+    }
+
     /** folder create and file
      */
     public function build_app_crud() {
+        $this->on_begin_crud();
+
         $dir = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder; //code path output
         $this->create_folder($dir);
 
@@ -79,6 +85,19 @@ class easyuigii {
 
     private function get_template_js_crud() {
         $ar = $this->ar_col_type;
+        $key_row = [];
+        $ar2 = []; //ord aray with ID/PRIMARY KEY with first element
+        while ($row = current($ar)) {
+            $key = key($row);
+            if ($key == $this->primary_key) {
+                $key_row = $row;
+            } else {
+                $ar2[] = $row;
+            }
+            next($ar);
+        }
+        $ar = array_merge([$key_row], $ar2);
+
         $code = "";
         while ($row = current($ar)) {
             $key = key($row);
@@ -167,6 +186,50 @@ class easyuigii {
             }
             $strSql = "SELECT $strCol FROM $table A";
             return $strSql;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
+    /** get primary key
+     *
+     * @return type string primary key
+     */
+    private function get_primary_key() {
+        try {
+
+            $app = Slim\Slim::getInstance();
+            include 'api_setup.php';
+            $table = $this->table_name;
+            $sql = "
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='$table'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                ";
+
+            ($debug) ? error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log') : false;
+
+            $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $db = oci_parse($conn, $sql);
+            $rs = oci_execute($db);
+
+            oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+
+            if (Count($data) > 0) {
+                $pk = $data[0]['COLUMN_NAME'];
+                return $pk;
+            } else {
+                // error not find primary key
+                throw new Exception($this->T('Errore - non è possibile recuperare la primary key'));
+            }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'error.log');
             throw new Exception(message_err($e));
