@@ -377,3 +377,6 @@ Tue Sep 19, 2017 16:49:46 Unknown:0 - Undefined index: COLUMN_NAME
 Tue Sep 19, 2017 16:49:46Unknown:0 - Undefined index: COLUMN_NAME
 
 Tue Sep 19, 2017 17:22:27Undefined variable: code
+Tue Sep 19, 2017 22:21:34 easyuigii.php:230 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+Tue Sep 19, 2017 22:21:34easyuigii.php:230 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+

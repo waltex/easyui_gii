@@ -12,6 +12,7 @@ class easyuigii {
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
+    public $cols_table_skip = ["ID2"]; //skip col for crud (select/insert/update)
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "1";
     public $api_url = "/crud/ABB_CRUD";
@@ -153,7 +154,7 @@ class easyuigii {
      *
      * @return type string
      */
-    private function get_select_from_table() {
+    private function get_sql_for_select() {
         try {
 
             $app = Slim\Slim::getInstance();
@@ -172,20 +173,26 @@ class easyuigii {
             $ncols = oci_num_fields($db);
 
             $this->ar_col_type = [];
-            $strCol = "";
+            $str_col_w_a = "";
+            $str_col = "";
+            $ncol = 0;
             for ($i = 1; $i <= $ncols; $i++) {
                 $col_name = oci_field_name($db, $i);
                 $col_name_w_a = "A." . $col_name;
                 $col_type = oci_field_type($db, $i);
-                array_push($this->ar_col_type, [$col_name => $col_type]);
-                //$this->ar_col_type[] = [$col_name => $col_type]; //save type col
-                if ($col_type == "DATE") {
-                    $col_name_w_a = $this->format_date_select($col_name_w_a, $col_name);
+                //skip cols
+                if (!in_array($col_name, $this->cols_table_skip)) {
+                    $ncol+=1;
+                    array_push($this->ar_col_type, [$col_name => $col_type]);
+                    if ($col_type == "DATE") {
+                        $col_name_w_a = $this->format_date_select($col_name_w_a, $col_name);
+                    }
+                    $strComma = ($ncol > 1) ? ", " : "";
+                    $str_col_w_a.=$strComma . $col_name_w_a; //list col with alias
+                    $str_col.=$strComma . $col_name; //list col without alias
                 }
-                $strComma = ($i < $ncols) ? ", " : "";
-                $strCol.=$col_name_w_a . $strComma;
             }
-            $strSql = "SELECT $strCol FROM $table A";
+            $strSql = "SELECT $str_col_w_a FROM $table A";
             return $strSql;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'error.log');
@@ -247,8 +254,9 @@ class easyuigii {
      */
     private function get_api_fn_crud($api_fn_name) {
 
-        $sql = $this->get_select_from_table(); //for template
+        $sql_select = $this->get_sql_for_select(); //for template
         $param_api = $this->get_param_api_for_insert(); //for template
+        $sql_insert = $this->get_sql_for_insert(); //for template
         //build template html
         $root_template = $this->script_path . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);
@@ -256,13 +264,76 @@ class easyuigii {
 
         $php = $twig->render('/crud/api/crud.api.php.twig', array(
             'api_fn_name' => $api_fn_name
-            , 'sql' => $sql
+            , 'sql_select' => $sql_select
+            , 'sql_insert' => $sql_insert
             , 'tabella' => $this->table_name
             , 'id' => $this->primary_key
             , 'param_api' => $param_api
         ));
         $php = str_replace("<?php", "", $php);
         return $php;
+    }
+
+    /** list col from type col table es. field1, field2, field3
+     */
+    private function get_list_col_w_o_id() {
+        $str_col = "";
+        $ncol = "0";
+        $ar = $this->ar_col_type;
+        while ($row = current($ar)) {
+            $col_name = key($row);
+            $type = $row[$key];
+            if ($this->primary_key != $col_name) {
+                if (!in_array($col_name, $this->cols_table_skip)) {
+                    $ncol+=1;
+                    $str_comma = ($ncol > 1) ? ", " : "";
+                    $str_col.=$str_comma . $col_name; //list col without alias
+                }
+            }
+            next($ar);
+        }
+        return $str_col;
+    }
+
+    /** list col from type col table for insert sql es. field1, field2, field3
+     */
+    private function get_list_col_for_insert_values() {
+        $str_col = "";
+        $ncol = "0";
+        $ar = $this->ar_col_type;
+        while ($row = current($ar)) {
+            $col_name = key($row);
+            $type = $row[$key];
+            if ($this->primary_key != $col_name) {
+                if (!in_array($col_name, $this->cols_table_skip)) {
+                    $ncol+=1;
+                    $str_comma = ($ncol > 1) ? ", " : "";
+                    $str_col.=$str_comma . ':' . $col_name; //list col -> :field1, :field2
+                }
+            }
+            next($ar);
+        }
+        return $str_col;
+    }
+
+    private function get_sql_for_insert() {
+        $list_col = $this->get_list_col_w_o_id(); //field1, field2, field3
+        $str_col = $this->get_list_col_for_insert_values(); //:field1, :field2
+        $table = $this->table_name;
+        $seq = $table . "_seq"; //sequenze
+        $pk = $this->primary_key;
+
+        $sql = "
+                        DECLARE
+                        ID_SEQ NUMBER(15,0) := NULL;
+                        BEGIN
+                            SELECT $seq.NEXTVAL INTO ID_SEQ FROM DUAL;
+                            INSERT INTO $table ($list_col)
+                            VALUES (ID_SEQ, $str_col)
+                            RETURNING ID_SEQ  INTO :$pk;
+                        END;
+                    ";
+        return $sql;
     }
 
     /** es . $ID = $app->request->params('ID'); // Param from Post user
@@ -353,6 +424,7 @@ class easyuigii {
             $ar_files = [
                 [$template_path . "/LICENSE", $dir . "/"],
                 [$template_path . "/composer.json", $dir . "/"],
+                [$template_path . "/.htaccess", $dir . "/"], //for disable cache javascript
                 [$template_path . "/api/.htaccess", $dir . "/api/"],
                 [$template_path . "/api/fn_api.php", $dir . "/api/"],
                 [$template_path . "/api/api_setup.php", $dir . "/api/"],

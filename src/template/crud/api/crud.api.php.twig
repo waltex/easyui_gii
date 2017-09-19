@@ -11,8 +11,8 @@
         if ($command == 'SELECT') {
 
             $sql = "
-                {{sql|raw}}
-                ";
+            {{sql_select|raw}}
+            ";
 
             if ($debug) {
                 error_log(LogTime() . ' Sql, crud select {{tabella}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
@@ -84,6 +84,7 @@
             {# $NOME_CATEGORIA = $app->request->params('NOME_CATEGORIA'); // Param from Post user #}
             {{param_api|raw}}
 
+            {#
             $sql = "
                         DECLARE
                         ID_SEQ NUMBER(15,0) := NULL;
@@ -93,8 +94,11 @@
                             VALUES (ID_SEQ, :NOME_CATEGORIA, SYSDATE)
                             RETURNING ID_SEQ  INTO :ID;
                         END;
-                    ";
-
+                        ";
+            #}
+            $sql = "
+                    {{sql_insert}}
+                   ";
 
             $parm_sql = [
                 ':NOME_CATEGORIA' => $NOME_CATEGORIA,
