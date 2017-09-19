@@ -15,7 +15,7 @@
                 ";
 
             if ($debug) {
-                error_log(LogTime() . ' Sql, test crud: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+                error_log(LogTime() . ' Sql, crud select {{tabella}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
             }
 
             $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
@@ -30,15 +30,19 @@
     }
 
         if ($command == 'DELETE') {
-//ATTENZIONE SOLO IN  QUESTO CASO MI RITORNA MINUSCOLO
+            //retun lower id
             $ID = $app->request->params('id'); // Param from Post user
 
-            $sql = "DELETE FROM ABB_MAG_CATEGORIE WHERE ID IN ($ID)";
+            $sql = "DELETE FROM {{tabella}} WHERE {{id}} IN ($ID)";
+            
+            if ($debug) {
+                error_log(LogTime() . ' Sql, crud delete {{tabella}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+            }
 
             $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
             $db = oci_parse($conn, $sql);
 
-            //$rs = oci_execute($db);
+            $rs = oci_execute($db);
             $app->render(200, ['success' => true, 'rows affected' => oci_num_rows($db)]);
         }
 

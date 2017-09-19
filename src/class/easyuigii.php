@@ -7,6 +7,7 @@ class easyuigii {
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
     private $ar_col_type = []; // for tamplate crud
+    private $primary_key = 'ID2';
     private $language_default = ''; // form asset template
     public $app_name = "";
     public $app_folder = "";
@@ -68,6 +69,7 @@ class easyuigii {
             , 'api_url' => $this->api_url
             , 'title' => $this->app_name
             , 'col_crud' => $this->get_template_js_crud() //this function use after $this->get_api_fn_crud
+            , 'id' => $this->primary_key
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
@@ -101,7 +103,7 @@ class easyuigii {
             $with = "width: '$px',";
         }
 
-        if (in_array($col, ['ID'])) {
+        if (in_array($col, [$this->primary_key])) {
             $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
             return $ck . "{field: '$col', title: '$col', $with sortable: true}," . PHP_EOL;
         }
@@ -188,7 +190,12 @@ class easyuigii {
         $loader = new Twig_Loader_Filesystem($root_template);
         $twig = new Twig_Environment($loader);
 
-        $php = $twig->render('/crud/api/crud.api.php.twig', array('api_fn_name' => $api_fn_name, "sql" => $sql));
+        $php = $twig->render('/crud/api/crud.api.php.twig', array(
+            'api_fn_name' => $api_fn_name
+            , 'sql' => $sql
+            , 'tabella' => $this->table_name
+            , 'id' => $this->primary_key
+        ));
         $php = str_replace("<?php", "", $php);
         return $php;
     }

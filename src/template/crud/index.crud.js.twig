@@ -16,12 +16,12 @@ $(document).ready(function () {
             url: 'api{{api_url}}/SELECT',
             saveUrl: 'api/XXX',
             updateUrl: 'api/xxx',
-            destroyUrl: 'api/xx',
+            destroyUrl: 'api{{api_url}}/DELETE',
             method: 'post',
             rownumbers: true,
             striped: true,
             fit: true,
-            idField: 'ID', /** importante **/
+            idField: '{{id}}', /** {{T('importante')}} **/
             singleSelect: false,
             remoteSort: false,
             multiSort: false,
