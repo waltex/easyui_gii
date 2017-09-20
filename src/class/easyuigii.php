@@ -299,7 +299,7 @@ class easyuigii {
         $ar = $this->ar_col_type;
         while ($row = current($ar)) {
             $col_name = key($row);
-            $type = $row[$key];
+            $type = $row[$col_name];
             if ($this->primary_key != $col_name) {
                 if (!in_array($col_name, $this->cols_table_skip)) {
                     $ncol+=1;
