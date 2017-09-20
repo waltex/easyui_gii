@@ -15,7 +15,7 @@
             ";
 
             if ($debug) {
-                error_log(LogTime() . ' Sql, crud select {{tabella}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+                error_log(LogTime() . ' Sql, crud select {{table}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
             }
 
             $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
@@ -33,10 +33,10 @@
             //retun lower id
             $ID = $app->request->params('id'); // Param from Post user
 
-            $sql = "DELETE FROM {{tabella}} WHERE {{id}} IN ($ID)";
+            $sql = "DELETE FROM {{table}} WHERE {{id}} IN ($ID)";
             
             if ($debug) {
-                error_log(LogTime() . ' Sql, crud delete {{tabella}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+                error_log(LogTime() . ' Sql, crud delete {{table}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
             }
 
             $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
@@ -101,29 +101,34 @@
                    ";
 
             $parm_sql = [
-                ':NOME_CATEGORIA' => $NOME_CATEGORIA,
+                {# ':NOME_CATEGORIA' => $NOME_CATEGORIA,  #}
+                {{param_log_insert|raw}}
             ];
 
             if ($debug) {
                 if (isset($parm_sql) & isset($sql)) {
-                    error_log(LogTime() . 'insert ABB_MAG_CATEGORIE, sql: ' . PHP_EOL . print_r($parm_sql, true) . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+                    error_log(LogTime() . 'insert {{table}}, sql: ' . PHP_EOL . print_r($parm_sql, true) . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
                 }
             }
 
 
             $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
             $db = oci_parse($conn, $sql);
+            {#
             oci_bind_by_name($db, ":ID", $ID, OCI_B_ROWID);
             oci_bind_by_name($db, ":NOME_CATEGORIA", $NOME_CATEGORIA, -1);
+            #}
+            {{bind_insert|raw}}
 
             $rs = oci_execute($db);
             $data_r = [
-                'ID' => $ID, 'NOME_CATEGORIA' => $NOME_CATEGORIA
+                {#'ID' => $ID,#}
+                {{param_return_ins|raw}}
             ];
             $app->response()->body(json_encode($data_r));
         }
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . ' errore - crud ABB_MAG_CATEGORIE: ' . $e->getMessage() . PHP_EOL, 3, 'error.log');
+        error_log(LogTime() . ' errore - crud {{table}}: ' . $e->getMessage() . PHP_EOL, 3, 'error.log');
     }
 }

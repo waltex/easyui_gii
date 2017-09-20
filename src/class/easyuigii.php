@@ -9,6 +9,7 @@ class easyuigii {
     private $ar_col_type = []; // for tamplate crud
     private $primary_key = ""; // auto find from table structure
     private $language_default = ''; // form asset template
+    private $host_api = "api"; // for remote/local host es. (local) api or remote) http:/192.168.20/easui_gii/api
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
@@ -73,6 +74,7 @@ class easyuigii {
         $fn_api = $this->get_api_fn_crud($this->api_fn_name); //template redered api function
 
         $js = $twig->render('/crud/index.crud.js.twig', array('n' => $this->html_prefix
+            , 'host_api' => $this->host_api
             , 'api_url' => $this->api_url
             , 'title' => $this->app_name
             , 'col_crud' => $this->get_template_js_crud() //this function use after $this->get_api_fn_crud
@@ -131,7 +133,7 @@ class easyuigii {
 
         if (in_array($col, $this->dg_cols_ck)) {
             //{field: 'ID_CLONE', title: 'Fase<br>Duplicata', formatter: mycheck},
-            return "{field: '$col', title: '$colt', editor: {type: 'checkbox', options: {formatter: mycheck,required: true}}}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', editor: {type: 'checkbox', options: {on: '1', off: '0',formatter: mycheck,required: true}}}," . PHP_EOL;
         }
 
         if (in_array($type, ['VARCHAR2', 'VARCHAR'])) {
@@ -254,11 +256,10 @@ class easyuigii {
         return "TO_CHAR($filed,'" . $this->date_format . "') $col_name";
     }
 
-
-        /** to_char with date
+    /** to_char with date
      *
      * @param type $field field
-   
+
      * @return type string es. (:FIELD1,'YYYY-MM-DD')
      */
     private function format_date_to_char2($filed) {
@@ -274,6 +275,9 @@ class easyuigii {
         $sql_select = $this->get_sql_for_select(); //for template
         $param_api = $this->get_param_api_for_insert(); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template
+        $param_log_insert = $this->get_param_sql_for_log_insert();
+        $bind_insert = $this->get_param_for_bind_insert();
+        $param_return_ins = $this->get_param_insert_return_ar();
         //build template html
         $root_template = $this->script_path . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);
@@ -283,9 +287,12 @@ class easyuigii {
             'api_fn_name' => $api_fn_name
             , 'sql_select' => $sql_select
             , 'sql_insert' => $sql_insert
-            , 'tabella' => $this->table_name
+            , 'table' => $this->table_name
             , 'id' => $this->primary_key
             , 'param_api' => $param_api
+            , 'param_log_insert' => $param_log_insert
+            , 'bind_insert' => $bind_insert
+            , 'param_return_ins' => $param_return_ins
         ));
         $php = str_replace("<?php", "", $php);
         return $php;
@@ -293,23 +300,79 @@ class easyuigii {
 
     /** list col from type col table es. field1, field2, field3
      */
-    private function get_list_col_w_o_id() {
+    private function get_list_col() {
         $str_col = "";
         $ncol = "0";
         $ar = $this->ar_col_type;
         while ($row = current($ar)) {
             $col_name = key($row);
             $type = $row[$col_name];
-            if ($this->primary_key != $col_name) {
-                if (!in_array($col_name, $this->cols_table_skip)) {
+            if (!in_array($col_name, $this->cols_table_skip)) {
                     $ncol+=1;
                     $str_comma = ($ncol > 1) ? ", " : "";
                     $str_col.=$str_comma . $col_name; //list col without alias
                 }
-            }
             next($ar);
         }
         return $str_col;
+    }
+
+    /** param for bind insert
+     *
+     * @return string paramsql es oci_bind_by_name($db, ":ID", $ID, OCI_B_ROWID);
+     */
+    private function get_param_for_bind_insert() {
+        $pk = $this->primary_key;
+        $str_bind = "";
+        $ar = $this->ar_col_type;
+        while ($row = current($ar)) {
+            $col_name = key($row);
+            $col_type = $row[$col_name];
+            if (!in_array($col_name, $this->cols_table_skip)) {
+                ($col_name == $pk) ? $type_param = "OCI_B_ROWID" : $type_param = "-1";
+                $str_bind.="oci_bind_by_name(\$db, \":$col_name\", \$$col_name, $type_param);" . PHP_EOL;
+            }
+            next($ar);
+        }
+        return $str_bind;
+    }
+
+        /** param for insert - return array
+     *
+     * @return string paramsql es ':PARAM1' => $PARAM1,
+     */
+    private function get_param_insert_return_ar() {
+        $str_par = "";
+        $ar = $this->ar_col_type;
+        while ($row = current($ar)) {
+            $col_name = key($row);
+            $col_type = $row[$col_name];
+            if (!in_array($col_name, $this->cols_table_skip)) {
+                    $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
+                }
+            next($ar);
+        }
+        return $str_par;
+    }
+
+    /** param for insert for log sql
+     *
+     * @return string paramsql es ':PARAM1' => $PARAM1,
+     */
+    private function get_param_sql_for_log_insert() {
+        $str_par = "";
+        $ar = $this->ar_col_type;
+        while ($row = current($ar)) {
+            $col_name = key($row);
+            $col_type = $row[$col_name];
+            if ($this->primary_key != $col_name) {
+                if (!in_array($col_name, $this->cols_table_skip)) {
+                    $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
+                }
+            }
+            next($ar);
+        }
+        return $str_par;
     }
 
     /** list col from type col table for insert sql es. field1, field2, field3
@@ -338,10 +401,10 @@ class easyuigii {
     }
 
     private function get_sql_for_insert() {
-        $list_col = $this->get_list_col_w_o_id(); //field1, field2, field3
+        $list_col = $this->get_list_col(); //field1, field2, field3
         $str_col = $this->get_list_col_for_insert_values(); //:field1, :field2
         $table = $this->table_name;
-        $seq = $table . "_seq"; //sequenze
+        $seq = $table . "_SEQ"; //sequenze
         $pk = $this->primary_key;
 
         $sql = "

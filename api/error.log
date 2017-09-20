@@ -384,3 +384,10 @@ Tue Sep 19, 2017 23:08:04rmdir(/Applications/XAMPP/xamppfiles/htdocs/out/crud): 
 Wed Sep 20, 2017 17:25:02Undefined variable: key
 Wed Sep 20, 2017 17:25:54Undefined variable: key
 Wed Sep 20, 2017 17:26:08Undefined variable: key
+Wed Sep 20, 2017 20:47:15 easyuigii.php:228 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+Wed Sep 20, 2017 20:47:15easyuigii.php:228 - oci_connect(): ORA-12170: TNS:Connect timeout occurred
+
+Wed Sep 20, 2017 21:08:21 easyuigii.php:228 - oci_connect(): ORA-12560: TNS:protocol adapter error
+Wed Sep 20, 2017 21:08:21easyuigii.php:228 - oci_connect(): ORA-12560: TNS:protocol adapter error
+
+Wed Sep 20, 2017 22:04:01rmdir(/Applications/XAMPP/xamppfiles/htdocs/out/crud): Directory not empty

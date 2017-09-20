@@ -1086,3 +1086,348 @@ Wed Sep 20, 2017 17:27:33 Sql, get column field:
 
                 SELECT * FROM ABB_CRUD
                 
+Wed Sep 20, 2017 20:46:07 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 20:46:54 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 20:47:04 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 20:58:54 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 20:59:00 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 20:59:33 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 20:59:40 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 21:00:18 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 21:00:46 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 21:01:02 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 21:01:07 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 21:04:03 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 21:04:07 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 21:05:16 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 21:05:22 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 21:08:21 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 21:09:41 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 21:09:52 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 21:59:24 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 21:59:27 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:03:59 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:04:43 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:04:46 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:06:03 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:06:06 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:08:13 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:08:16 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:13:48 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:13:51 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:21:34 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:21:37 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:23:58 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:24:01 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:34:38 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:34:40 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:37:08 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:37:11 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Wed Sep 20, 2017 22:44:52 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Wed Sep 20, 2017 22:44:55 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
