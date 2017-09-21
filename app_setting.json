@@ -14,6 +14,6 @@
     "#1 password database": "CENPROD",
     "#1 tnsnames.ora": "  (DESCRIPTION =     (ADDRESS_LIST =       (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.27)(PORT = 1521))     )     (CONNECT_DATA =       (SID = DB11G)       (SERVER = DEDICATED)     )   )",
     "#1 variabile utente": "$db4_GOLD",
-    "#1 variabile password": "$db4_GOLD",
-    "#1 variabile tns": "$db4_psw"
+    "#1 variabile password": "$db4_psw",
+    "#1 variabile tns": "$DB11G"
 }
