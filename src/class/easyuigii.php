@@ -14,7 +14,7 @@ class easyuigii {
     public $app_folder = "";
     public $table_name = "";
     public $cols_table_skip = ["ID2"]; //skip col for crud (select/insert/update) and javascript
-    public $cols_table_hide = ["ID"]; //hide col only on code javascript and not to sql
+    public $cols_table_hide = []; //hide col only on code javascript and not to sql
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "1";
     public $api_url = "/crud/ABB_CRUD";
@@ -104,9 +104,11 @@ class easyuigii {
 
         $code = "";
         while ($row = current($ar)) {
-            $key = key($row);
-            $value = $row[$key];
-            $code.= $this->get_js_crud_col($key, $value);
+            $col = key($row);
+            $type = $row[$col];
+            if (!in_array($col, $this->cols_table_hide)) {
+                $code.= $this->get_js_crud_col($col, $type);
+            }
             next($ar);
         }
         $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
@@ -274,11 +276,16 @@ class easyuigii {
     private function get_api_fn_crud($api_fn_name) {
 
         $sql_select = $this->get_sql_for_select(); //for template
-        $param_api = $this->get_param_api_for_insert(); //for template
+        $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template
-        $param_log_insert = $this->get_param_sql_for_log_insert();
-        $bind_insert = $this->get_param_for_bind_insert();
-        $param_return_ins = $this->get_param_insert_return_ar();
+        $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
+        $bind_insert = $this->get_param_for_bind_insert_update(false);
+        $param_return = $this->get_param_insert_update_return();
+        $param_api_upd = $this->get_param_api_for_insert_update(true); //for template
+        $param_log_update = $this->get_param_sql_for_log_insert_update(true);
+        $sql_update = $this->get_sql_for_update();
+        $bind_update = $this->get_param_for_bind_insert_update(true);
+
         //build template html
         $root_template = $this->script_path . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);
@@ -289,11 +296,15 @@ class easyuigii {
             , 'sql_select' => $sql_select
             , 'sql_insert' => $sql_insert
             , 'table' => $this->table_name
-            , 'id' => $this->primary_key
-            , 'param_api' => $param_api
+            , 'pk' => $this->primary_key
+            , 'param_api_ins' => $param_api_ins
             , 'param_log_insert' => $param_log_insert
             , 'bind_insert' => $bind_insert
-            , 'param_return_ins' => $param_return_ins
+            , 'param_return' => $param_return
+            , 'param_api_upd' => $param_api_upd
+            , 'param_log_update' => $param_log_update
+            , 'sql_update' => $sql_update
+            , 'bind_update' => $bind_update
         ));
         $php = str_replace("<?php", "", $php);
         return $php;
@@ -309,20 +320,20 @@ class easyuigii {
             $col_name = key($row);
             $type = $row[$col_name];
             if (!in_array($col_name, $this->cols_table_skip)) {
-                    $ncol+=1;
-                    $str_comma = ($ncol > 1) ? ", " : "";
-                    $str_col.=$str_comma . $col_name; //list col without alias
-                }
+                $ncol+=1;
+                $str_comma = ($ncol > 1) ? ", " : "";
+                $str_col.=$str_comma . $col_name; //list col without alias
+            }
             next($ar);
         }
         return $str_col;
     }
 
-    /** param for bind insert
+    /** param for bind insert/update
      *
      * @return string paramsql es oci_bind_by_name($db, ":ID", $ID, OCI_B_ROWID);
      */
-    private function get_param_for_bind_insert() {
+    private function get_param_for_bind_insert_update($isUpdate) {
         $pk = $this->primary_key;
         $str_bind = "";
         $ar = $this->ar_col_type;
@@ -331,6 +342,7 @@ class easyuigii {
             $col_type = $row[$col_name];
             if (!in_array($col_name, $this->cols_table_skip)) {
                 ($col_name == $pk) ? $type_param = "OCI_B_ROWID" : $type_param = "-1";
+                ($isUpdate) ? $type_param = "-1" : false;
                 $str_bind.="oci_bind_by_name(\$db, \":$col_name\", \$$col_name, $type_param);" . PHP_EOL;
             }
             next($ar);
@@ -338,19 +350,19 @@ class easyuigii {
         return $str_bind;
     }
 
-        /** param for insert - return array
+    /** param for insert - return array
      *
-     * @return string paramsql es ':PARAM1' => $PARAM1,
+     * @return string paramsql es 'PARAM1' => $PARAM1,
      */
-    private function get_param_insert_return_ar() {
+    private function get_param_insert_update_return() {
         $str_par = "";
         $ar = $this->ar_col_type;
         while ($row = current($ar)) {
             $col_name = key($row);
             $col_type = $row[$col_name];
             if (!in_array($col_name, $this->cols_table_skip)) {
-                    $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
-                }
+                $str_par.= "'$col_name' => \$$col_name," . PHP_EOL;
+            }
             next($ar);
         }
         return $str_par;
@@ -360,7 +372,7 @@ class easyuigii {
      *
      * @return string paramsql es ':PARAM1' => $PARAM1,
      */
-    private function get_param_sql_for_log_insert() {
+    private function get_param_sql_for_log_insert_update($add_idd) {
         $str_par = "";
         $ar = $this->ar_col_type;
         while ($row = current($ar)) {
@@ -370,10 +382,49 @@ class easyuigii {
                 if (!in_array($col_name, $this->cols_table_skip)) {
                     $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
                 }
+            } else { //add primary key
+                if ($add_idd) {
+                    if (!in_array($col_name, $this->cols_table_skip)) {
+                        $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
+                    }
+                }
             }
+
             next($ar);
         }
         return $str_par;
+    }
+
+    /** get sql for update
+     */
+    private function get_sql_for_update() {
+        $str_col = "";
+        $ncol = "0";
+        $ar = $this->ar_col_type;
+        while ($row = current($ar)) {
+            $col_name = key($row);
+            $col_type = $row[$col_name];
+            if ($this->primary_key != $col_name) {
+                if (!in_array($col_name, $this->cols_table_skip)) {
+                    $ncol+=1;
+                    $str_comma = ($ncol > 1) ? ", " : "";
+                    
+                    if ($col_type == "DATE") {
+                        $col_dt = $this->format_dt2todate(":" . $col_name);
+                        $col_name = "$col_name=$col_dt";
+                    } else {
+                        $col_name = "$col_name=:$col_name";
+                    }
+                    $str_col.=$str_comma . $col_name; //list col -> :field1, :field2
+                }
+            }
+            next($ar);
+        }
+        $table = $this->table_name;
+        $pk = $this->primary_key;
+
+        $sql = "UPDATE $table SET $str_col WHERE $pk=:$pk";
+        return $sql;
     }
 
     /** list col from type col table for insert sql es. field1, field2, field3
@@ -422,8 +473,12 @@ class easyuigii {
     }
 
     /** es . $ID = $app->request->params('ID'); // Param from Post user
+     *
+     * @param type $add_id if true add param for primary key
+     * @return string
+     * @throws Exception
      */
-    private function get_param_api_for_insert() {
+    private function get_param_api_for_insert_update($add_id) {
         try {
             $code = "";
             $ar = $this->ar_col_type;
@@ -432,6 +487,10 @@ class easyuigii {
                 $value = $row[$key];
                 if ($key != $this->primary_key) {
                     $code.= "\$$key = \$app->request->params('$key'); // Param from Post user" . PHP_EOL;
+                } else {
+                    if ($add_id) { //primary key
+                        $code.= "\$$key = \$app->request->params('$key'); // Param from Post user" . PHP_EOL;
+                    }
                 }
                 next($ar);
             }

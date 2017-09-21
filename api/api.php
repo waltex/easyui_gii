@@ -30,7 +30,6 @@ include 'fn_api.php';
 $app->run();
 SvuotaLog();
 
-
 /**
  * Test Api
  */
@@ -164,8 +163,6 @@ function crud_generate() {
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
     }
 }
-
-
 
 function test_oci() {
     try {

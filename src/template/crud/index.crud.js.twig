@@ -15,13 +15,13 @@ $(document).ready(function () {
             title: '{{title}}',
             url: '{{host_api}}{{api_url}}/SELECT',
             saveUrl: '{{host_api}}{{api_url}}/INSERT',
-            updateUrl: 'api/xxx',
+            updateUrl: '{{host_api}}{{api_url}}/UPDATE',
             destroyUrl: '{{host_api}}{{api_url}}/DELETE',
             method: 'post',
             rownumbers: true,
             striped: true,
             fit: true,
-            idField: '{{id}}', /** {{T('importante')}} **/
+            idField: '{{pk|raw}}', /** {{T('importante')}} **/
             singleSelect: false,
             remoteSort: false,
             multiSort: false,
