@@ -64,8 +64,8 @@ function auto_translate() {
         $file = "../app_setting.json";
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);
-        $lang2from = $ar_file["language from translate"];
-        $lang2to = $ar_file["language to translate"];
+        $lang2from = $ar_file["traduci dalla lingua"]; //translate from language
+        $lang2to = $ar_file["traduci alla lingua"]; //translate to language
 
         /*
           //ex "stichoza/google-translate-php": "~3.2",

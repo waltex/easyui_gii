@@ -641,9 +641,9 @@ class easyuigii {
         $file = $this->script_path . "/app_setting.json";
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);
-        $lang2from = $ar_file["language from translate"];
-        $lang2to = $ar_file["language to translate"];
-        $langDefault = $ar_file["language default"];
+        $lang2from = $ar_file["traduci dalla lingua"];
+        $lang2to = $ar_file["traduci alla lingua"];
+        $langDefault = $ar_file["lingua corrente"];
 
 
 
