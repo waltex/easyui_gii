@@ -13,7 +13,8 @@ class easyuigii {
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
-    public $cols_table_skip = ["ID2"]; //skip col for crud (select/insert/update)
+    public $cols_table_skip = ["ID2"]; //skip col for crud (select/insert/update) and javascript
+    public $cols_table_hide = ["ID"]; //hide col only on code javascript and not to sql
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "1";
     public $api_url = "/crud/ABB_CRUD";
@@ -262,8 +263,8 @@ class easyuigii {
 
      * @return type string es. (:FIELD1,'YYYY-MM-DD')
      */
-    private function format_date_to_char2($filed) {
-        return "TO_CHAR($filed,'" . $this->date_format . "')";
+    private function format_dt2todate($filed) {
+        return "TO_DATE($filed,'" . $this->date_format . "')";
     }
 
     /** get string code  fn CrudBase
@@ -390,7 +391,7 @@ class easyuigii {
                     $str_comma = ($ncol > 1) ? ", " : "";
                     $col_name = ":" . $col_name;
                     if ($col_type == "DATE") {
-                        $col_name = $this->format_date_to_char2($col_name);
+                        $col_name = $this->format_dt2todate($col_name);
                     }
                     $str_col.=$str_comma . $col_name; //list col -> :field1, :field2
                 }

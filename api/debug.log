@@ -1431,3 +1431,54 @@ Wed Sep 20, 2017 22:44:55 Sql, get column field:
 
                 SELECT * FROM ABB_CRUD
                 
+Thu Sep 21, 2017 8:34:10 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Thu Sep 21, 2017 8:34:13 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Thu Sep 21, 2017 8:34:49 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Thu Sep 21, 2017 8:34:52 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
+Thu Sep 21, 2017 8:53:21 Sql, get primary key: 
+
+                SELECT cols.table_name,
+                cols.column_name,
+                cons.constraint_type
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='ABB_CRUD'
+                and cons.constraint_type = 'P'   -- P primary , R forenk
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ORDER BY cols.table_name,cols.position
+                
+Thu Sep 21, 2017 8:53:24 Sql, get column field: 
+
+                SELECT * FROM ABB_CRUD
+                
