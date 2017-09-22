@@ -12,8 +12,16 @@
     "#1 in produzione": true,
     "#1 utente database": "CENPROD",
     "#1 password database": "CENPROD",
-    "#1 tnsnames.ora": "  (DESCRIPTION =     (ADDRESS_LIST =       (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.1.27)(PORT = 1521))     )     (CONNECT_DATA =       (SID = DB11G)       (SERVER = DEDICATED)     )   )",
-    "#1 variabile utente": "$db4_GOLD",
+    "#1 tnsnames.ora": "  (DESCRIPTION =     (ADDRESS_LIST =       (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.20.46)(PORT = 1521))     )     (CONNECT_DATA =       (SID = GOLDPROD)       (SERVER = DEDICATED)     )   )",
+    "#1 variabile utente": "$db4_usr",
     "#1 variabile password": "$db4_psw",
-    "#1 variabile stringa di connessione": "$DB11G"
+    "#1 variabile stringa di connessione": "$GOLDPROD",
+    "#2 nome connessione database ORACLE (oci driver)": "GOLD - Test",
+    "#2 in produzione": false,
+    "#2 utente database": "CENTEST",
+    "#2 password database": "CENTEST",
+    "#2 tnsnames.ora": "  (DESCRIPTION =     (ADDRESS_LIST =       (ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.20.42)(PORT = 1521))     )     (CONNECT_DATA =       (SID = GOLDTEST)       (SERVER = DEDICATED)     )   )",
+    "#2 variabile utente": "$db4_usr",
+    "#2 variabile password": "$db4_psw",
+    "#2 variabile stringa di connessione": "$GOLDTEST"
 }

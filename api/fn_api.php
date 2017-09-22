@@ -37,9 +37,12 @@ function SvuotaLog() {
     try {
         //$app = Slim\Slim::getInstance();
         include 'api_setup.php';
-        $folder = "logs/";
+        $dir = "logs/";
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true); //create folder
+        }
         foreach ($param_log as $file => $value) {
-            $file = $folder . $file;
+            $file = $dir . $file;
             if ($value > -1) {
                 if (file_exists($file)) {
                     if ((filesize($file) / 1024 / 1024) > $value) {
