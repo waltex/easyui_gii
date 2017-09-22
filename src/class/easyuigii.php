@@ -9,6 +9,7 @@ class easyuigii {
     private $ar_col_type = []; // for tamplate crud
     private $primary_key = ""; // auto find from table structure
     private $language_default = ''; // form asset template
+    private $app_setting = []; // array app setting from json file
     private $host_api = "api"; // for remote/local host es. (local) api or remote) http:/192.168.20/easui_gii/api
     public $app_name = "";
     public $app_folder = "";
@@ -27,15 +28,29 @@ class easyuigii {
 
     function __construct() {
         $this->script_path = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
-
-        $file = $this->script_path . "/app_setting.json";
-        $imp = file_get_contents($file);
-        $ar_file = json_decode($imp, true);
+        $ar_file = $this->get_ar_app_setting();
+        $this->app_setting = json_encode($ar_file);
         $this->language_default = $ar_file["lingua corrente"];
     }
 
     function on_begin_crud() {
         $this->primary_key = $this->get_primary_key();
+    }
+
+    function get_db_settings() {
+        $setting = $this->app_setting;
+        foreach ($setting as $key => $value) {
+           
+        }
+    }
+
+    /** return array app setting
+     */
+    function get_ar_app_setting() {
+        $file = $this->script_path . "/app_setting.json";
+        $imp = file_get_contents($file);
+        $ar_file = json_decode($imp, true);
+        return $ar_file;
     }
 
     /** folder create and file
@@ -408,7 +423,7 @@ class easyuigii {
                 if (!in_array($col_name, $this->cols_table_skip)) {
                     $ncol+=1;
                     $str_comma = ($ncol > 1) ? ", " : "";
-                    
+
                     if ($col_type == "DATE") {
                         $col_dt = $this->format_dt2todate(":" . $col_name);
                         $col_name = "$col_name=$col_dt";
