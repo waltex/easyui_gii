@@ -39,10 +39,10 @@ function test_api() {
         include 'api_setup.php';
 
         $app->render(200, ['success' => true, 'msg' => 'Hello']);
-        error_log(LogTime() . 'test api' . PHP_EOL, 3, 'api.log');
+        error_log(LogTime() . 'test api' . PHP_EOL, 3, 'logs/api.log');
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
+        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'logs/error.log');
     }
 }
 
@@ -91,7 +91,7 @@ function auto_translate() {
         $app->render(200, [$value => $value_t]);
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
+        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'logs/error.log');
     }
 }
 
@@ -113,7 +113,7 @@ function setting_read() {
         $app->render(200, $ar_out);
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
+        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'logs/error.log');
     }
 }
 
@@ -138,7 +138,7 @@ function setting_save() {
         file_put_contents($file, $return);
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
+        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'logs/error.log');
     }
 }
 
@@ -160,7 +160,7 @@ function crud_generate() {
         $app->render(200, ['success' => true, 'msg' => "eseguito"]);
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'error.log');
+        error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'logs/error.log');
     }
 }
 
@@ -180,10 +180,10 @@ function test_oci() {
 
         $app->response()->body(json_encode($data));
         if ($debug) {
-            error_log(LogTime() . ' Sql test oci' . $sql . PHP_EOL, 3, 'debug.log');
+            error_log(LogTime() . ' Sql test oci' . $sql . PHP_EOL, 3, 'logs/debug.log');
         }
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . ' Sql tets oci  ' . PHP_EOL . $sql . PHP_EOL, 3, 'error.log');
+        error_log(LogTime() . ' Sql tets oci  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
     }
 }

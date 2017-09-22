@@ -27,16 +27,19 @@ class easyuigii {
      */
 
     function __construct() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         $this->script_path = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
         $ar_file = $this->get_ar_app_setting();
         $this->app_setting = $ar_file;
     }
 
     function on_begin_crud() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         $this->primary_key = $this->get_primary_key();
     }
 
     function get_db_settings() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         $setting = $this->app_setting;
         foreach ($setting as $key => $value) {
            
@@ -46,6 +49,7 @@ class easyuigii {
     /** return array app setting
      */
     function get_ar_app_setting() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         $file = $this->script_path . "/app_setting.json";
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);
@@ -55,6 +59,7 @@ class easyuigii {
     /** folder create and file
      */
     public function build_app_crud() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         $this->on_begin_crud();
 
         $dir = $_SERVER['DOCUMENT_ROOT'] . "/" . $this->app_folder; //code path output
@@ -102,6 +107,7 @@ class easyuigii {
     }
 
     private function get_template_js_crud() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         $ar = $this->ar_col_type;
         $key_row = [];
         $ar2 = []; //ord aray with ID/PRIMARY KEY with first element
@@ -136,6 +142,7 @@ class easyuigii {
      * @param type $col string name column
      */
     private function get_js_crud_col($col, $type) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         $with = "";
         $colt = $this->T($col); //translate
         if ($this->dg_col_px_auto) {
@@ -174,6 +181,7 @@ class easyuigii {
      * @return type string
      */
     private function get_sql_for_select() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         try {
 
             $app = Slim\Slim::getInstance();
@@ -183,7 +191,7 @@ class easyuigii {
                 SELECT * FROM $table
                 ";
 
-            ($debug) ? error_log(LogTime() . ' Sql, get column field: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log') : false;
+            error_log(LogTime() . ' Sql, get column field: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
             $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
             $db = oci_parse($conn, $sql);
@@ -214,7 +222,7 @@ class easyuigii {
             $strSql = "SELECT $str_col_w_a FROM $table A";
             return $strSql;
         } catch (Exception $e) {
-            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
         }
     }
@@ -224,6 +232,7 @@ class easyuigii {
      * @return type string primary key
      */
     private function get_primary_key() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         try {
 
             $app = Slim\Slim::getInstance();
@@ -242,7 +251,7 @@ class easyuigii {
                 ORDER BY cols.table_name,cols.position
                 ";
 
-            ($debug) ? error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log') : false;
+            error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
             $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
             $db = oci_parse($conn, $sql);
@@ -258,7 +267,7 @@ class easyuigii {
                 throw new Exception($this->T('Errore - non è possibile recuperare la primary key'));
             }
         } catch (Exception $e) {
-            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
         }
     }
@@ -270,6 +279,7 @@ class easyuigii {
      * @return type string es. (A.FIELD1,'YYYY-MM-DD') FIELD1
      */
     private function format_date_to_char($filed, $col_name) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
         return "TO_CHAR($filed,'" . $this->date_format . "') $col_name";
     }
 
@@ -288,6 +298,7 @@ class easyuigii {
      * @param type $fn_name
      */
     private function get_api_fn_crud($api_fn_name) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
 
         $sql_select = $this->get_sql_for_select(); //for template
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
@@ -327,6 +338,8 @@ class easyuigii {
     /** list col from type col table es. field1, field2, field3
      */
     private function get_list_col() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $str_col = "";
         $ncol = "0";
         $ar = $this->ar_col_type;
@@ -348,6 +361,8 @@ class easyuigii {
      * @return string paramsql es oci_bind_by_name($db, ":ID", $ID, OCI_B_ROWID);
      */
     private function get_param_for_bind_insert_update($isUpdate) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $pk = $this->primary_key;
         $str_bind = "";
         $ar = $this->ar_col_type;
@@ -369,6 +384,8 @@ class easyuigii {
      * @return string paramsql es 'PARAM1' => $PARAM1,
      */
     private function get_param_insert_update_return() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $str_par = "";
         $ar = $this->ar_col_type;
         while ($row = current($ar)) {
@@ -387,6 +404,8 @@ class easyuigii {
      * @return string paramsql es ':PARAM1' => $PARAM1,
      */
     private function get_param_sql_for_log_insert_update($add_idd) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $str_par = "";
         $ar = $this->ar_col_type;
         while ($row = current($ar)) {
@@ -412,6 +431,8 @@ class easyuigii {
     /** get sql for update
      */
     private function get_sql_for_update() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $str_col = "";
         $ncol = "0";
         $ar = $this->ar_col_type;
@@ -444,6 +465,8 @@ class easyuigii {
     /** list col from type col table for insert sql es. field1, field2, field3
      */
     private function get_list_col_for_insert_values() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $str_col = "";
         $ncol = "0";
         $ar = $this->ar_col_type;
@@ -467,6 +490,8 @@ class easyuigii {
     }
 
     private function get_sql_for_insert() {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $list_col = $this->get_list_col(); //field1, field2, field3
         $str_col = $this->get_list_col_for_insert_values(); //:field1, :field2
         $table = $this->table_name;
@@ -493,6 +518,8 @@ class easyuigii {
      * @throws Exception
      */
     private function get_param_api_for_insert_update($add_id) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         try {
             $code = "";
             $ar = $this->ar_col_type;
@@ -510,7 +537,7 @@ class easyuigii {
             }
             return $code;
         } catch (Exception $e) {
-            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
         }
     }
@@ -522,6 +549,8 @@ class easyuigii {
      * @return type string
      */
     private function get_api_name($url, $fn) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         return '$' . "app->post('$url', '$fn'); ";
     }
 
@@ -532,6 +561,8 @@ class easyuigii {
      * @param type $fn_api string rest functions
      */
     private function set_api($dir, $api_url, $fn_api) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $file1_api = $this->script_path . $this->template_base_path . "/api/api_1_declare.php";
         $api_declare = file_get_contents($file1_api);
 
@@ -548,6 +579,8 @@ class easyuigii {
 
      */
     function copy_files_to_dir($ar_files) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         try {
             foreach ($ar_files as $file) {
                 $from = $file[0];
@@ -555,7 +588,7 @@ class easyuigii {
                 copy($from, $to);
             }
         } catch (Exception $e) {
-            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
         }
     }
@@ -564,6 +597,8 @@ class easyuigii {
      * @param type $dir directory app
      */
     private function copy_file_framework($dir) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         try {
             $this->create_folder($dir . "/api");
 
@@ -589,7 +624,7 @@ class easyuigii {
             ];
             $this->copy_files_to_dir($ar_files, $dir);
         } catch (Exception $e) {
-            error_log(LogTime() . " " . message_err($e), 3, 'error.log');
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
         }
     }
@@ -598,6 +633,8 @@ class easyuigii {
      * @param type $dir directory
      */
     private function create_folder($dir) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $ck = basename($dir);
         if ($ck != 'htdocs') {
             if (!is_dir($dir)) {
@@ -616,6 +653,8 @@ class easyuigii {
      * @param string $dir directory
      */
     private function rrmdir($dir) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
@@ -636,6 +675,8 @@ class easyuigii {
      * @param string $dir directory to extract
      */
     private function unzip($zip_file, $dir) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $zip = new ZipArchive;
         $file = $zip->open($zip_file);
         $zip->extractTo($dir);
@@ -652,6 +693,8 @@ class easyuigii {
      * @return type
      */
     public function T($value) {
+        error_log(logTime() . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log');
+
         $file = $this->script_path . "/app_setting.json";
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);

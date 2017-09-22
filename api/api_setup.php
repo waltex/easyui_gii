@@ -1,8 +1,13 @@
 <?php
-$debug = true;
-$debug_log_mb = 10; //max megabyte logs, -1 no limite
-$api_log_mb = 10; //max megabyte logs, -1 no limite
-$error_log_mb = 20; //max megabyte logs, -1 no limite
+
+$log = true; //enable write logs
+//max megabyte logs, -1 no limite
+$param_log = [
+    "api.log" => 0.5,
+    "debug.log" => 1,
+    "fn.log" => 0.01,
+    "sql.log" => 1
+];
 
 
 $db1_user = 'root';

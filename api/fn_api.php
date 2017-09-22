@@ -23,7 +23,7 @@ function jsonpWrap($jsonp) {
 
 //Log
 function logTime() {
-    return date("D M d, Y G:i:s", time());
+    return date("D M d, Y G:i:s ", time());
 }
 
 function message_err($e) {
@@ -37,33 +37,31 @@ function SvuotaLog() {
     try {
         //$app = Slim\Slim::getInstance();
         include 'api_setup.php';
-
-        if ($debug_log_mb > -1) {
-            if (file_exists("debug.log")) {
-                if ((filesize("debug.log") / 1024 / 1024) > $debug_log_mb) {
-                    copy("debug.log", "debug_old.log");
-                    unlink("debug.log");
+        $folder = "logs/";
+        foreach ($param_log as $file => $value) {
+            $file = $folder . $file;
+            if ($value > -1) {
+                if (file_exists($file)) {
+                    if ((filesize($file) / 1024 / 1024) > $value) {
+                        $path_info = pathinfo($file);
+                        $file_old = $path_info['dirname'] . '/' . $path_info['filename'] . "_old." . $path_info['extension'];
+                        copy($file, $file_old);
+                        unlink($file);
+                    }
                 }
-            }
-        };
+            };
+        }
 
-        if ($api_log_mb > -1) {
-            if (file_exists("api.log")) {
-                if ((filesize("api.log") / 1024 / 1024) > $api_log_mb) {
-                    copy("api.log", "api_old.log");
-                    unlink("api.log");
-                }
-            }
-        };
-        if ($error_log_mb > -1) {
-            if (file_exists("error.log")) {
-
-                if ((filesize("error.log") / 1024 / 1024) > $error_log_mb) {
-                    copy("error.log", "error_old.log");
-                    unlink("error.log");
-                }
-            }
-        };
+        /*
+          if ($debug_log_mb > -1) {
+          if (file_exists("debug.log")) {
+          if ((filesize("debug.log") / 1024 / 1024) > $debug_log_mb) {
+          copy("debug.log", "debug_old.log");
+          unlink("debug.log");
+          }
+          }
+          };
+         */
     } catch (Exception $e) {
         //$app->stop($e);
     }
