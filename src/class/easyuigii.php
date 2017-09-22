@@ -57,7 +57,7 @@ class easyuigii {
         ($this->app_setting["debug su file"]) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $pos = strpos($value, " ");
-        $param = substr($value, $pos, strlen($value));
+        $param = substr($value, $pos + 1, strlen($value));
         return $param;
     }
 
@@ -74,7 +74,7 @@ class easyuigii {
         return $param;
     }
 
-    /** set db setting
+    /** set db setting to method class
      */
     private function set_db_setting() {
         include 'api_setup.php';
@@ -92,7 +92,8 @@ class easyuigii {
                 $ar_db[$key_no_id] = $value;
             }
         }
-        if (isset($ar_db["nome connessione database ORACLE (oci driver)"])) {
+        $test = 1;
+        if (array_key_exists("nome connessione database ORACLE (oci driver)", $ar_db)) {
             $this->oci_name = $ar_db["nome connessione database ORACLE (oci driver)"]; //user
             $this->oci_cn = $ar_db["tnsnames.ora"]; //
             $this->oci_user = $ar_db["utente database"]; //user
@@ -292,8 +293,8 @@ class easyuigii {
 
             error_log(LogTime() . ' Sql, get column field: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
-
-            $conn = oci_connect($this->oci_usr, $this->oci_psw, $this->oci_cn, 'UTF8');
+            //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
             $db = oci_parse($conn, $sql);
             $rs = oci_execute($db);
 
@@ -353,7 +354,9 @@ class easyuigii {
 
             error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
-            $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+             
+            //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
             $db = oci_parse($conn, $sql);
             $rs = oci_execute($db);
 
