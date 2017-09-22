@@ -29,8 +29,7 @@ class easyuigii {
     function __construct() {
         $this->script_path = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
         $ar_file = $this->get_ar_app_setting();
-        $this->app_setting = json_encode($ar_file);
-        $this->language_default = $ar_file["lingua corrente"];
+        $this->app_setting = $ar_file;
     }
 
     function on_begin_crud() {
@@ -74,7 +73,7 @@ class easyuigii {
         $this->copy_file_framework($dir); // copy file/folder framework
         //create asset template
         $html = $twig->render('/base/asset.html.twig', array(
-            'language_default' => $this->language_default
+            'language_default' => $this->app_setting["lingua corrente"] // current language
         ));
         $file = $dir . "/asset.html";
         file_put_contents($file, $html); //write generated html
