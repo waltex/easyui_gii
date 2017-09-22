@@ -27,8 +27,10 @@ $app->post('/dg/crud/generate', 'crud_generate'); //generate code for crud
 $app->get('/test_oci', 'test_oci'); //test driver oracle
 
 include 'fn_api.php';
+$start = new easyuigii();
+
 $app->run();
-SvuotaLog();
+
 
 /**
  * Test Api

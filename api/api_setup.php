@@ -1,15 +1,5 @@
 <?php
 
-$write_log = true; //enable write logs
-//max megabyte logs, -1 no limite
-$param_log = [
-    "api.log" => 0.5,
-    "debug.log" => 0.5,
-    "fn.log" => 0.5,
-    "sql.log" => 2
-];
-
-
 $db1_user = 'root';
 $db1_psw = '';
 $db1_mysql = 'mysql:host=localhost;dbname=test';
