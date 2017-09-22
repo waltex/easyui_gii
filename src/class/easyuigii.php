@@ -31,7 +31,7 @@ class easyuigii {
         $file = $this->script_path . "/app_setting.json";
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);
-        $this->language_default = $ar_file["language default"];
+        $this->language_default = $ar_file["lingua corrente"];
     }
 
     function on_begin_crud() {
