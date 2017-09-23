@@ -194,6 +194,17 @@ class easyuigii {
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
+        //write template api_setup.php
+        $api_setup = $twig->render('/base/api/api_setup.oci.php.twig', array(
+            'oci_cn_var' => $this->oci_cn_var
+            , 'oci_user_var' => $this->oci_user_var
+            , 'oci_password_var' => $this->oci_password_var
+            , 'oci_cn' => $this->oci_cn
+            , 'oci_user' => $this->oci_user
+            , 'oci_password' => $this->oci_password
+        ));
+        $file = $dir . "/api/api_setup.php";
+        file_put_contents($file, $api_setup); //write generated html
         //create api
         $this->set_api($dir, $api_url, $fn_api); //create file api
     }
@@ -276,7 +287,7 @@ class easyuigii {
      */
     private function get_sql_for_select() {
         try {
-    
+
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
             $app = Slim\Slim::getInstance();
@@ -329,7 +340,7 @@ class easyuigii {
      */
     private function get_primary_key() {
         try {
-    
+
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
             $app = Slim\Slim::getInstance();
@@ -349,7 +360,7 @@ class easyuigii {
 
             error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
-             
+
             //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
             $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
             $db = oci_parse($conn, $sql);
@@ -736,7 +747,6 @@ class easyuigii {
                 [$template_path . "/.htaccess", $dir . "/"], //for disable cache javascript
                 [$template_path . "/api/.htaccess", $dir . "/api/"],
                 [$template_path . "/api/fn_api.php", $dir . "/api/"],
-                [$template_path . "/api/api_setup.php", $dir . "/api/"],
             ];
             $this->copy_files_to_dir($ar_files, $dir);
         } catch (Exception $e) {
