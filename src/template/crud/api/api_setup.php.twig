@@ -1,0 +1,24 @@
+<?php
+
+$debug = true;
+$debug_log_mb = 1; //max megabyte logs, -1 no limite
+$api_log_mb = 1; //max megabyte logs, -1 no limite
+$error_log_mb = 1; //max megabyte logs, -1 no limite
+
+{#
+$db4_user = '******';
+$db4_psw  = '******';
+
+$TSNAMES = '
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = XXX.XXX.XXX.XX)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SID = GOLDPROD)
+      (SERVER = DEDICATED)
+    )
+  )';
+#}
+{{oci_drv_setting|raw}}
+

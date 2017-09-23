@@ -18,7 +18,7 @@
                 error_log(LogTime() . ' Sql, crud select {{table|raw}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
             }
 
-            $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $conn = oci_connect({{drv_user_var|raw}}, {{drv_password_var|raw}}, {{drv_cn_var|raw}}, '{{drv_charset|raw}}');
             $db = oci_parse($conn, $sql);
             $rs = oci_execute($db);
 
@@ -39,7 +39,7 @@
                 error_log(LogTime() . ' Sql, crud delete {{table|raw}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
             }
 
-            $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $conn = oci_connect({{drv_user_var|raw}}, {{drv_password_var|raw}}, {{drv_cn_var|raw}}, '{{drv_charset|raw}}');
             $db = oci_parse($conn, $sql);
 
             $rs = oci_execute($db);
@@ -71,7 +71,7 @@
                 }
             }
 
-            $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $conn = oci_connect({{drv_user_var|raw}}, {{drv_password_var|raw}}, {{drv_cn_var|raw}}, '{{drv_charset|raw}}');
             $db = oci_parse($conn, $sql);
             {#
             oci_bind_by_name($db, ":ID", $ID, -1);
@@ -121,7 +121,7 @@
             }
 
 
-            $conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $conn = oci_connect({{drv_user_var|raw}}, {{drv_password_var|raw}}, {{drv_cn_var|raw}}, '{{drv_charset|raw}}');
             $db = oci_parse($conn, $sql);
             {#
             oci_bind_by_name($db, ":ID", $ID, OCI_B_ROWID);

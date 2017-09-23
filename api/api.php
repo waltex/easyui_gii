@@ -38,7 +38,6 @@ $app->run();
 function test_api() {
     try {
         $app = Slim\Slim::getInstance();
-        include 'api_setup.php';
 
         $app->render(200, ['success' => true, 'msg' => 'Hello']);
         error_log(LogTime() . 'test api' . PHP_EOL, 3, 'logs/api.log');
@@ -58,7 +57,6 @@ function test_translate() {
 function auto_translate() {
     try {
         $app = Slim\Slim::getInstance();
-        include 'api_setup.php';
 
         $value = $app->request->params('value'); // Param keyword to translate
 
@@ -102,7 +100,6 @@ function auto_translate() {
 function setting_read() {
     try {
         $app = Slim\Slim::getInstance();
-        include 'api_setup.php';
 
         $file = "../app_setting.json";
         $imp = file_get_contents($file);
@@ -124,7 +121,7 @@ function setting_read() {
 function setting_save() {
     try {
         $app = Slim\Slim::getInstance();
-        include 'api_setup.php';
+
 
         $name = $app->request->params('name');
         $val = $app->request->params('val');
@@ -150,7 +147,6 @@ function setting_save() {
 function crud_generate() {
     try {
         $app = Slim\Slim::getInstance();
-        include 'api_setup.php';
 
         $crud = new easyuigii;
         $crud->app_name = $app->request->params('app_name');
@@ -169,7 +165,6 @@ function crud_generate() {
 function test_oci() {
     try {
         $app = Slim\Slim::getInstance();
-        include 'api_setup.php';
 
         $sql = "
                         SELECT  'ok' from dual
