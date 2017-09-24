@@ -35,8 +35,21 @@ function init_app() {
         striped: true,
         nowrap: false,
         //fitColumns: true,
+        onClickRow: function (index, row) {
+            var file = row.file;
+            $('#cc_layout').layout('panel', 'center').panel({
+                href: file,
+                onLoadError: function () {
+                    console.log('error');
+                    $(this).href = null;
+                    $('#cc_layout').layout('panel', 'center').panel({href: null});
+                }
+            })
+        },
         columns: [[
-                {field: 'name', title: T('digita qui per cercare'), width: '100%', editor: "text"},
+                {field: 'name', title: T('digita qui per cercare'), width: '100%', editor: "text", formatter: function (value, row, index) {
+                        return T(value);//transalte
+                    }},
             ]]
     });
     $('#dg_snippets').datagrid('enableFilter');
