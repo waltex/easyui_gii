@@ -26,6 +26,10 @@ $app->post('/dg/setting/save', 'setting_save'); //save data app_setting.json
 $app->post('/dg/crud/generate', 'crud_generate'); //generate code for crud
 $app->get('/test_oci', 'test_oci'); //test driver oracle
 $app->post('/dg/snippets/read', 'snippets_read'); //read file for snippets
+$app->post('/dg/snippets/add', 'snippets_add'); //add file for snippets
+$app->post('/dg/snippets/delete', 'snippets_delete'); //deleet snippets
+$app->post('/dg/snippets/rename', 'snippets_rename'); //rename snippets
+
 
 include 'fn_api.php';
 $start = new easyuigii();
@@ -198,5 +202,72 @@ function snippets_read() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - list file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+/** add file snippets
+ */
+function snippets_add() {
+    try {
+        $app = Slim\Slim::getInstance();
+
+        $name = $app->request->params('name'); // name snippets
+
+        $gii = new easyuigii();
+        $return = $gii->add_snippets($name); // return name without extension
+        if ($return !== false) {
+            $data = ["file" => $name, "name" => $return];
+            $app->response()->body(json_encode($data));
+        } else {
+            $app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);
+        }
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - add file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+/** delete file snippets
+ */
+function snippets_delete() {
+    try {
+        $app = Slim\Slim::getInstance();
+
+        $name = $app->request->params('id'); // name snippets
+
+        $gii = new easyuigii();
+        $return = $gii->delete_snippets($name); // return name without extension
+        if ($return !== false) {
+            $app->render(200, ['success' => true]);
+        } else {
+            $app->render(200, ['isError' => true, 'msg' => $gii->T('File non presente')]);
+        }
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - delete file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+
+/** rename file snippets
+ */
+function snippets_rename() {
+    try {
+        $app = Slim\Slim::getInstance();
+
+        $file_to = $app->request->params('name'); // file to rename
+        $file_from = $app->request->params('file'); // file name start
+
+        $gii = new easyuigii();
+        $return = $gii->rename_snippets($file_from, $file_to); // return name without extension
+        if ($return !== false) {
+           $data = ["file" => $file_to, "name" => $return];
+            $app->response()->body(json_encode($data));
+        } else {
+            $app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);
+        }
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - rename file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
     }
 }

@@ -48,6 +48,85 @@ class easyuigii {
         $this->primary_key = $this->get_primary_key();
     }
 
+    /** rename  file snippets
+     * @param type $name
+     */
+    public function rename_snippets($file_from, $file_to) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $dir = $this->script_path . "/snippets";
+        $filename_to = $dir . '/' . $file_to;
+        $filename_from = $dir . '/' . $file_from;
+
+        if ((file_exists($filename_from)) && (!file_exists($filename_to))) {
+            copy($filename_from, $filename_to);
+            unlink($filename_from);
+            $path_info = pathinfo($filename_to);
+            $name = $path_info['filename'];
+            return $name;
+        } else {
+            return false;
+        }
+    }
+
+    /** delete  file snippets
+     * @param type $name
+     */
+    public function delete_snippets($name) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $dir = $this->script_path . "/snippets";
+        $file = $dir . '/' . $name;
+
+
+        if (file_exists($file)) {
+            unlink($file);
+        } else {
+            return false;
+        }
+    }
+
+    /** write  file snippets empty
+     * @param type $name
+     */
+    public function add_snippets($name) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $dir = $this->script_path . "/snippets";
+        $file = $dir . '/' . $name;
+     
+        if (!file_exists($file)) {
+            $path_info = pathinfo($file);
+            $name = $path_info['filename'];
+            $ext = $path_info['extension'];
+            $content = "";
+
+
+            $html = trim('
+<!DOCTYPE html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Snippets</title>
+    <link rel="import" href="asset.html">
+</head>
+<html>
+    <body>
+
+    <script></script>
+    </body>
+</html>
+                ');
+            ($ext == "php") ? $content = "<?php" : false;
+            (in_array($ext, ["htm", "html", "js"])) ? $content = $html : false;
+            file_put_contents($file, $content);
+
+
+            return $name;
+        } else {
+            return false;
+        }
+    }
+
     /** lsit file on the folder snippets
      */
     public function list_file_for_snippets() {
