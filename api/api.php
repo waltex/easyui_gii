@@ -25,12 +25,12 @@ $app->post('/dg/setting/read', 'setting_read'); //read data app_setting.json
 $app->post('/dg/setting/save', 'setting_save'); //save data app_setting.json
 $app->post('/dg/crud/generate', 'crud_generate'); //generate code for crud
 $app->get('/test_oci', 'test_oci'); //test driver oracle
+$app->post('/dg/snippets/read', 'snippets_read'); //read file for snippets
 
 include 'fn_api.php';
 $start = new easyuigii();
 
 $app->run();
-
 
 /**
  * Test Api
@@ -182,5 +182,21 @@ function test_oci() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . ' Sql tets oci  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+/** read list file snippets
+ */
+function snippets_read() {
+    try {
+        $app = Slim\Slim::getInstance();
+
+        $list = new easyuigii();
+        $data = $list->list_file_for_snippets();
+
+        $app->response()->body(json_encode($data));
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - list file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
     }
 }

@@ -2,7 +2,9 @@ var g_debug // for debug code to browser
 function init_app() {
     //translate menu
     $('#dg_set').html(T('Impostazioni'));//menu settings
-    $('#mm_app_gen').html(T('Apri app Generate'));//Apri applicazioni generate
+    $('#mm_app_gen').html(T('Apri app Generate'));//open app generated
+    $('#dg_snippets').html(T('Esempi di codice'));//snippets
+
 
 
     addTab('welcome', 'welcome.html', null);
@@ -22,6 +24,9 @@ function init_app() {
     });
     $('#dg_set').on('click', function () {
         addTab(T('impostazioni'), 'settings.html', null);
+    });
+    $('#dg_snippets').on('click', function () {
+        addTab('snippets', 'snippets.html', null);
     });
 }
 function addTab(title, url, opt) {
@@ -48,7 +53,7 @@ function addTab(title, url, opt) {
     }
 }
 function addTab_sub(title, url, opt) {
-    var content = '<iframe id="iframe_' + title + '" scrolling="yes" frameborder="0"  src="' + url + '" style="width:100%;height:99.5%;"></iframe>';
+    var content = '<iframe id="iframe_' + title + '" scrolling="yes" frameborder="0"  src="' + url + '" style="width:99%;height:97.3%;padding:0.5%"></iframe>';
     var tab = $('#tab_app').tabs('add', {
         title: title,
         content: content,

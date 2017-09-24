@@ -48,6 +48,29 @@ class easyuigii {
         $this->primary_key = $this->get_primary_key();
     }
 
+    /** lsit file on the folder snippets
+     */
+    public function list_file_for_snippets() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+
+        $dir = $this->script_path . "/snippets";
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true); //create folder
+        }
+        $list = scandir($dir);
+        $data = [];
+        foreach ($list as $file) {
+            if (!in_array($file, ["..", "."])) {
+                $path_info = pathinfo($file);
+                $name = $path_info['filename'];
+                $data[] = ["file" => $file, "name" => $name];
+            }
+        }
+
+        return $data;
+    }
+
     /** get key  parameter of setting unless #1
      * @param type $value
      * @return type string
