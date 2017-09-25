@@ -10,10 +10,25 @@
     <body>
 
         <div id="cc_layout" class="easyui-layout" data-options="fit:true">
-            <div id="l_west" data-options="region:'west',title:'list code',split:true, iconCls:'icon-c'" style="width:400px;">
+            <div id="l_west" data-options="region:'west',title:'list code',hideCollapsedContent:false,split:true, iconCls:'icon-c'" style="width:400px;">
                 <table id="dg_snippets" class="easyui-datagrid"></table>
             </div>
-            <div data-options="region:'center',title:'center title'" style="padding:5px;background:#eee;">
+            <div data-options="region:'center',border:false">
+                <div id="cc_code" class="easyui-layout" data-options="fit:true">
+                    <!-- panel image -->
+                    <div data-options="region:'north',title:'image',hideCollapsedContent:false,split:true" style="height:40%;">
+                        <div style="padding:1%">
+                            <form id="ff_upload" method="post" enctype="multipart/form-data">
+                                <input id='fb_upload' name="file" class="easyui-filebox" style="width:350px">
+                            </form>
+                        </div>
+                    </div>
+                    <!-- panel code -->
+                    <div data-options="region:'center'" style="height:60%;padding:5px;background:#eee;">
+
+
+                    </div>
+                </div>
 
             </div>
         </div>

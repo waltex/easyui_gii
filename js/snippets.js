@@ -3,7 +3,30 @@ var g_edit_code = false;
 function init_app() {
     //translate
     $('#cc_layout').layout('panel', 'west').panel({title: T('elenco esempi di codice')}); //panel west
-    $('#cc_layout').layout('panel', 'center').panel({title: T('Pagina codice')}); //panel west
+    //$('#cc_code').layout('panel', 'center').panel({title: T('Pagina codice')}); //panel west
+    $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice')}); //panel west
+    $('#cc_code').layout('panel', 'north').panel({
+        onCollapse: function () {
+            var opts = $(this).panel('options');
+            var layout = $(this).closest('.layout');
+            var region = opts.region;
+            var p = layout.layout('panel', 'expand' + region.substr(0, 1).toUpperCase() + region.substr(1));
+            var tools = p.panel('options').tools;
+            p.panel({
+                tools: [{
+                        iconCls: 'icon-add',
+                        handler: bt_add,
+                    }].concat(tools.pop())
+            })
+        },
+        tools: [{
+                iconCls: 'icon-add',
+                handler: bt_add,
+            }]});
+
+    function bt_add() {
+        alert('new2');
+    }
 
     var dg1_tb = ['-', {
             text: T('Aggiungi'),
@@ -22,16 +45,12 @@ function init_app() {
             handler: function () {
                 $('#dg_snippets').edatagrid('cancelRow');
             }}, '-', {
-            text: T('Ricarica'),
-            iconCls: 'icon-reload',
-            handler: function () {
-                $('#dg_snippets').edatagrid('reload');
-            }}, '-', {
             text: T('Elimina'),
             iconCls: 'icon-remove',
             handler: function () {
                 $('#dg_snippets').edatagrid('destroyRow');
             }}, '-', {
+            id: 'bt_edit',
             text: T('Modifica'),
             toggle: true,
             iconCls: 'icon-edit',
@@ -64,11 +83,11 @@ function init_app() {
             $.messager.alert(T('Attenzione'), row.msg, 'warning');
         },
         onDestroy: function (index, row) {
-            $('#cc_layout').layout('panel', 'center').panel({
+            $('#cc_code').layout('panel', 'center').panel({
                 content: '<div></div>',
             })
         },
-                columns: [[
+        columns: [[
                 {field: 'ck', checkbox: true},
                 {field: 'name', title: T('digita qui per cercare'), width: '100%', editor: "text", formatter: function (value, row, index) {
                         return T(value);//transalte
@@ -79,7 +98,10 @@ function init_app() {
 
     $('#bt_add').tooltip({
         content: T('inserire anche estensione es .php .html')
-    })
+    });
+    $('#bt_edit').tooltip({
+        content: T('Abilita la modifica della pagina del codice')
+    });
 
     function view_file(file, edit) {
         //var file = row.file;
@@ -101,9 +123,40 @@ function init_app() {
             entry: file});
         var url = 'http://localhost/easyui_gii/lib/net2ftp/index.php?' + param;
         var content = '<iframe id="iframe_snippets" scrolling="yes" frameborder="0"  src="' + url + '" style="width:99%;height:97.3%;padding:0.5%"></iframe>';
-        $('#cc_layout').layout('panel', 'center').panel({
+        $('#cc_code').layout('panel', 'center').panel({
             content: content,
         })
     }
 
+    $('#fb_upload').filebox({
+        label: T('immagine codice:'),
+        labelPosition: 'top',
+        buttonText: T('scegli'),
+        accept: 'image/*',
+        required: true
+    });
+
+    $('#bt_upload').on('click', function () {
+        $('#ff_upload').form('submit');
+
+    });
+    $('#ff_upload').form({
+        url: 'api/xxx',
+        onSubmit: function (param) {
+            if ($('#fb_upload').filebox('isValid')) {
+                $.messager.progress({title: '** upload **', msg: T('Trasferimento immagine, in corso...')});
+                return true;
+            } else {
+                $.messager.alert('** attenzione **', T('Selezionare una immagine'), 'warning');
+                return false;
+            }
+        },
+        success: function (data) {
+            $.messager.progress('close');
+        },
+        onLoadError: function () {
+            $.messager.alert(T('attenzione'), T('Si è verificvato un errore nel trasferimento'), 'error');
+        }
+    });
 }
+
