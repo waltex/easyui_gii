@@ -11,7 +11,7 @@ class easyuigii {
     private $app_setting = []; // array app setting from json file
     private $host_api = "api"; // for remote/local host es. (local) api or remote) http:/192.168.20/easui_gii/api
     private $current_languange = ''; //from app_setting.json
-    private $debug_on_file = ''; //from app_setting.json
+    public $debug_on_file = ''; //from app_setting.json
     private $oci_cn = ""; //current connection string for driver  oracle (oci)
     private $oci_user = ""; //current user for driver  oracle (oci)
     private $oci_password = ""; //current psw for driver oracle (oci)
@@ -133,14 +133,14 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
-        $dir = $this->script_path . "/snippets";
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true); //create folder
+        $dir = $this->script_path . "/snippets/";
+        if (!is_dir($dir . 'image')) {
+            mkdir($dir . 'image', 0777, true); //create folder
         }
         $list = scandir($dir);
         $data = [];
         foreach ($list as $file) {
-            if (!in_array($file, ["..", "."])) {
+            if (!in_array($file, ["..", ".", "image", ".DS_Store"])) {
                 $path_info = pathinfo($file);
                 $name = $path_info['filename'];
                 $data[] = ["file" => $file, "name" => $name];

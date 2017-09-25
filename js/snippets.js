@@ -141,7 +141,7 @@ function init_app() {
 
     });
     $('#ff_upload').form({
-        url: 'api/xxx',
+        url: 'api/uoload/image',
         onSubmit: function (param) {
             if ($('#fb_upload').filebox('isValid')) {
                 $.messager.progress({title: '** upload **', msg: T('Trasferimento immagine, in corso...')});

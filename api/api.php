@@ -29,7 +29,7 @@ $app->post('/dg/snippets/read', 'snippets_read'); //read file for snippets
 $app->post('/dg/snippets/add', 'snippets_add'); //add file for snippets
 $app->post('/dg/snippets/delete', 'snippets_delete'); //deleet snippets
 $app->post('/dg/snippets/rename', 'snippets_rename'); //rename snippets
-
+$app->post('/uoload/image', 'upload_image'); //upload image snippets
 
 include 'fn_api.php';
 $start = new easyuigii();
@@ -152,14 +152,16 @@ function crud_generate() {
     try {
         $app = Slim\Slim::getInstance();
 
-        $crud = new easyuigii;
-        $crud->app_name = $app->request->params('app_name');
-        $crud->app_folder = $app->request->params('app_folder');
-        $crud->table_name = $app->request->params('table_name');
+        $gii = new easyuigii;
+        $gii->app_name = $app->request->params('app_name');
+        $gii->app_folder = $app->request->params('app_folder');
+        $gii->table_name = $app->request->params('table_name');
 
-        $crud->build_app_crud();
+        $gii->build_app_crud();
 
         $app->render(200, ['success' => true, 'msg' => "eseguito"]);
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'logs/error.log');
@@ -195,10 +197,12 @@ function snippets_read() {
     try {
         $app = Slim\Slim::getInstance();
 
-        $list = new easyuigii();
-        $data = $list->list_file_for_snippets();
+        $gii = new easyuigii();
+        $data = $gii->list_file_for_snippets();
 
         $app->response()->body(json_encode($data));
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - list file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
@@ -221,6 +225,8 @@ function snippets_add() {
         } else {
             $app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);
         }
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - add file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
@@ -242,6 +248,8 @@ function snippets_delete() {
         } else {
             $app->render(200, ['isError' => true, 'msg' => $gii->T('File non presente')]);
         }
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - delete file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
@@ -266,8 +274,16 @@ function snippets_rename() {
         } else {
             $app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);
         }
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - rename file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
     }
+}
+
+/** upload imae snippets
+ */
+function upload_image() {
+    
 }
