@@ -215,7 +215,8 @@ class easyuigii {
         }
         $param_log = [
             "api.log" => str_replace(",", ".", $this->app_setting["limita file api.log a MB"]),
-            "debug.log" => str_replace(",", ".", $this->app_setting["limita debug.api.log a MB"]),
+            "errore.log" => str_replace(",", ".", $this->app_setting["limita file error.log a MB"]),
+            "debug.log" => str_replace(",", ".", $this->app_setting["limita file api.log a MB"]),
             "fn.log" => str_replace(",", ".", $this->app_setting["limita file fn.log a MB"]),
             "sql.log" => str_replace(",", ".", $this->app_setting["limita file sql.log a MB"]),
         ];
