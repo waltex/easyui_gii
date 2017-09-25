@@ -128,6 +128,7 @@ function init_app() {
         })
     }
 
+
     $('#fb_upload').filebox({
         label: T('immagine codice:'),
         labelPosition: 'top',
@@ -137,9 +138,15 @@ function init_app() {
     });
 
     $('#bt_upload').on('click', function () {
+        var file = $('#dg_snippets').datagrid('getSelected').file
+        $('#ff_upload').form('options').queryParams = {name_file: file}
         $('#ff_upload').form('submit');
+        var url = "snippets/image/" + file + '.jpg';
+        var content = '<iframe id="iframe_image" frameborder="0" scrolling="no"  src="' + url + '" style="width:200px;height:200px;padding:0.5%"></iframe>';
+        $('#image_snippets').panel({content: content})
 
     });
+    $('#bt_upload').linkbutton({text: T('Salva')})
     $('#ff_upload').form({
         url: 'api/uoload/image',
         onSubmit: function (param) {
@@ -150,6 +157,9 @@ function init_app() {
                 $.messager.alert('** attenzione **', T('Selezionare una immagine'), 'warning');
                 return false;
             }
+        },
+        queryParams: {
+            name_file: null
         },
         success: function (data) {
             $.messager.progress('close');

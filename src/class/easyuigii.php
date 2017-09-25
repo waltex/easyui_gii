@@ -48,6 +48,14 @@ class easyuigii {
         $this->primary_key = $this->get_primary_key();
     }
 
+    public function upload_image($name_file) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $uploadfile = $this->script_path . "/snippets/image/" . $name_file . ".jpg";
+        $filetmp = $_FILES['file']['tmp_name'];
+        move_uploaded_file($filetmp, $uploadfile);
+    }
+
     /** rename  file snippets
      * @param type $name
      */
@@ -94,7 +102,7 @@ class easyuigii {
 
         $dir = $this->script_path . "/snippets";
         $file = $dir . '/' . $name;
-     
+
         if (!file_exists($file)) {
             $path_info = pathinfo($file);
             $name = $path_info['filename'];

@@ -285,5 +285,12 @@ function snippets_rename() {
 /** upload imae snippets
  */
 function upload_image() {
-    
+    $app = Slim\Slim::getInstance();
+
+    $name_file = $app->request->params('name_file'); // file name start
+    $gii = new easyuigii();
+    $gii->upload_image($name_file);
+
+
+    ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 }
