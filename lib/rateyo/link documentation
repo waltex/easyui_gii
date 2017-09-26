@@ -1,0 +1,20 @@
+http://rateyo.fundoocode.ninja/
+
+es.
+get
+$("#rateYo").rateYo("option", "rating");
+set
+  $("#rateYo").rateYo({
+    rating: 3.6,
+    readOnly: true
+  });
+
+//max star
+$("#rateYo").rateYo({
+    numStars: 3
+  });
+
+//size
+$("#rateYo").rateYo({
+    starWidth: "20px"
+  });

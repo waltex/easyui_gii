@@ -53,7 +53,10 @@ function init_app() {
         nowrap: false,
         //fitColumns: true,
         onClickRow: click_row,
-        onSuccess: view_file,
+        onLoadSuccess: set_star,
+        onSuccess: function (index, row) {
+            view_file();
+        },
         onError: function (index, row) {
             $.messager.alert(T('Attenzione'), row.msg, 'warning');
         },
@@ -62,23 +65,46 @@ function init_app() {
             $('#image_snippets').panel({content: '<div></div>'});
         },
         onEdit: function (index, row) {
-            console.log(index);
             var ed = $('#dg_snippets').datagrid('getEditor', {index: index, field: 'name'});
-            //$(ed.target).textbox('setValue', row.file);
             $(ed.target).textbox('setValue', row.file);
+            $(ed.target).textbox('textbox').bind('keydown', function (e) {
+                if (e.keyCode == 13) {	// when press ENTER key, accept the inputed value.
+                    $('#dg_snippets').edatagrid('saveRow');
+                }
+            });
 
 
         },
         columns: [[
                 {field: 'ck', checkbox: true},
-                {field: 'name', title: T('Nome file'), width: '100%', editor: "textbox", formatter: function (value, row, index) {
+                {field: 'name', title: T('Nome file'), width: '82%', editor: "textbox", formatter: function (value, row, index) {
+
                         return T(value);//transalte
+                    }},
+                {field: 'start', title: T('Importante'), width: '15%', formatter: function (value, row, index) {
+                        return '<span id="#rateYo_' + index + '" style="float:center"></span>';
                     }},
             ]]
     });
     $('#dg_snippets').datagrid('enableFilter');
 
 
+    function set_star() {
+        var tot = $('span').length
+        for (var i = 0; i < tot; i++) {
+            var id = $('span')[i].id;
+            var n = id.indexOf('#rateYo_');
+            console.log(id)
+            if (n > -1) {
+                $($('span')[i]).rateYo({
+                    numStars: 3,
+                    starWidth: '15px',
+                    readOnly: true,
+                    rating: 2,
+                })
+            }
+        }
+    }
     function click_row() {
         view_file();
     }

@@ -6,6 +6,8 @@
         <link rel="import" href="asset.html">
         <script src="js/translate.js" type="text/javascript"></script>
         <script src="js/snippets.js" type="text/javascript"></script>
+        <link href="lib/rateyo/jquery.rateyo.min.css" rel="stylesheet" type="text/css"/>
+        <script src="lib/rateyo/jquery.rateyo.min.js" type="text/javascript"></script>
     </head>
     <body>
 
@@ -17,12 +19,15 @@
                 <div id="cc_code" class="easyui-layout" data-options="fit:true">
                     <!-- panel image -->
                     <div data-options="region:'north',title:'image',hideCollapsedContent:false,split:true" style="height:40%;">
+                        <span id="rateYo"></span>
                         <div id="div_upload" style="padding:1%;display:none">
                             <form id="ff_upload" method="post" enctype="multipart/form-data">
                                 <div style="display:inline-block">
                                     <label id="label_fb_upload" for="fb_upload">File immagine</label><!-- File image -->
                                     <input id='fb_upload' name="file" class="easyui-filebox" style="width:250px">
                                     <a id="bt_upload" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="margin-left: 10px;">upload</a>
+
+
                                 </div>
 
                             </form>
