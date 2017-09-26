@@ -5,28 +5,6 @@ function init_app() {
     $('#cc_layout').layout('panel', 'west').panel({title: T('elenco esempi di codice')}); //panel west
     //$('#cc_code').layout('panel', 'center').panel({title: T('Pagina codice')}); //panel west
     $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice')}); //panel west
-    $('#cc_code').layout('panel', 'north').panel({
-        onCollapse: function () {
-            var opts = $(this).panel('options');
-            var layout = $(this).closest('.layout');
-            var region = opts.region;
-            var p = layout.layout('panel', 'expand' + region.substr(0, 1).toUpperCase() + region.substr(1));
-            var tools = p.panel('options').tools;
-            p.panel({
-                tools: [{
-                        iconCls: 'icon-add',
-                        handler: bt_add,
-                    }].concat(tools.pop())
-            })
-        },
-        tools: [{
-                iconCls: 'icon-add',
-                handler: bt_add,
-            }]});
-
-    function bt_add() {
-        alert('new2');
-    }
 
     var dg1_tb = ['-', {
             text: T('Aggiungi'),
@@ -131,9 +109,21 @@ function init_app() {
     function viw_image_code() {
         var file = $('#dg_snippets').datagrid('getSelected').file
         var url = "snippets/image/" + file + '.jpg';
-        var content = '<img id="image_code" style="max-width:100%;height:auto;max-height:95%;width:auto;margin:0px auto;display:block" align="middle" src="' + url + '"></img>';
-        $('#image_snippets').panel({content: content});
+
         (g_edit_code) ? $('#div_upload').show() : $('#div_upload').hide();
+        // check if exists imege
+
+            $.get(url)
+                    .done(function () {
+                        $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice con immagine, clicca qui per visualizzarla')}); //panel west
+                        var content = '<img id="image_code" style="max-width:100%;height:auto;max-height:95%;width:auto;margin:0px auto;display:block" align="middle" src="' + url + '"></img>';
+                        $('#image_snippets').panel({content: content});
+                    }).fail(function () {
+                $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice')}); //panel west
+            });
+
+
+
     }
 
     $('#label_fb_upload').html(T('File immagine:'));
@@ -144,9 +134,9 @@ function init_app() {
     });
 
     $('#bt_upload').on('click', function () {
+        var file = $('#dg_snippets').datagrid('getSelected').file
         $('#ff_upload').form('options').queryParams = {name_file: file}
         $('#ff_upload').form('submit');
-        viw_image_code()
     });
     $('#bt_upload').linkbutton({text: T('Salva')})
     $('#ff_upload').form({
@@ -165,6 +155,7 @@ function init_app() {
         },
         success: function (data) {
             $.messager.progress('close');
+            viw_image_code();
         },
         onLoadError: function () {
             $.messager.alert(T('attenzione'), T('Si è verificvato un errore nel trasferimento'), 'error');
