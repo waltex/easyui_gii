@@ -58,22 +58,30 @@ function init_app() {
             $.messager.alert(T('Attenzione'), row.msg, 'warning');
         },
         onDestroy: function (index, row) {
-            $('#cc_code').layout('panel', 'center').panel({
-                content: '<div></div>',
-            })
+            $('#cc_code').layout('panel', 'center').panel({content: '<div></div>'})
+            $('#image_snippets').panel({content: '<div></div>'});
+        },
+        onEdit: function (index, row) {
+            console.log(index);
+            var ed = $('#dg_snippets').datagrid('getEditor', {index: index, field: 'name'});
+            //$(ed.target).textbox('setValue', row.file);
+            $(ed.target).textbox('setValue', row.file);
+
+
         },
         columns: [[
                 {field: 'ck', checkbox: true},
-                {field: 'name', title: T('digita qui per cercare'), width: '100%', editor: "textarea", formatter: function (value, row, index) {
+                {field: 'name', title: T('Nome file'), width: '100%', editor: "textbox", formatter: function (value, row, index) {
                         return T(value);//transalte
                     }},
             ]]
     });
+    $('#dg_snippets').datagrid('enableFilter');
+
+
     function click_row() {
         view_file();
     }
-    $('#dg_snippets').datagrid('enableFilter');
-
     $('#bt_add').tooltip({
         content: T('inserire anche estensione es .php .html')
     });
@@ -113,14 +121,15 @@ function init_app() {
         (g_edit_code) ? $('#div_upload').show() : $('#div_upload').hide();
         // check if exists imege
 
-            $.get(url)
-                    .done(function () {
-                        $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice con immagine, clicca qui per visualizzarla')}); //panel west
-                        var content = '<img id="image_code" style="max-width:100%;height:auto;max-height:95%;width:auto;margin:0px auto;display:block" align="middle" src="' + url + '"></img>';
-                        $('#image_snippets').panel({content: content});
-                    }).fail(function () {
-                $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice')}); //panel west
-            });
+        $.get(url)
+                .done(function () {
+                    $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice con immagine, clicca qui per visualizzarla')}); //panel west
+                    var content = '<img id="image_code" style="max-width:100%;height:auto;max-height:95%;width:auto;margin:0px auto;display:block" align="middle" src="' + url + '"></img>';
+                    $('#image_snippets').panel({content: content});
+                }).fail(function () {
+            $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice')}); //panel west
+            $('#image_snippets').panel({content: '<div></div>'});
+        });
 
 
 
