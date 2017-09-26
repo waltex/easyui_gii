@@ -1,0 +1,25 @@
+   
+   <script>
+    $('#cc_code').layout('panel', 'north').panel({
+        onCollapse: function () {
+            var opts = $(this).panel('options');
+            var layout = $(this).closest('.layout');
+            var region = opts.region;
+            var p = layout.layout('panel', 'expand' + region.substr(0, 1).toUpperCase() + region.substr(1));
+            var tools = p.panel('options').tools;
+            p.panel({
+                tools: [{
+                        iconCls: 'icon-add',
+                        handler: bt_add,
+                    }].concat(tools.pop())
+            })
+        },
+        tools: [{
+                iconCls: 'icon-add',
+                handler: bt_add,
+            }]});
+
+    function bt_add() {
+        alert('new2');
+    }
+    </script>
