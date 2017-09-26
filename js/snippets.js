@@ -67,7 +67,9 @@ function init_app() {
         toolbar: dg1_tb,
         fit: true,
         striped: true,
-        singleSelect: false,
+        singleSelect: true,
+        checkOnSelect: false,
+        selectOnCheck: false,
         nowrap: false,
         //fitColumns: true,
         onClickRow: function (index, row) {

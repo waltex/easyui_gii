@@ -106,7 +106,7 @@ class easyuigii {
         if (!file_exists($file)) {
             $path_info = pathinfo($file);
             $name = $path_info['filename'];
-            $ext = $path_info['extension'];
+            $ext = isset($path_info['extension']) ? $path_info['extension'] : "";
             $content = "";
 
 
@@ -199,7 +199,6 @@ class easyuigii {
                 $ar_db[$key_no_id] = $value;
             }
         }
-        $test = 1;
         if (array_key_exists("nome connessione database ORACLE (oci driver)", $ar_db)) {
             $this->oci_name = $ar_db["nome connessione database ORACLE (oci driver)"]; //user
             $this->oci_cn = $ar_db["tnsnames.ora"]; //
