@@ -28,7 +28,7 @@ function init_app() {
             handler: function () {
                 $('#dg_snippets').edatagrid('destroyRow');
             }}, '-', {
-            id: 'bt_edit',
+            id: 'bt_edit_old',
             text: T('Modifica'),
             toggle: true,
             iconCls: 'icon-edit',
@@ -85,9 +85,7 @@ function init_app() {
     $('#bt_add').tooltip({
         content: T('inserire anche estensione es .php .html')
     });
-    $('#bt_edit').tooltip({
-        content: T('Abilita la modifica della pagina del codice')
-    });
+
 
     function view_file() {
         var file = $('#dg_snippets').datagrid('getSelected').file;
@@ -123,7 +121,7 @@ function init_app() {
 
         $.get(url)
                 .done(function () {
-                    $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice con immagine, clicca qui per visualizzarla')}); //panel west
+                    $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice con immagine ')}); //panel west
                     var content = '<img id="image_code" style="max-width:100%;height:auto;max-height:95%;width:auto;margin:0px auto;display:block" align="middle" src="' + url + '"></img>';
                     $('#image_snippets').panel({content: content});
                 }).fail(function () {
@@ -164,6 +162,7 @@ function init_app() {
         },
         success: function (data) {
             $.messager.progress('close');
+            $('#fb_upload').filebox('clear');
             viw_image_code();
         },
         onLoadError: function () {

@@ -65,10 +65,19 @@ class easyuigii {
         $dir = $this->script_path . "/snippets";
         $filename_to = $dir . '/' . $file_to;
         $filename_from = $dir . '/' . $file_from;
+        $filename_img_to = $dir . '/image/' . $file_to . ".jpg";
+        $filename_img_from = $dir . '/image/' . $file_from . ".jpg";
+
 
         if ((file_exists($filename_from)) && (!file_exists($filename_to))) {
             copy($filename_from, $filename_to);
             unlink($filename_from);
+            //rename image
+            if ((file_exists($filename_img_from)) && (!file_exists($filename_img_to))) {
+                copy($filename_img_from, $filename_img_to);
+                unlink($filename_img_from);
+            }
+
             $path_info = pathinfo($filename_to);
             $name = $path_info['filename'];
             return $name;
