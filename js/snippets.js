@@ -56,6 +56,7 @@ function init_app() {
             iconCls: 'icon-edit',
             handler: function () {
                 g_edit_code = !g_edit_code;
+                view_file();
             }}];
     $('#dg_snippets').edatagrid({
         url: 'api/dg/snippets/read',
@@ -73,15 +74,8 @@ function init_app() {
         selectOnCheck: false,
         nowrap: false,
         //fitColumns: true,
-        onClickRow: function (index, row) {
-            var file = row.file;
-            var edit = (g_edit_code) ? 'edit' : 'view'
-            view_file(file, edit);
-        },
-        onSuccess: function (index, row) {
-            var file = row.file;
-            view_file(file, 'edit');
-        },
+        onClickRow: click_row,
+        onSuccess: view_file,
         onError: function (index, row) {
             $.messager.alert(T('Attenzione'), row.msg, 'warning');
         },
@@ -97,6 +91,9 @@ function init_app() {
                     }},
             ]]
     });
+    function click_row() {
+        view_file();
+    }
     $('#dg_snippets').datagrid('enableFilter');
 
     $('#bt_add').tooltip({
@@ -106,8 +103,8 @@ function init_app() {
         content: T('Abilita la modifica della pagina del codice')
     });
 
-    function view_file(file, edit) {
-        //var file = row.file;
+    function view_file() {
+        var file = $('#dg_snippets').datagrid('getSelected').file;
         var param = $.param({protocol: 'FTP',
             ftpserver: 'localhost',
             ftpserverport: 21,
@@ -121,33 +118,35 @@ function init_app() {
             viewmode: 'list',
             sort: '',
             sortorder: '',
-            state: edit,
+            state: (g_edit_code) ? 'edit' : 'view',
             directory: '/easyui_gii/snippets',
             entry: file});
         var url = 'http://localhost/easyui_gii/lib/net2ftp/index.php?' + param;
         var content = '<iframe id="iframe_snippets" scrolling="yes" frameborder="0"  src="' + url + '" style="width:99%;height:97.3%;padding:0.5%"></iframe>';
         $('#cc_code').layout('panel', 'center').panel({
             content: content,
-        })
+        });
+        viw_image_code();
+    }
+    function viw_image_code() {
+        var file = $('#dg_snippets').datagrid('getSelected').file
+        var url = "snippets/image/" + file + '.jpg';
+        var content = '<img id="image_code" style="max-width:100%;height:auto;max-height:95%;width:auto;margin:0px auto;display:block" align="middle" src="' + url + '"></img>';
+        $('#image_snippets').panel({content: content});
+        (g_edit_code) ? $('#div_upload').show() : $('#div_upload').hide();
     }
 
-
+    $('#label_fb_upload').html(T('File immagine:'));
     $('#fb_upload').filebox({
-        label: T('immagine codice:'),
-        labelPosition: 'top',
         buttonText: T('scegli'),
         accept: 'image/*',
         required: true
     });
 
     $('#bt_upload').on('click', function () {
-        var file = $('#dg_snippets').datagrid('getSelected').file
         $('#ff_upload').form('options').queryParams = {name_file: file}
         $('#ff_upload').form('submit');
-        var url = "snippets/image/" + file + '.jpg';
-        var content = '<iframe id="iframe_image" frameborder="0" scrolling="no"  src="' + url + '" style="width:200px;height:200px;padding:0.5%"></iframe>';
-        $('#image_snippets').panel({content: content})
-
+        viw_image_code()
     });
     $('#bt_upload').linkbutton({text: T('Salva')})
     $('#ff_upload').form({

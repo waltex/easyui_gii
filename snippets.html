@@ -17,13 +17,17 @@
                 <div id="cc_code" class="easyui-layout" data-options="fit:true">
                     <!-- panel image -->
                     <div data-options="region:'north',title:'image',hideCollapsedContent:false,split:true" style="height:40%;">
-                        <div style="padding:1%">
+                        <div id="div_upload" style="padding:1%;display:none">
                             <form id="ff_upload" method="post" enctype="multipart/form-data">
-                                <input id='fb_upload' name="file" class="easyui-filebox" style="width:350px">
-                                <a id="bt_upload" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">upload</a>
+                                <div style="display:inline-block">
+                                    <label id="label_fb_upload" for="fb_upload">File immagine</label><!-- File image -->
+                                    <input id='fb_upload' name="file" class="easyui-filebox" style="width:250px">
+                                    <a id="bt_upload" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="margin-left: 10px;">upload</a>
+                                </div>
+
                             </form>
                         </div>
-                        <div id="image_snippets" class="easyui-panel">
+                        <div id="image_snippets" class="easyui-panel" data-options="fit:true">
 
                         </div>
                     </div>
