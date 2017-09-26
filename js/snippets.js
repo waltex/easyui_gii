@@ -67,6 +67,7 @@ function init_app() {
         toolbar: dg1_tb,
         fit: true,
         striped: true,
+        editorHeight: 45,
         singleSelect: true,
         checkOnSelect: false,
         selectOnCheck: false,
@@ -91,7 +92,7 @@ function init_app() {
         },
         columns: [[
                 {field: 'ck', checkbox: true},
-                {field: 'name', title: T('digita qui per cercare'), width: '100%', editor: "text", formatter: function (value, row, index) {
+                {field: 'name', title: T('digita qui per cercare'), width: '100%', editor: "textarea", formatter: function (value, row, index) {
                         return T(value);//transalte
                     }},
             ]]
