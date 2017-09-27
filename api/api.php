@@ -220,7 +220,7 @@ function snippets_add() {
         $gii = new easyuigii();
         $return = $gii->add_snippets($name); // return name without extension
         if ($return !== false) {
-            $data = ["file" => $name, "name" => $return];
+            $data = ["file" => $name, "name" => $return, "star" => 0];
             $app->response()->body(json_encode($data));
         } else {
             $app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);

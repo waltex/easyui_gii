@@ -53,10 +53,32 @@ function init_app() {
         selectOnCheck: false,
         nowrap: false,
         //fitColumns: true,
+        onBeforeEdit: function (index, row) {
+            var tot = $('#dg_snippets').datagrid('getRows').length - 1;
+            if (index < tot) {
+                set_star_on_edit(index);
+            } else {
+                $('#dg_snippets').datagrid('updateRow', {
+                    index: index,
+                    row: {
+                        star: '<span id="rateYo_' + index + '"></span>'
+                    }
+                });
+                $('#rateYo_' + index).rateYo({
+                    numStars: 3,
+                    maxValue: 3,
+                    starWidth: '15px',
+                    readOnly: false,
+                    rating: 1,
+                });
+
+            }
+        },
         onClickRow: click_row,
-        onLoadSuccess: set_star,
+        onLoadSuccess: set_star_readonly,
         onSuccess: function (index, row) {
             view_file();
+            set_star_readonly();
         },
         onError: function (index, row) {
             $.messager.alert(T('Attenzione'), row.msg, 'warning');
@@ -73,17 +95,6 @@ function init_app() {
                     $('#dg_snippets').edatagrid('saveRow');
                 }
             });
-
-            var ed = $('#dg_snippets').datagrid('getEditor', {index: index, field: 'star'});
-            /*
-             $(ed.target).textbox('textbox').bind('keydown', function (e) {
-                if (e.keyCode == 13) {	// when press ENTER key, accept the inputed value.
-                    $('#dg_snippets').edatagrid('saveRow');
-                }
-            });
-            var rateYo = '<span id="#rateYo_edit" style="float:center">3</span>';
-            $(ed.target).textbox('setValue', rateYo);
-            */
         },
         columns: [[
                 {field: 'ck', checkbox: true},
@@ -91,8 +102,8 @@ function init_app() {
 
                         return T(value);//transalte
                     }},
-                {field: 'star', title: T('Importanza'), width: '15%', editor: "textbox", formatter: function (value, row, index) {
-                        return '<span id="#rateYo_' + index + '" style="float:center">' + value + '</span>';
+                {field: 'star', title: T('Importanza'), width: '15%', formatter: function (value, row, index) {
+                        return '<span id="rateYo_' + index + '" style="float:center">' + value + '</span>';
                     }},
             ]]
     });
@@ -105,21 +116,23 @@ function init_app() {
         content: T('Abilita la modifica del codice nella pagina a fianco')
     });
 
-    function set_star() {
-        var tot = $('span').length
-        for (var i = 0; i < tot; i++) {
-            var id = $('span')[i].id;
-            var n = id.indexOf('#rateYo_');
-            console.log(id)
-            if (n > -1) {
-                var star = $($('span')[i]).html();
-                $($('span')[i]).rateYo({
-                    numStars: 3,
-                    starWidth: '15px',
-                    readOnly: true,
-                    rating: star,
-                })
-            }
+
+    function set_star_on_edit(index) {
+        $('#rateYo_' + index).rateYo("option", "readOnly", false);
+    }
+    function set_star_readonly() {
+        //console.log('set star');
+        var rows = $('#dg_snippets').datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            var star = rows[i].star;
+            $('#rateYo_' + i).rateYo({
+                numStars: 3,
+                maxValue: 3,
+                starWidth: '15px',
+                readOnly: true,
+                rating: star,
+            });
+
         }
     }
     function click_row() {
