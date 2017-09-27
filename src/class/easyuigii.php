@@ -160,7 +160,7 @@ class easyuigii {
             if (!in_array($file, ["..", ".", "image", ".DS_Store"])) {
                 $path_info = pathinfo($file);
                 $name = $path_info['filename'];
-                $data[] = ["file" => $file, "name" => $name];
+                $data[] = ["file" => $file, "name" => $name, "star" => 5];
             }
         }
 

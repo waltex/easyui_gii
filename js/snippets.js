@@ -74,7 +74,16 @@ function init_app() {
                 }
             });
 
-
+            var ed = $('#dg_snippets').datagrid('getEditor', {index: index, field: 'star'});
+            /*
+             $(ed.target).textbox('textbox').bind('keydown', function (e) {
+                if (e.keyCode == 13) {	// when press ENTER key, accept the inputed value.
+                    $('#dg_snippets').edatagrid('saveRow');
+                }
+            });
+            var rateYo = '<span id="#rateYo_edit" style="float:center">3</span>';
+            $(ed.target).textbox('setValue', rateYo);
+            */
         },
         columns: [[
                 {field: 'ck', checkbox: true},
@@ -82,8 +91,8 @@ function init_app() {
 
                         return T(value);//transalte
                     }},
-                {field: 'start', title: T('Importante'), width: '15%', formatter: function (value, row, index) {
-                        return '<span id="#rateYo_' + index + '" style="float:center"></span>';
+                {field: 'star', title: T('Importanza'), width: '15%', editor: "textbox", formatter: function (value, row, index) {
+                        return '<span id="#rateYo_' + index + '" style="float:center">' + value + '</span>';
                     }},
             ]]
     });
@@ -103,11 +112,12 @@ function init_app() {
             var n = id.indexOf('#rateYo_');
             console.log(id)
             if (n > -1) {
+                var star = $($('span')[i]).html();
                 $($('span')[i]).rateYo({
                     numStars: 3,
                     starWidth: '15px',
                     readOnly: true,
-                    rating: 2,
+                    rating: star,
                 })
             }
         }
