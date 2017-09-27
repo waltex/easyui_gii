@@ -46,6 +46,7 @@ function init_app() {
         border: false,
         toolbar: dg1_tb,
         fit: true,
+        fitColumns: true,
         striped: true,
         editorHeight: 45,
         singleSelect: true,
@@ -87,6 +88,7 @@ function init_app() {
             $('#cc_code').layout('panel', 'center').panel({content: '<div></div>'})
             $('#image_snippets').panel({content: '<div></div>'});
         },
+        onCancelEdit: set_star_readonly,
         onEdit: function (index, row) {
             var ed = $('#dg_snippets').datagrid('getEditor', {index: index, field: 'name'});
             $(ed.target).textbox('setValue', row.file);
@@ -98,11 +100,11 @@ function init_app() {
         },
         columns: [[
                 {field: 'ck', checkbox: true},
-                {field: 'name', title: T('Nome file'), width: '82%', editor: "textbox", formatter: function (value, row, index) {
+                {field: 'name', title: T('Nome file'), width: 250, editor: "textbox", formatter: function (value, row, index) {
 
                         return T(value);//transalte
                     }},
-                {field: 'star', title: T('Importanza'), width: '15%', formatter: function (value, row, index) {
+                {field: 'star', title: T('Importanza'), width: 45, formatter: function (value, row, index) {
                         return '<span id="rateYo_' + index + '" style="float:center">' + value + '</span>';
                     }},
             ]]
