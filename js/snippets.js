@@ -28,7 +28,7 @@ function init_app() {
             handler: function () {
                 $('#dg_snippets').edatagrid('destroyRow');
             }}, '-', {
-            id: 'bt_edit_old',
+            id: 'bt_edit',
             text: T('Modifica'),
             toggle: true,
             iconCls: 'icon-edit',
@@ -36,6 +36,7 @@ function init_app() {
                 g_edit_code = !g_edit_code;
                 view_file();
             }}];
+
     $('#dg_snippets').edatagrid({
         url: 'api/dg/snippets/read',
         updateUrl: 'api/dg/snippets/rename',
@@ -88,6 +89,12 @@ function init_app() {
     });
     $('#dg_snippets').datagrid('enableFilter');
 
+    $('#bt_add').tooltip({
+        content: T('Aggiunge una riga (inserire anche estensione es .php .html)')
+    });
+    $('#bt_edit').tooltip({
+        content: T('Abilita la modifica del codice nella pagina a fianco')
+    });
 
     function set_star() {
         var tot = $('span').length
@@ -108,9 +115,7 @@ function init_app() {
     function click_row() {
         view_file();
     }
-    $('#bt_add').tooltip({
-        content: T('inserire anche estensione es .php .html')
-    });
+
 
 
     function view_file() {
