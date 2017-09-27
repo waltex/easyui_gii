@@ -216,12 +216,13 @@ function snippets_add() {
         $app = Slim\Slim::getInstance();
 
         $name = $app->request->params('name'); // name snippets
+        $star = $app->request->params('star'); // name snippets
 
         $gii = new easyuigii();
         $return = $gii->add_snippets($name); // return name without extension
         if ($return !== false) {
-            $data = ["file" => $name, "name" => $return, "star" => 0];
-            $app->response()->body(json_encode($data));
+            $gii->save_star($name, $star); //save star to file json
+            $app->response()->body(json_encode($return));
         } else {
             $app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);
         }
@@ -244,6 +245,7 @@ function snippets_delete() {
         $gii = new easyuigii();
         $return = $gii->delete_snippets($name); // return name without extension
         if ($return !== false) {
+            $gii->save_star($name, null); //delete star
             $app->render(200, ['success' => true]);
         } else {
             $app->render(200, ['isError' => true, 'msg' => $gii->T('File non presente')]);
@@ -265,11 +267,14 @@ function snippets_rename() {
 
         $file_to = $app->request->params('name'); // file to rename
         $file_from = $app->request->params('file'); // file name start
+        $star = $app->request->params('star'); // file name start
 
         $gii = new easyuigii();
         $return = $gii->rename_snippets($file_from, $file_to); // return name without extension
         if ($return !== false) {
-           $data = ["file" => $file_to, "name" => $return];
+            $gii->save_star($file_to, $star); //save star to file json
+            $gii->save_star($file_from, null); //delete
+            $data = ["file" => $file_to, "name" => $return];
             $app->response()->body(json_encode($data));
         } else {
             $app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);

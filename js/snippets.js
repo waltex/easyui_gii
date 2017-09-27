@@ -1,5 +1,6 @@
 var g_debug
 var g_edit_code = false;
+var g_dg_edit = false;
 function init_app() {
     //translate
     $('#cc_layout').layout('panel', 'west').panel({title: T('elenco esempi di codice')}); //panel west
@@ -53,8 +54,26 @@ function init_app() {
         checkOnSelect: false,
         selectOnCheck: false,
         nowrap: false,
-        //fitColumns: true,
+        queryParams: {
+            star: null,
+        },
+
+        onClickRow: click_row,
+        onLoadSuccess: set_star_readonly,
+        onSuccess: function (index, row) {
+            view_file();
+            set_star_readonly();
+        },
+        onError: function (index, row) {
+            $.messager.alert(T('Attenzione'), row.msg, 'warning');
+        },
+        onDestroy: function (index, row) {
+            $('#cc_code').layout('panel', 'center').panel({content: '<div></div>'})
+            $('#image_snippets').panel({content: '<div></div>'});
+        },
+        onCancelEdit: set_star_readonly,
         onBeforeEdit: function (index, row) {
+            g_dg_edit = true;
             var tot = $('#dg_snippets').datagrid('getRows').length - 1;
             if (index < tot) {
                 set_star_on_edit(index);
@@ -75,20 +94,6 @@ function init_app() {
 
             }
         },
-        onClickRow: click_row,
-        onLoadSuccess: set_star_readonly,
-        onSuccess: function (index, row) {
-            view_file();
-            set_star_readonly();
-        },
-        onError: function (index, row) {
-            $.messager.alert(T('Attenzione'), row.msg, 'warning');
-        },
-        onDestroy: function (index, row) {
-            $('#cc_code').layout('panel', 'center').panel({content: '<div></div>'})
-            $('#image_snippets').panel({content: '<div></div>'});
-        },
-        onCancelEdit: set_star_readonly,
         onEdit: function (index, row) {
             var ed = $('#dg_snippets').datagrid('getEditor', {index: index, field: 'name'});
             $(ed.target).textbox('setValue', row.file);
@@ -97,6 +102,14 @@ function init_app() {
                     $('#dg_snippets').edatagrid('saveRow');
                 }
             });
+        },
+        onEndEdit: function (index, row, changes) {
+            var star = $('#rateYo_' + index).rateYo("rating");
+            $('#dg_snippets').datagrid('updateRow', {
+                index: index,
+                row: {star: star}
+            });
+            g_dg_edit = false;
         },
         columns: [[
                 {field: 'ck', checkbox: true},
@@ -138,7 +151,7 @@ function init_app() {
         }
     }
     function click_row() {
-        view_file();
+        (!g_dg_edit) ? view_file() : false;
     }
 
 

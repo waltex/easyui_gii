@@ -56,6 +56,34 @@ class easyuigii {
         move_uploaded_file($filetmp, $uploadfile);
     }
 
+
+    
+
+    /** save star of the snippets
+     *
+     * @param type $file filename
+     * @param type $star
+     */
+    public function save_star($file, $star) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $file_star = $this->script_path . "/snippets/star.json";
+
+        if (file_exists($file_star)) {
+            $ar_star = file_get_contents($file_star);
+            $ar_file_star = json_decode($ar_star, true);
+        } else {
+            $ar_file_star = [];
+        }
+        if ($star == null) {
+            unset($ar_file_star[$file]); //delete
+        } else {
+            $ar_file_star[$file] = $star;
+        }
+        $json = json_encode($ar_file_star);
+        file_put_contents($file_star, $json);
+    }
+
     /** rename  file snippets
      * @param type $name
      */
@@ -109,6 +137,8 @@ class easyuigii {
     public function add_snippets($name) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
+        $filename = $name;
+
         $dir = $this->script_path . "/snippets";
         $file = $dir . '/' . $name;
 
@@ -138,7 +168,7 @@ class easyuigii {
             file_put_contents($file, $content);
 
 
-            return $name;
+            return ["file" => $filename, "name" => $name]; //su add not return the star
         } else {
             return false;
         }
@@ -157,14 +187,27 @@ class easyuigii {
         $list = scandir($dir);
         $data = [];
         foreach ($list as $file) {
-            if (!in_array($file, ["..", ".", "image", ".DS_Store"])) {
+            if (!in_array($file, ["..", ".", "image", ".DS_Store", "star.json"])) {
                 $path_info = pathinfo($file);
                 $name = $path_info['filename'];
-                $data[] = ["file" => $file, "name" => $name, "star" => 2];
+                $data[] = ["file" => $file, "name" => $name];
             }
         }
 
-        return $data;
+        $file_star = $this->script_path . "/snippets/star.json";
+        if (file_exists($file_star)) {
+            $ar_star = file_get_contents($file_star);
+            $ar_file_star = json_decode($ar_star, true);
+            $ar_file_star2 = [];
+            foreach ($ar_file_star as $key => $value) {
+                $ar_file_star2[] = ["file" => $key, "star" => $value, "name" => $key];
+            }
+            $data2 = array_merge_recursive($data, $ar_file_star2); //add star
+            return $data2;
+        } else {
+            return $data;
+        }
+        
     }
 
     /** get key  parameter of setting unless #1
