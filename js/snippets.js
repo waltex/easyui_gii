@@ -59,7 +59,11 @@ function init_app() {
         },
 
         onClickRow: click_row,
-        onLoadSuccess: set_star_readonly,
+        onLoadSuccess: function (data) {
+            //if (!data.isError) {
+                set_star_readonly();
+            //}
+        },
         onSuccess: function (index, row) {
             view_file();
             set_star_readonly();

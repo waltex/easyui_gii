@@ -198,11 +198,16 @@ class easyuigii {
         if (file_exists($file_star)) {
             $ar_star = file_get_contents($file_star);
             $ar_file_star = json_decode($ar_star, true);
-            $ar_file_star2 = [];
-            foreach ($ar_file_star as $key => $value) {
-                $ar_file_star2[] = ["file" => $key, "star" => $value, "name" => $key];
+            $data2 = [];
+            foreach ($data as $value) {
+                $file = $value["file"];
+                $name = $value["name"];
+                $star = 0;
+                if (array_key_exists($file, $ar_file_star)) {
+                    $star = $ar_file_star[$file];
+                }
+                $data2[] = ["file" => $file, "name" => $name, "star" => $star];
             }
-            $data2 = array_merge_recursive($data, $ar_file_star2); //add star
             return $data2;
         } else {
             return $data;
