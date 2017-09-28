@@ -66,6 +66,7 @@ class easyuigii {
      */
     public function save_star($file, $star) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        $star = round($star);
 
         $file_star = $this->script_path . "/snippets/star.json";
 
@@ -205,6 +206,7 @@ class easyuigii {
                 $star = 0;
                 if (array_key_exists($file, $ar_file_star)) {
                     $star = $ar_file_star[$file];
+                    $star = round($star);
                 }
                 $data2[] = ["file" => $file, "name" => $name, "star" => $star];
             }
