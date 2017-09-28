@@ -200,9 +200,10 @@ function snippets_read() {
 
         $filter = $app->request->params('filter'); // name snippets
         $ext = $app->request->params('name'); // name snippets
+        $filter_content = $app->request->params('filter_content');
 
         $gii = new easyuigii();
-        $data = $gii->list_file_for_snippets($filter, $ext);
+        $data = $gii->list_file_for_snippets($filter, $ext, $filter_content);
 
         $app->response()->body(json_encode($data));
 

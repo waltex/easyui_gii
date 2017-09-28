@@ -177,7 +177,7 @@ class easyuigii {
      * @param type $filter
      * @return type
      */
-    public function list_file_for_snippets($filter, $ext) {
+    public function list_file_for_snippets($filter, $ext, $filter_content) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
@@ -196,8 +196,8 @@ class easyuigii {
         }
         //$data = array_filter($data, 'self::filter_file');
 
-        $data = array_filter($data, function($value) use ($filter, $ext) {
-            return self::filter_file($value, $filter, $ext);
+        $data = array_filter($data, function($value) use ($filter, $ext, $filter_content) {
+            return self::filter_file($value, $filter, $ext, $filter_content);
         });
 
         $file_star = $this->script_path . "/snippets/star.json";
@@ -226,10 +226,19 @@ class easyuigii {
      * @param type $ext_find estensiond to filter
      * @return type value find
      */
-    private function filter_file($value, $filter, $ext_find) {
-        $name = $value["name"];
+    private function filter_file($value, $filter, $ext_find, $filter_content) {
+        $name = $value["name"]; //file without extenstion
         $file = $value["file"];
         $path_info = pathinfo($file);
+
+        if ($filter_content === "true") {
+            $file_content = $this->script_path . '/snippets/' . $file;
+            $text = file_get_contents($file_content); //filter the content file and not the name file
+        } else {
+            $text = $name; //filter the name file
+        }
+
+
         $ext_file = $path_info['extension'];
         ($ext_find == "???") ? $ext_find = null : false;
 
@@ -237,7 +246,7 @@ class easyuigii {
             $ar_filter = explode(" ", $filter);
             $is_find = false;
             foreach ($ar_filter as $find) {
-                if (strpos($name, $find) !== false) {
+                if (strpos($text, $find) !== false) {
                     $is_find = true;
                 }
             }

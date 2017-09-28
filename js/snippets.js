@@ -284,12 +284,13 @@ function init_app() {
     */
     $('#ss_search').searchbox({
         searcher: function (value, name) {
-            console.log(name);
-            $('#dg_snippets').datagrid('options').queryParams = {filter: value, name: name};
+            var filter_content = $('#bt_filter_content').linkbutton('options').selected;
+            $('#dg_snippets').datagrid('options').queryParams = {filter: value, name: name, filter_content: filter_content};
             $('#dg_snippets').datagrid('reload');
         },
         menu: '#mm',
         prompt: T('cerca...')
     });
+    $('#bt_filter_content').linkbutton({text: T('Contenuto'), toggle: true});
 }
 
