@@ -30,6 +30,7 @@ $app->post('/dg/snippets/add', 'snippets_add'); //add file for snippets
 $app->post('/dg/snippets/delete', 'snippets_delete'); //deleet snippets
 $app->post('/dg/snippets/rename', 'snippets_rename'); //rename snippets
 $app->post('/uoload/image', 'upload_image'); //upload image snippets
+$app->post('/delete/uoload/image', 'del_upload_image'); //delete uploadet image snippets
 
 include 'fn_api.php';
 $start = new easyuigii();
@@ -258,7 +259,6 @@ function snippets_delete() {
     }
 }
 
-
 /** rename file snippets
  */
 function snippets_rename() {
@@ -302,4 +302,27 @@ function upload_image() {
 
 
     ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+}
+
+/** delete upload image
+ */
+function del_upload_image() {
+    try {
+        $app = Slim\Slim::getInstance();
+        $file = $app->request->params('file'); // file name start
+
+        $gii = new easyuigii();
+        $filename = $gii->script_path . "/snippets/image/" . $file . ".jpg";
+        if (file_exists($filename)) {
+            unlink($filename);
+            $app->render(200, ['success' => true, 'msg' => $gii->T("E' stato cancellato il file"), 'title' => 'info']);
+        } else {
+            $app->render(200, ['success' => true, 'msg' => $gii->T("File non presente"), 'title' => 'warning']);
+        }
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage(), 'title' => 'error']);
+        error_log(LogTime() . 'error - delete uploadet image ' . PHP_EOL, 3, 'logs/error.log');
+    }
 }

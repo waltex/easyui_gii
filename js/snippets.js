@@ -242,9 +242,9 @@ function init_app() {
                     .done(function (data) {
                         $.messager.progress('close');
                         if (data.success) {
-                            $.messager.alert(T('cancellazione'), data.msg, 'info');
+                            $.messager.alert(T('cancellazione'), data.msg, data.title);
                         } else {
-                            $.messager.alert('** errore **', data.msg, 'error');
+                            $.messager.alert('** errore **', data.msg, data.title);
                         }
                     })
                     .fail(function () {
