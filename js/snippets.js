@@ -232,7 +232,27 @@ function init_app() {
         $('#ff_upload').form('options').queryParams = {name_file: file}
         $('#ff_upload').form('submit');
     });
-    $('#bt_upload').linkbutton({text: T('Salva')})
+    $('#bt_upload').linkbutton({text: T('Salva')});
+    $('#bt_upload_del').linkbutton({
+        text: T('Elimina'),
+        onClick: function () {
+            var file = $('#dg_snippets').datagrid('getSelected').file;
+            $.messager.progress({title: T('cancellazione'), msg: 'Attendere, cancellazione in corso...'});
+            $.post('api/delete/uoload/image', {file: file})
+                    .done(function (data) {
+                        $.messager.progress('close');
+                        if (data.success) {
+                            $.messager.alert(T('cancellazione'), data.msg, 'info');
+                        } else {
+                            $.messager.alert('** errore **', data.msg, 'error');
+                        }
+                    })
+                    .fail(function () {
+                        $.messager.progress('close');
+                        $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                    });
+        }
+    });
     $('#ff_upload').form({
         url: 'api/uoload/image',
         onSubmit: function (param) {
