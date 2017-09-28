@@ -121,7 +121,7 @@ body {
 
 #page-title{
 	overflow: hidden;
-	height: 60px;
+	height: 10px;
 	margin-bottom: 20px;
 	background: #f2f1f1 url(../img/twitter-border.png) repeat-x bottom left;
 }
@@ -178,10 +178,10 @@ h1,h2,h3,h4,h5,h6{
 	line-height: 1.4em;
 	font-family: 'Ubuntu', arial, serif; 
 	font-weight: lighter;
-	margin-bottom: 10px;
+	margin-bottom: 0px;
 }
 
-h1{ font-size: 30px; }
+h1{ font-size: 0px; }
 
 h2{ font-size: 28px; }
 
