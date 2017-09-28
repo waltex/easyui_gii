@@ -55,13 +55,12 @@ function init_app() {
         selectOnCheck: false,
         nowrap: false,
         queryParams: {
-            star: null,
+            filter: 'a',
         },
-
         onClickRow: click_row,
         onLoadSuccess: function (data) {
             //if (!data.isError) {
-                set_star_readonly();
+            set_star_readonly();
             //}
         },
         onSuccess: function (index, row) {
@@ -75,7 +74,21 @@ function init_app() {
             $('#cc_code').layout('panel', 'center').panel({content: '<div></div>'})
             $('#image_snippets').panel({content: '<div></div>'});
         },
-        onCancelEdit: set_star_readonly,
+        onCancelEdit: function (index) {
+            var tot = $('#dg_snippets').datagrid('getRows').length;
+            //esclude new row
+            if (index < tot) {
+                var star = $('#dg_snippets').datagrid('getRows')[index].star;
+                //$("#rateYo_" + index).rateYo("option", "rating", star);
+                $('#rateYo_' + index).rateYo({
+                    numStars: 3,
+                    maxValue: 3,
+                    starWidth: '15px',
+                    readOnly: false,
+                    rating: star,
+                });
+            }
+        },
         onBeforeEdit: function (index, row) {
             g_dg_edit = true;
             var tot = $('#dg_snippets').datagrid('getRows').length - 1;
@@ -218,7 +231,27 @@ function init_app() {
         $('#ff_upload').form('options').queryParams = {name_file: file}
         $('#ff_upload').form('submit');
     });
-    $('#bt_upload').linkbutton({text: T('Salva')})
+    $('#bt_upload').linkbutton({text: T('Salva')});
+    $('#bt_upload_del').linkbutton({
+        text: T('Elimina'),
+        onClick: function () {
+            var file = $('#dg_snippets').datagrid('getSelected').file;
+            $.messager.progress({title: T('cancellazione'), msg: 'Attendere, cancellazione in corso...'});
+            $.post('api/delete/uoload/image', {file: file})
+                    .done(function (data) {
+                        $.messager.progress('close');
+                        if (data.success) {
+                            $.messager.alert(T('cancellazione'), data.msg, data.title);
+                        } else {
+                            $.messager.alert('** errore **', data.msg, data.title);
+                        }
+                    })
+                    .fail(function () {
+                        $.messager.progress('close');
+                        $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                    });
+        }
+    });
     $('#ff_upload').form({
         url: 'api/uoload/image',
         onSubmit: function (param) {
@@ -241,6 +274,22 @@ function init_app() {
         onLoadError: function () {
             $.messager.alert(T('attenzione'), T('Si è verificvato un errore nel trasferimento'), 'error');
         }
+    });
+    /*
+    $('#mm').menu('appendItem', {
+        text: 'php',
+        iconCls: 'icon-ok',
+        onclick: function () {
+            alert('New Item')
+        }
+    });
+    */
+    $('#ss_search').searchbox({
+        searcher: function (value, name) {
+            $('#dg_snippets').datagrid('reload');
+        },
+        //menu: '#mm',
+        prompt: T('inserire un valore')
     });
 }
 

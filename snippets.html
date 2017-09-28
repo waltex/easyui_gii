@@ -13,23 +13,26 @@
 
         <div id="cc_layout" class="easyui-layout" data-options="fit:true">
             <div id="l_west" data-options="region:'west',title:'list code',hideCollapsedContent:false,split:true, iconCls:'icon-c'" style="width:400px;">
+                <input id="ss_search" class="easyui-searchbox"  style="width:100%">
+                <div id="mm">
+                    <!--div data-options="name:'all',iconCls:'icon-ok'">All News</div>
+                    <div data-options="name:'sports'">Sports News</div-->
+                </div>
                 <table id="dg_snippets" class="easyui-datagrid"></table>
             </div>
             <div data-options="region:'center',border:false">
                 <div id="cc_code" class="easyui-layout" data-options="fit:true">
                     <!-- panel image -->
-                    <div data-options="region:'north',title:'image',hideCollapsedContent:false,split:true" style="height:40%;">
+                    <div data-options="region:'north',title:'image',hideCollapsedContent:false,split:true" style="height:35%;">
                         <span id="rateYo"></span>
                         <div id="div_upload" style="padding:1%;display:none">
                             <form id="ff_upload" method="post" enctype="multipart/form-data">
                                 <div style="display:inline-block">
                                     <label id="label_fb_upload" for="fb_upload">File immagine</label><!-- File image -->
                                     <input id='fb_upload' name="file" class="easyui-filebox" style="width:250px">
-                                    <a id="bt_upload" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="margin-left: 10px;">upload</a>
-
-
+                                    <a id="bt_upload" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="margin-left: 10px;">Salva</a>
+                                    <a id="bt_upload_del" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" style="margin-left: 10px;">Elimina</a>
                                 </div>
-
                             </form>
                         </div>
                         <div id="image_snippets" class="easyui-panel" data-options="fit:true">
@@ -37,7 +40,7 @@
                         </div>
                     </div>
                     <!-- panel code -->
-                    <div data-options="region:'center'" style="height:60%;padding:5px;background:#eee;">
+                    <div data-options="region:'center'" style="height:65%;padding:5px;background:#eee;">
 
 
                     </div>

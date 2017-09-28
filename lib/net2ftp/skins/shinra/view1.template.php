@@ -5,7 +5,7 @@
 <?php if ($filetype == "text") { ?>
 		<?php echo $luminous_text; ?>
 
-		<div style="margin-top: 10px; text-align: center; font-size: 90%;">
+		<div style="margin-top: 0px; text-align: center; font-size: 90%;">
 			<?php echo __("Syntax highlighting powered by <a href=\"http://luminous.asgaard.co.uk\">Luminous</a>"); ?>
 		</div>
 <?php } // end if
@@ -19,7 +19,7 @@
 <?php } // end elseif
 
 	/* ----- Flash ----- */
-	elseif ($filetype == "flash") { ?>
+	elseif ($filetype == "flash_no") { ?>
 		<div style="font-size: 90%; text-align: center;">
 		<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" id="flashfile">
 		<param name="movie" value="">
