@@ -55,7 +55,7 @@ function init_app() {
         selectOnCheck: false,
         nowrap: false,
         queryParams: {
-            star: null,
+            filter: 'a',
         },
         onClickRow: click_row,
         onLoadSuccess: function (data) {
@@ -275,7 +275,7 @@ function init_app() {
             $.messager.alert(T('attenzione'), T('Si è verificvato un errore nel trasferimento'), 'error');
         }
     });
-
+    /*
     $('#mm').menu('appendItem', {
         text: 'php',
         iconCls: 'icon-ok',
@@ -283,11 +283,12 @@ function init_app() {
             alert('New Item')
         }
     });
+    */
     $('#ss_search').searchbox({
         searcher: function (value, name) {
-            alert(value + "," + name)
+            $('#dg_snippets').datagrid('reload');
         },
-        menu: '#mm',
+        //menu: '#mm',
         prompt: T('inserire un valore')
     });
 }
