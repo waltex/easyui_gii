@@ -57,11 +57,10 @@ function init_app() {
         queryParams: {
             star: null,
         },
-
         onClickRow: click_row,
         onLoadSuccess: function (data) {
             //if (!data.isError) {
-                set_star_readonly();
+            set_star_readonly();
             //}
         },
         onSuccess: function (index, row) {
@@ -79,14 +78,14 @@ function init_app() {
             var tot = $('#dg_snippets').datagrid('getRows').length;
             //esclude new row
             if (index < tot) {
-            var star = $('#dg_snippets').datagrid('getRows')[index].star;
-            //$("#rateYo_" + index).rateYo("option", "rating", star);
-            $('#rateYo_' + index).rateYo({
-                numStars: 3,
-                maxValue: 3,
-                starWidth: '15px',
-                readOnly: false,
-                rating: star,
+                var star = $('#dg_snippets').datagrid('getRows')[index].star;
+                //$("#rateYo_" + index).rateYo("option", "rating", star);
+                $('#rateYo_' + index).rateYo({
+                    numStars: 3,
+                    maxValue: 3,
+                    starWidth: '15px',
+                    readOnly: false,
+                    rating: star,
                 });
             }
         },
@@ -275,6 +274,21 @@ function init_app() {
         onLoadError: function () {
             $.messager.alert(T('attenzione'), T('Si è verificvato un errore nel trasferimento'), 'error');
         }
+    });
+
+    $('#mm').menu('appendItem', {
+        text: 'php',
+        iconCls: 'icon-ok',
+        onclick: function () {
+            alert('New Item')
+        }
+    });
+    $('#ss_search').searchbox({
+        searcher: function (value, name) {
+            alert(value + "," + name)
+        },
+        menu: '#mm',
+        prompt: T('inserire un valore')
     });
 }
 
