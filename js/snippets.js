@@ -75,7 +75,21 @@ function init_app() {
             $('#cc_code').layout('panel', 'center').panel({content: '<div></div>'})
             $('#image_snippets').panel({content: '<div></div>'});
         },
-        onCancelEdit: set_star_readonly,
+        onCancelEdit: function (index) {
+            var tot = $('#dg_snippets').datagrid('getRows').length;
+            //esclude new row
+            if (index < tot) {
+            var star = $('#dg_snippets').datagrid('getRows')[index].star;
+            //$("#rateYo_" + index).rateYo("option", "rating", star);
+            $('#rateYo_' + index).rateYo({
+                numStars: 3,
+                maxValue: 3,
+                starWidth: '15px',
+                readOnly: false,
+                rating: star,
+                });
+            }
+        },
         onBeforeEdit: function (index, row) {
             g_dg_edit = true;
             var tot = $('#dg_snippets').datagrid('getRows').length - 1;
