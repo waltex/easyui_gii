@@ -1,12 +1,12 @@
 <?php defined("NET2FTP") or die("Direct access to this location is not allowed."); ?>
 <!-- Template /skins/shinra/manage.template.php begin -->
 
-				<div style="margin-left: 50px; margin-right: 20px;">
+				<div style="margin-left: 0px; margin-right: 0px;">
 
-						<h1>
-<?php							printTitleIcon(); ?>
-<?php 						echo $title; ?>
-						</h1>
+						<!--h1>
+<!--?php							printTitleIcon(); ?-->
+<!--?php 						echo $title; ?!..>
+						</h1-->
 
 		<form name="<?php echo $formname; ?>" id="<?php echo $formname; ?>" action="<?php echo $net2ftp_globals["action_url"]; ?>" <?php if (isset($enctype)) { echo $enctype; } ?> method="post">
 <?php			printLoginInfo(); ?>
@@ -18,7 +18,7 @@
 			<input type="hidden" name="screen"    value="<?php echo $nextscreen; ?>" />
 
 <?php /* ----- Back icon ----- */ ?>
-<?php			printActionIcon("back", $back_onclick, ""); ?> &nbsp; 
+<!--?php			printActionIcon("back", $back_onclick, ""); ?--> &nbsp; 
 
 <?php /* ----- Submit icon - only for transactions which have a 2nd screen ----- */ ?>
 <?php			if ($net2ftp_globals["screen"] == 1
@@ -31,11 +31,11 @@
 				printActionIcon("forward", $forward_onclick, ""); 
 			} ?>
 
-			<br /><br />
+			<!--br /><br /-->
 <?php	require_once($net2ftp_globals["application_skinsdir"] . "/" . $net2ftp_globals["skin"] . "/" . $net2ftp_globals["state"] . $net2ftp_globals["screen"] . ".template.php"); ?>
 		</form>
 
 				</div>
 
-<?php require_once($net2ftp_globals["application_skinsdir"] . "/" . $net2ftp_globals["skin"] . "/footer.template.php"); ?>
+<!--?php require_once($net2ftp_globals["application_skinsdir"] . "/" . $net2ftp_globals["skin"] . "/footer.template.php"); ?-->
 <!-- Template /skins/shinra/manage.template.php end -->

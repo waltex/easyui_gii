@@ -202,6 +202,7 @@ function net2ftp_module_printBody() {
 // TextareaSelect onchange
 	$onchange = "document.forms['EditForm'].screen.value=2;document.forms['EditForm'].textareaType.value=document.forms['EditForm'].textareaSelect.options[document.forms['EditForm'].textareaSelect.selectedIndex].value;document.forms['EditForm'].submit();";
 
+	
 // Character encoding (requires multibyte string module to be installed)
 // With this, you can save a text with specified encoding and line break sequence
 // http://www.net2ftp.org/forums/viewtopic.php?id=2449
@@ -469,7 +470,8 @@ function printTextareaSelect($onchange) {
 	$pluginProperties = getPluginProperties();
 	if (isset($_POST["textareaType"]) == true) { $textareaType = validateTextareaType($_POST["textareaType"]); }
 	else                                       { $textareaType = ""; }
-
+	
+	//$textareaType = "ace";
 	$filename_extension = get_filename_extension($net2ftp_globals["entry"]);
 
 // Convert *htm* to html
