@@ -54,9 +54,7 @@ function init_app() {
         checkOnSelect: false,
         selectOnCheck: false,
         nowrap: false,
-        queryParams: {
-            filter: 'a',
-        },
+        queryParams: {filter: "", name: "*"},
         onClickRow: click_row,
         onLoadSuccess: function (data) {
             //if (!data.isError) {
@@ -83,7 +81,7 @@ function init_app() {
                 $('#rateYo_' + index).rateYo({
                     numStars: 3,
                     maxValue: 3,
-                    starWidth: '15px',
+                    starWidth: '20px',
                     readOnly: false,
                     rating: star,
                 });
@@ -104,7 +102,7 @@ function init_app() {
                 $('#rateYo_' + index).rateYo({
                     numStars: 3,
                     maxValue: 3,
-                    starWidth: '15px',
+                    starWidth: '20px',
                     readOnly: false,
                     rating: 1,
                 });
@@ -130,16 +128,16 @@ function init_app() {
         },
         columns: [[
                 {field: 'ck', checkbox: true},
-                {field: 'name', title: T('Nome file'), width: 250, editor: "textbox", formatter: function (value, row, index) {
+                {field: 'name', title: T('Nome file'), width: 240, editor: "textbox", formatter: function (value, row, index) {
 
                         return T(value);//transalte
                     }},
-                {field: 'star', title: T('Importanza'), width: 45, formatter: function (value, row, index) {
+                {field: 'star', title: T('Importanza'), width: 60, formatter: function (value, row, index) {
                         return '<span id="rateYo_' + index + '" style="float:center">' + value + '</span>';
                     }},
             ]]
     });
-    $('#dg_snippets').datagrid('enableFilter');
+    //$('#dg_snippets').datagrid('enableFilter');
 
     $('#bt_add').tooltip({
         content: T('Aggiunge una riga (inserire anche estensione es .php .html)')
@@ -160,7 +158,7 @@ function init_app() {
             $('#rateYo_' + i).rateYo({
                 numStars: 3,
                 maxValue: 3,
-                starWidth: '15px',
+                starWidth: '20px',
                 readOnly: true,
                 rating: star,
             });
@@ -286,10 +284,12 @@ function init_app() {
     */
     $('#ss_search').searchbox({
         searcher: function (value, name) {
+            console.log(name);
+            $('#dg_snippets').datagrid('options').queryParams = {filter: value, name: name};
             $('#dg_snippets').datagrid('reload');
         },
-        //menu: '#mm',
-        prompt: T('inserire un valore')
+        menu: '#mm',
+        prompt: T('cerca...')
     });
 }
 

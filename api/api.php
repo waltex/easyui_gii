@@ -198,8 +198,11 @@ function snippets_read() {
     try {
         $app = Slim\Slim::getInstance();
 
+        $filter = $app->request->params('filter'); // name snippets
+        $ext = $app->request->params('name'); // name snippets
+
         $gii = new easyuigii();
-        $data = $gii->list_file_for_snippets();
+        $data = $gii->list_file_for_snippets($filter, $ext);
 
         $app->response()->body(json_encode($data));
 

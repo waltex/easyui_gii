@@ -56,9 +56,6 @@ class easyuigii {
         move_uploaded_file($filetmp, $uploadfile);
     }
 
-
-    
-
     /** save star of the snippets
      *
      * @param type $file filename
@@ -176,8 +173,11 @@ class easyuigii {
     }
 
     /** lsit file on the folder snippets
+     *
+     * @param type $filter
+     * @return type
      */
-    public function list_file_for_snippets() {
+    public function list_file_for_snippets($filter, $ext) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
@@ -194,6 +194,11 @@ class easyuigii {
                 $data[] = ["file" => $file, "name" => $name];
             }
         }
+        //$data = array_filter($data, 'self::filter_file');
+
+        $data = array_filter($data, function($value) use ($filter, $ext) {
+            return self::filter_file($value, $filter, $ext);
+        });
 
         $file_star = $this->script_path . "/snippets/star.json";
         if (file_exists($file_star)) {
@@ -214,7 +219,40 @@ class easyuigii {
         } else {
             return $data;
         }
-        
+    }
+    /** filter array return for datagrid
+     * @param type $value value to filter
+     * @param type $filter word filter
+     * @param type $ext_find estensiond to filter
+     * @return type value find
+     */
+    private function filter_file($value, $filter, $ext_find) {
+        $name = $value["name"];
+        $file = $value["file"];
+        $path_info = pathinfo($file);
+        $ext_file = $path_info['extension'];
+        ($ext_find == "???") ? $ext_find = null : false;
+
+        if ($filter != "") {
+            $ar_filter = explode(" ", $filter);
+            $is_find = false;
+            foreach ($ar_filter as $find) {
+                if (strpos($name, $find) !== false) {
+                    $is_find = true;
+                }
+            }
+        } else {
+            $is_find = true; //with no filter, show all
+        }
+        //filter extension
+        if ($ext_find != "*") {
+            if ($ext_file != $ext_find) {
+                $is_find = false;
+            }
+        }
+        if ($is_find) {
+            return $value;
+        }
     }
 
     /** get key  parameter of setting unless #1
