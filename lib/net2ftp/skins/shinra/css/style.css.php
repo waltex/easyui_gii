@@ -51,7 +51,7 @@ body {
 	-webkit-border-radius: 10px;
 }
 
-#header{
+#header_no{
 <?php	if   ($show_ads == "no") { echo "height: 100px;\n"; }
 	else                     { echo "height: 180px;\n"; } ?>
 	position: relative;

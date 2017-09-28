@@ -277,7 +277,11 @@ function snippets_rename() {
             $data = ["file" => $file_to, "name" => $return];
             $app->response()->body(json_encode($data));
         } else {
-            $app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);
+            //not rename
+            $gii->save_star($file_to, $star); //save star to file json
+            $data = ["file" => $file_to, "name" => $file_from, "star" => $star];
+            $app->response()->body(json_encode($data));
+            //$app->render(200, ['isError' => true, 'msg' => $gii->T('File già presente')]);
         }
 
         ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
