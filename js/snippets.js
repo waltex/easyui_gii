@@ -84,6 +84,7 @@ function init_app() {
                     starWidth: '20px',
                     readOnly: false,
                     rating: star,
+                    fullStar: true,
                 });
             }
         },
@@ -104,7 +105,8 @@ function init_app() {
                     maxValue: 3,
                     starWidth: '20px',
                     readOnly: false,
-                    rating: 1,
+                    rating: 0,
+                    fullStar: true,
                 });
 
             }
@@ -161,6 +163,7 @@ function init_app() {
                 starWidth: '20px',
                 readOnly: true,
                 rating: star,
+                fullStar: true,
             });
 
         }
