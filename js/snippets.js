@@ -54,6 +54,9 @@ function init_app() {
         checkOnSelect: false,
         selectOnCheck: false,
         nowrap: false,
+        pagination: true,
+        pageSize: 100,
+        pageList: [100, 250, 500, 1000],
         queryParams: {filter: "", name: "*"},
         onClickRow: click_row,
         onLoadSuccess: function (data) {
