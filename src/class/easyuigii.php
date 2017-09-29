@@ -220,6 +220,7 @@ class easyuigii {
             return $data;
         }
     }
+
     /** filter array return for datagrid
      * @param type $value value to filter
      * @param type $filter word filter
@@ -238,8 +239,11 @@ class easyuigii {
             $text = $name; //filter the name file
         }
 
-
-        $ext_file = $path_info['extension'];
+        if (array_key_exists('extension', $path_info)) {
+            $ext_file = $path_info['extension'];
+        } else {
+            $ext_file = "";
+        }
         ($ext_find == "???") ? $ext_find = null : false;
 
         if ($filter != "") {
