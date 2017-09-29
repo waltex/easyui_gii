@@ -202,15 +202,40 @@ function snippets_read() {
         $ext = $app->request->params('name'); // name snippets
         $filter_content = $app->request->params('filter_content');
 
+        $page = $app->request->params('page'); // Param from pagination
+        $rows = $app->request->params('rows'); // Param from pagination
+
+        if ($page <= 1) {
+            $da = 1;
+            $a = $rows;
+        } else {
+            $da = ($page - 1) * $rows;
+            $da = $da + 1;
+            $a = $page * $rows;
+        }
+
         $gii = new easyuigii();
         $data = $gii->list_file_for_snippets($filter, $ext, $filter_content);
 
-        $app->response()->body(json_encode($data));
+        //for pagination
+        $ar = [];
+        $riga = 1;
+        foreach ($data as $value) {
+            $riga+=1;
+            if (($riga >= $da) && ($riga <= $a)) {
+                $ar[] = $value;
+            }
+        }
+        $result['rows'] = $ar;
+        $result['total'] = Count($data);
+
+
+        $app->response()->body(json_encode($result));
 
         ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . 'error - list file snippets  ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/error.log');
+        error_log(LogTime() . 'error - list file snippets  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }
 

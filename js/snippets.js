@@ -60,9 +60,9 @@ function init_app() {
         queryParams: {filter: "", name: "*"},
         onClickRow: click_row,
         onLoadSuccess: function (data) {
-            //if (!data.isError) {
+            if (!data.isError) {
             set_star_readonly();
-            //}
+            }
         },
         onSuccess: function (index, row) {
             view_file();
