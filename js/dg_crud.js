@@ -62,8 +62,9 @@ function init_app() {
                     var app_name = $('#tb_app_name').textbox('getValue');
                     var app_folder = $('#tb_app_folder').textbox('getValue');
                     var table_name = $('#tb_table_name').textbox('getValue');
+                    var model_from_json = $("#sb_model").switchbutton('options').checked;
                     $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
-                    $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name})
+                    $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name, model_from_json: model_from_json})
                             .done(function (data) {
                                 $.messager.progress('close');
                                 if (data.success) {
@@ -83,8 +84,7 @@ function init_app() {
                             });
                 }
             });
-        }
-        else {
+        } else {
             $.messager.alert(T('attenzione'), T('compilare tutti i campi correttamente'), 'warning');
         }
     });
@@ -96,10 +96,10 @@ function init_app() {
         onText: T('si'), offText: T('no'),
         onChange: function (checked) {
             if (checked) {
-                $('#dg_model').show()
+                $('#div_model').show();
                 load_dg_model();
             } else {
-                $('#dg_model').hide()
+                $('#div_model').hide();
             }
         }
     });
@@ -115,6 +115,7 @@ function init_app() {
             iconCls: 'icon-save',
             handler: function () {
                 $('#dg_model').edatagrid('saveRow');
+                dg_model_save2json();
             }}, '-', {
             text: T('Annulla'),
             iconCls: 'icon-undo',
@@ -141,6 +142,17 @@ function init_app() {
                     $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
                 }
             }}];
+    var data_pk_fk = [{
+            text: 'Primary Key',
+            id: 'PRIMARY_KEY'
+        }, {
+            text: 'Foreing Key',
+            id: 'FOREIGN_KEY'
+        }, {
+            text: T('Nessuna'),
+            id: null
+        }];
+    var data_type = [{text: 'tetxbox'}, {text: 'datebox', }, {text: 'numberbox'}];
     function load_dg_model() {
         $('#dg_model').edatagrid({
             //url: url: 'api/dg/model/read/json',
@@ -149,16 +161,63 @@ function init_app() {
             fit: true,
             striped: true,
             singleSelect: true,
+            checkOnSelect: false,
+            selectOnCheck: false,
             fitColumns: true,
             columns: [[
+                    {field: 'ck', checkbox: true},
                     {field: "COL", title: T('Nome Colonna'), editor: "text"},
-                    {field: "TYPE", title: T('Tipo Campo'), editor: "text"},
-                    {field: "CONSTRAINT_TYPE", title: T('Pk - Fk'), editor: "text"},
+                    {field: "TYPE", title: T('Tipo Campo'), editor: {type: 'combobox', options: {
+                                valueField: 'text',
+                                textField: 'text',
+                                editable: false,
+                                panelWidth: 100,
+                                data: data_type
+                            }}},
+                    {field: "CONSTRAINT_TYPE", title: T('Pk - Fk'), editor: {type: 'combobox', options: {
+                                valueField: 'id',
+                                textField: 'text',
+                                editable: false,
+                                panelWidth: 100,
+                                data: data_pk_fk
+                            }}
+                        , formatter: function (value, row, index) {
+                            var data = combo_get_text(value, data_pk_fk);
+                            return data;
+                        }
+                    },
                     {field: "SKIP", title: T('Campo') + '<br>' + T('Scartato'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "HIDE", title: T('Campo') + '<br>' + T('Nascosto'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "CK", title: T('Campo') + '<br>' + T('Si / No'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "CK", title: T('Campo') + '<br>' + T('Si, No'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                 ]]
         });
+    }
+    function combo_get_text(id, data) {
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].id == id)
+                return data[i].text;
+        }
+
+    }
+    function dg_model_save2json() {
+        var rows = $('#dg_model').datagrid('getRows');
+        $.post('api/dg/model/save/json', {data: rows})
+                .done(function (data) {
+                    $.messager.progress('close');
+                    if (data.success) {
+                        $.messager.show({
+                            title: T('salvataggio'),
+                            msg: data.msg,
+                            showType: 'slide'
+                        });
+                    } else {
+                        $.messager.alert(T('errore'), data.msg, 'error');
+                    }
+                })
+                .fail(function () {
+                    $.messager.progress('close');
+                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                });
     }
 }
 

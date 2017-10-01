@@ -24,6 +24,7 @@ class easyuigii {
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
+    public $model_from_json = false; // true for custom model
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "1";
     public $api_url = "/crud/ABB_CRUD";
@@ -44,13 +45,24 @@ class easyuigii {
 
         $this->set_db_setting();
 
-        $this->table_model = $this->get_table_model(true); // true get from custom model, false from db
+        $model_from_json = $this->model_from_json;
+        $this->table_model = $this->get_table_model($model_from_json); // true get from custom model, false from db
         $this->primary_key = $this->get_primary_key_from_model();
     }
 
+    /** save model to json file
+     *
+     * @param type $data array model
+     */
+    public function save_dg_model_to_json($data) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
+        $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
+        $json = json_encode($data);
+        file_put_contents($file, $json);
+    }
 
-        /** read model table from db
+    /** read model table from db
      * @return type
      */
     public function read_dg_model_from_db() {
@@ -525,7 +537,7 @@ class easyuigii {
             $with = "width: '50px',";
             return "{field: '$col', title: '$colt', $with editor: {type: 'numberbox', options: {required: true}}, sortable: true}," . PHP_EOL;
         }
-  
+
         if ($type == "datebox") {
             $with = "width: '100px',";
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
@@ -573,8 +585,6 @@ class easyuigii {
             throw new Exception(message_err($e));
         }
     }
-
-
 
     /** get table model
      *
@@ -858,7 +868,6 @@ class easyuigii {
                     }
                 }
             }
-
         }
         return $str_par;
     }

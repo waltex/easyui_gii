@@ -1,9 +1,9 @@
 [{
         "COL": "ID",
         "TYPE": "numberbox",
-        "CONSTRAINT_TYPE": null,
-        "SKIP": "1",
-        "HIDE": "1",
+        "CONSTRAINT_TYPE": "PRIMARY_KEY",
+        "SKIP": "0",
+        "HIDE": "0",
         "CK": "0"
     }, {
         "COL": "COMBO",
@@ -13,14 +13,14 @@
         "HIDE": "0",
         "CK": "0"
     }, {
-        "COL": "DTIN",
-        "TYPE": "datebox",
+        "COL": "ID2",
+        "TYPE": "numberbox",
         "CONSTRAINT_TYPE": null,
-        "SKIP": "0",
+        "SKIP": "1",
         "HIDE": "0",
         "CK": "0"
     }, {
-        "COL": "DTFI",
+        "COL": "DTIN",
         "TYPE": "datebox",
         "CONSTRAINT_TYPE": null,
         "SKIP": "0",
@@ -34,17 +34,17 @@
         "HIDE": "0",
         "CK": "0"
     }, {
+        "COL": "DTFI",
+        "TYPE": "datebox",
+        "CONSTRAINT_TYPE": null,
+        "SKIP": "0",
+        "HIDE": "0",
+        "CK": "0"
+    }, {
         "COL": "ATTIVO",
         "TYPE": "numberbox",
         "CONSTRAINT_TYPE": null,
         "SKIP": "0",
         "HIDE": "0",
         "CK": "1"
-    }, {
-        "COL": "ID2",
-        "TYPE": "numberbox",
-        "CONSTRAINT_TYPE": "PRIMARY_KEY",
-        "SKIP": "0",
-        "HIDE": "0",
-        "CK": "0"
     }]
