@@ -152,7 +152,7 @@ class easyuigii {
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Snippets</title>
-    <link rel="import" href="asset.html">
+    <script src="js/asset.js" type="text/javascript"></script>
 </head>
 <html>
     <body>
