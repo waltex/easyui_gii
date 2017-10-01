@@ -7,7 +7,6 @@ class easyuigii {
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
     private $root_gii = ""; // path root easyui gii
-    private $ar_col_type = []; // deprecato - for tamplate crud
     private $primary_key = ""; // auto find from table structure
     private $app_setting = []; // array app setting from json file
     private $host_api = "api"; // for remote/local host es. (local) api or remote) http:/192.168.20/easui_gii/api
@@ -25,14 +24,11 @@ class easyuigii {
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
-    public $cols_table_skip = ["ID2"]; // deprecato - skip col for all, crud (select/insert/update) and javascript
-    public $cols_table_hide = []; //deprecato - hide col only on code javascript and not to sql
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "1";
     public $api_url = "/crud/ABB_CRUD";
     public $api_fn_name = "crud_ABB_CRUD";
     public $dg_col_px_auto = true; //auto calc px, if false not set with length for datagrid col
-    public $dg_cols_ck = ["ATTIVO"]; // deprecato, cols datagrid with checkbox
     public $table_model = []; //tabel model structure
 
     function __construct() {
@@ -49,7 +45,7 @@ class easyuigii {
         $this->set_db_setting();
         //$this->primary_key = $this->get_primary_key();//deprecato
 
-        $this->table_model = $this->get_table_model(true); // true get from custom model
+        $this->table_model = $this->get_table_model(true); // true get from custom model, false from db
         $this->primary_key = $this->get_primary_key_from_model();
     }
 
@@ -458,7 +454,6 @@ class easyuigii {
         foreach ($model_ord as $value) {
             $col = $value["COL"];
             $type = $value["CONSTRAINT_TYPE"];
-            //if (!in_array($col, $this->cols_table_hide)) {
             if (($value["HIDE"] == "0") && ($value["SKIP"] == "0")) {
                 $code.= $this->get_js_crud_col($value);
             }
@@ -488,7 +483,7 @@ class easyuigii {
             $with = "width: '$px',";
         }
 
-        if ($type_pk_fk == $pk) {
+        if ($type_pk_fk == "PRIMARY_KEY") {
             $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
             return $ck . "{field: '$col', title: '$colt', $with sortable: true}," . PHP_EOL;
         }
@@ -498,16 +493,17 @@ class easyuigii {
             return "{field: '$col', title: '$colt', editor: {type: 'checkbox', options: {on: '1', off: '0'}},formatter: mycheck,required: true}," . PHP_EOL;
         }
 
-        //if (in_array($type, ['VARCHAR2', 'VARCHAR'])) {
+
         if ($type == "textbox") {
             return "{field: '$col', title: '$colt', $with editor: {type: 'textbox', options: {required: true}}, sortable: true}," . PHP_EOL;
         }
-        //if (in_array($type, ['NUMBER'])) {
+
+        //escludo the column primary key for edit
         if ($type == "numberbox") {
             $with = "width: '50px',";
             return "{field: '$col', title: '$colt', $with editor: {type: 'numberbox', options: {required: true}}, sortable: true}," . PHP_EOL;
         }
-        //if (in_array($type, ['DATE'])) {
+  
         if ($type == "datebox") {
             $with = "width: '100px',";
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
@@ -521,7 +517,7 @@ class easyuigii {
      *
      * @return type string
      */
-    private function get_sql_for_select2() {
+    private function get_sql_for_select() {
         try {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
@@ -556,59 +552,7 @@ class easyuigii {
         }
     }
 
-    /** create sql string
-     *
-     * @return type string
-     * deprecata
-     */
-    private function get_sql_for_select() {
-        try {
 
-            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-
-            $app = Slim\Slim::getInstance();
-
-            $table = $this->table_name;
-            $sql = "
-                SELECT * FROM $table
-                ";
-
-            error_log(LogTime() . ' Sql, get column field: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
-
-            //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
-            $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
-            $db = oci_parse($conn, $sql);
-            $rs = oci_execute($db);
-
-            $ncols = oci_num_fields($db);
-
-            $this->ar_col_type = [];
-            $str_col_w_a = "";
-            $str_col = "";
-            $ncol = 0;
-            for ($i = 1; $i <= $ncols; $i++) {
-                $col_name = oci_field_name($db, $i);
-                $col_name_w_a = "A." . $col_name;
-                $col_type = oci_field_type($db, $i);
-                //skip cols
-                if (!in_array($col_name, $this->cols_table_skip)) {
-                    $ncol+=1;
-                    array_push($this->ar_col_type, [$col_name => $col_type]);
-                    if ($col_type == "DATE") {
-                        $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
-                    }
-                    $strComma = ($ncol > 1) ? ", " : "";
-                    $str_col_w_a.=$strComma . $col_name_w_a; //list col with alias
-                    $str_col.=$strComma . $col_name; //list col without alias
-                }
-            }
-            $strSql = "SELECT $str_col_w_a FROM $table A";
-            return $strSql;
-        } catch (Exception $e) {
-            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
-            throw new Exception(message_err($e));
-        }
-    }
 
     /** get table model
      *
@@ -772,7 +716,6 @@ class easyuigii {
 
 
         $sql_select = $this->get_sql_for_select(); //for template
-        $sql_select = $this->get_sql_for_select2();
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template
         $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
@@ -817,16 +760,14 @@ class easyuigii {
 
         $str_col = "";
         $ncol = "0";
-        $ar = $this->ar_col_type;
-        while ($row = current($ar)) {
-            $col_name = key($row);
-            $type = $row[$col_name];
-            if (!in_array($col_name, $this->cols_table_skip)) {
+        $model = $this->table_model;
+        foreach ($model as $value) {
+            $col_name = $value["COL"];
+            if ($value["SKIP"] == 0) {
                 $ncol+=1;
                 $str_comma = ($ncol > 1) ? ", " : "";
                 $str_col.=$str_comma . $col_name; //list col without alias
             }
-            next($ar);
         }
         return $str_col;
     }
@@ -880,24 +821,22 @@ class easyuigii {
 
 
         $str_par = "";
-        $ar = $this->ar_col_type;
-        $model = $this->model;
-        while ($row = current($ar)) {
-            $col_name = key($row);
-            $col_type = $row[$col_name];
+        $model = $this->table_model;
+        //while ($row = current($ar)) {
+        foreach ($model as $value) {
+            $col_name = $value["COL"];
             if ($this->primary_key != $col_name) {
-                if (!in_array($col_name, $this->cols_table_skip)) {
+                if ($value["SKIP"] == "0") {
                     $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
                 }
             } else { //add primary key
                 if ($add_idd) {
-                    if (!in_array($col_name, $this->cols_table_skip)) {
+                    if ($value["SKIP"] == "0") {
                         $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
                     }
                 }
             }
 
-            next($ar);
         }
         return $str_par;
     }
@@ -910,16 +849,16 @@ class easyuigii {
 
         $str_col = "";
         $ncol = "0";
-        $ar = $this->ar_col_type;
-        while ($row = current($ar)) {
-            $col_name = key($row);
-            $col_type = $row[$col_name];
+        $model = $this->table_model;
+        foreach ($model as $value) {
+            $col_name = $value["COL"];
+            $col_type = $value["TYPE"];
             if ($this->primary_key != $col_name) {
-                if (!in_array($col_name, $this->cols_table_skip)) {
+                if ($value["SKIP"] == "0") {
                     $ncol+=1;
                     $str_comma = ($ncol > 1) ? ", " : "";
 
-                    if ($col_type == "DATE") {
+                    if ($col_type == "datebox") {
                         $col_dt = $this->format_dt2todate(":" . $col_name);
                         $col_name = "$col_name=$col_dt";
                     } else {
@@ -928,7 +867,6 @@ class easyuigii {
                     $str_col.=$str_comma . $col_name; //list col -> :field1, :field2
                 }
             }
-            next($ar);
         }
         $table = $this->table_name;
         $pk = $this->primary_key;
@@ -945,22 +883,22 @@ class easyuigii {
 
         $str_col = "";
         $ncol = "0";
-        $ar = $this->ar_col_type;
-        while ($row = current($ar)) {
-            $col_name = key($row);
-            $col_type = $row[$col_name];
+        $model = $this->table_model;
+        foreach ($model as $value) {
+
+            $col_name = $value["COL"];
+            $col_type = $value["TYPE"];
             if ($this->primary_key != $col_name) {
-                if (!in_array($col_name, $this->cols_table_skip)) {
+                if ($value["SKIP"] == "0") {
                     $ncol+=1;
                     $str_comma = ($ncol > 1) ? ", " : "";
                     $col_name = ":" . $col_name;
-                    if ($col_type == "DATE") {
+                    if ($col_type == "datebox") {
                         $col_name = $this->format_dt2todate($col_name);
                     }
                     $str_col.=$str_comma . $col_name; //list col -> :field1, :field2
                 }
             }
-            next($ar);
         }
         return $str_col;
     }
