@@ -89,6 +89,77 @@ function init_app() {
         }
     });
 
+
+    $("#sb_model").switchbutton({
+        label: 'jskjshjs',
+        checked: false,
+        onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            if (checked) {
+                $('#dg_model').show()
+                load_dg_model();
+            } else {
+                $('#dg_model').hide()
+            }
+        }
+    });
+    $("#sb_model_label").html(T("impostare un modello personalizzato per la tabella"));
+    var dg_model_tb = ['-', {
+            text: T('Aggiungi'),
+            iconCls: 'icon-add',
+            id: 'bt_add',
+            handler: function (e) {
+                $('#dg_model').edatagrid('addRow');
+            }}, '-', {
+            text: T('Salva'),
+            iconCls: 'icon-save',
+            handler: function () {
+                $('#dg_model').edatagrid('saveRow');
+            }}, '-', {
+            text: T('Annulla'),
+            iconCls: 'icon-undo',
+            handler: function () {
+                $('#dg_model').edatagrid('cancelRow');
+            }}, '-', {
+            text: T('Elimina'),
+            iconCls: 'icon-remove',
+            handler: function () {
+                $('#dg_model').edatagrid('destroyRow');
+            }}, '-', {
+            text: T('Ricarica'),
+            iconCls: 'icon-reload',
+            handler: function () {
+                $('#dg_model').datagrid({url: 'api/dg/model/read/json'});
+            }}, '-', {
+            text: T('Importa dal db'),
+            iconCls: 'icon-add',
+            handler: function () {
+                var table = $('#tb_table_name').textbox('getValue');
+                if (table != "") {
+                    $('#dg_model').datagrid({url: 'api/dg/model/read/db/' + table});
+                } else {
+                    $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
+                }
+            }}];
+    function load_dg_model() {
+        $('#dg_model').edatagrid({
+            //url: url: 'api/dg/model/read/json',
+            //updateUrl: 'api/xx',
+            toolbar: dg_model_tb,
+            fit: true,
+            striped: true,
+            singleSelect: true,
+            fitColumns: true,
+            columns: [[
+                    {field: "COL", title: T('Nome Colonna'), editor: "text"},
+                    {field: "TYPE", title: T('Tipo Campo'), editor: "text"},
+                    {field: "CONSTRAINT_TYPE", title: T('Pk - Fk'), editor: "text"},
+                    {field: "SKIP", title: T('Campo') + '<br>' + T('Scartato'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "HIDE", title: T('Campo') + '<br>' + T('Nascosto'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "CK", title: T('Campo') + '<br>' + T('Si / No'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                ]]
+        });
+    }
 }
 
 

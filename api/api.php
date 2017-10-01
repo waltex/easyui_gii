@@ -31,6 +31,9 @@ $app->post('/dg/snippets/delete', 'snippets_delete'); //deleet snippets
 $app->post('/dg/snippets/rename', 'snippets_rename'); //rename snippets
 $app->post('/uoload/image', 'upload_image'); //upload image snippets
 $app->post('/delete/uoload/image', 'del_upload_image'); //delete uploadet image snippets
+$app->post('/dg/model/read/json', 'dg_model_read_from_json'); //read model from json (custom)
+$app->post('/dg/model/read/db/:table', 'dg_model_read_from_db'); //read model from db
+
 include 'fn_api.php';
 $start = new easyuigii();
 
@@ -352,5 +355,43 @@ function del_upload_image() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage(), 'title' => 'error']);
         error_log(LogTime() . 'error - delete uploadet image ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+/** Read from json file
+ */
+function dg_model_read_from_json() {
+    try {
+        $app = Slim\Slim::getInstance();
+
+        $gii = new easyuigii();
+        $data = $gii->read_dg_model_from_json();
+
+
+        $app->response()->body(json_encode($data));
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - read dg model  ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+/** Read from db
+ */
+function dg_model_read_from_db($table) {
+    try {
+        $app = Slim\Slim::getInstance();
+
+        $gii = new easyuigii();
+        $gii->set_db_setting();
+        $gii->table_name = $table;
+        $data = $gii->read_dg_model_from_db();
+
+        $app->response()->body(json_encode($data));
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - read dg model  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }

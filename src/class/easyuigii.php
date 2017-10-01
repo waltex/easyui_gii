@@ -39,14 +39,36 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
     }
 
-    function on_begin_crud() {
+    private function on_begin_crud() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $this->set_db_setting();
-        //$this->primary_key = $this->get_primary_key();//deprecato
 
         $this->table_model = $this->get_table_model(true); // true get from custom model, false from db
         $this->primary_key = $this->get_primary_key_from_model();
+    }
+
+
+
+        /** read model table from db
+     * @return type
+     */
+    public function read_dg_model_from_db() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        $data = $this->get_table_model(false);
+        return $data;
+    }
+
+    /** read model table from db
+     * @return type
+     */
+    public function read_dg_model_from_json() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
+        $json = file_get_contents($file);
+        $data = json_decode($json, true);
+        return $data;
     }
 
     public function upload_image($name_file) {
@@ -295,7 +317,7 @@ class easyuigii {
 
     /** set db setting to method class
      */
-    private function set_db_setting() {
+    public function set_db_setting() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $setting = $this->app_setting;
