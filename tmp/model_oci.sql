@@ -28,14 +28,16 @@
                 go
                 SELECT
                  A.COLUMN_NAME COL
-                 ,case             when A.DATA_TYPE="NUMBER" then  "numberbox" 
-                                   when A.DATA_TYPE="VARCHAR" then  "textbox"  
-                                   when A.DATA_TYPE="VARCHAR2" then "textbox"  
-                                   when A.DATA_TYPE="DATE" then "datebox1"
-                                   --else A.DATA_TYPE
-                end TYPE1
-                
+                 ,case A.DATA_TYPE when 'NUMBER' then  'numberbox' 
+                                   when 'VARCHAR' then  'textbox'  
+                                   when 'VARCHAR2' then 'textbox'  
+                                   when 'DATE' then 'datebox'
+                                   else A.DATA_TYPE
+                end TYPE
                 , B.CONSTRAINT_TYPE
+                , 0 SKIP
+                , 0 HIDE
+                , 0 CK
                 FROM ALL_TAB_COLUMNS A LEFT JOIN 
                 (
                 SELECT 

@@ -25,14 +25,14 @@ class easyuigii {
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
-    public $cols_table_skip = ["ID2"]; //skip col for crud (select/insert/update) and javascript
-    public $cols_table_hide = []; //hide col only on code javascript and not to sql
+    public $cols_table_skip = ["ID2"]; // deprecato - skip col for all, crud (select/insert/update) and javascript
+    public $cols_table_hide = []; //deprecato - hide col only on code javascript and not to sql
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "1";
     public $api_url = "/crud/ABB_CRUD";
     public $api_fn_name = "crud_ABB_CRUD";
     public $dg_col_px_auto = true; //auto calc px, if false not set with length for datagrid col
-    public $dg_cols_ck = ["ATTIVO"]; //cols datagrid with checkbox
+    public $dg_cols_ck = ["ATTIVO"]; // deprecato, cols datagrid with checkbox
     public $table_model = []; //tabel model structure
 
     function __construct() {
@@ -49,9 +49,8 @@ class easyuigii {
         $this->set_db_setting();
         //$this->primary_key = $this->get_primary_key();//deprecato
 
-        $this->table_model = $this->get_table_model();
+        $this->table_model = $this->get_table_model(true); // true get from custom model
         $this->primary_key = $this->get_primary_key_from_model();
-        $test = 1;
     }
 
     public function upload_image($name_file) {
@@ -435,39 +434,40 @@ class easyuigii {
         $this->set_api($dir, $api_url, $fn_api); //create file api
     }
 
-    /** cretate code for crud type column
+       /** cretate code for crud type column
      *
      * @return string es. "columns: [[ {field: 'ck', checkbox: true}, {field: 'ID', title: 'ID', width: '30px'
      */
     private function get_template_js_crud() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $ar = $this->ar_col_type;
+        $model = $this->table_model;
         $key_row = [];
         $ar2 = []; //ord aray with ID/PRIMARY KEY with first element
-        while ($row = current($ar)) {
-            $key = key($row);
-            if ($key == $this->primary_key) {
-                $key_row = $row;
+        //while ($row = current($ar)) {
+        foreach ($model as $value) {
+            if ($value["CONSTRAINT_TYPE"] == "PRIMARY_KEY") {
+                $key_row = $value;
             } else {
-                $ar2[] = $row;
+                $ar2[] = $value;
             }
-            next($ar);
         }
-        $ar = array_merge([$key_row], $ar2);
+        $model_ord = array_merge([$key_row], $ar2); //model order by primary key
 
         $code = "";
-        while ($row = current($ar)) {
-            $col = key($row);
-            $type = $row[$col];
-            if (!in_array($col, $this->cols_table_hide)) {
-                $code.= $this->get_js_crud_col($col, $type);
+        foreach ($model_ord as $value) {
+            $col = $value["COL"];
+            $type = $value["CONSTRAINT_TYPE"];
+            //if (!in_array($col, $this->cols_table_hide)) {
+            if (($value["HIDE"] == "0") && ($value["SKIP"] == "0")) {
+                $code.= $this->get_js_crud_col($value);
             }
-            next($ar);
+
         }
         $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
         return $code;
     }
+
 
     /** return string code js for columns grid
      *
@@ -475,8 +475,12 @@ class easyuigii {
      *
      * @param type $col string name column
      */
-    private function get_js_crud_col($col, $type) {
+    private function get_js_crud_col($row) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $col = $row["COL"];
+        $type = $row["CONSTRAINT_TYPE"];
+
 
         $with = "";
         $colt = $this->T($col); //translate
@@ -485,24 +489,27 @@ class easyuigii {
             $with = "width: '$px',";
         }
 
-        if (in_array($col, [$this->primary_key])) {
+        if ($type == "PRIMARY_KEY") {
             $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
             return $ck . "{field: '$col', title: '$colt', $with sortable: true}," . PHP_EOL;
         }
 
-        if (in_array($col, $this->dg_cols_ck)) {
+        if ($row["CK"] == "1") {
             //{field: 'ID_CLONE', title: 'Fase<br>Duplicata', formatter: mycheck},
             return "{field: '$col', title: '$colt', editor: {type: 'checkbox', options: {on: '1', off: '0',formatter: mycheck,required: true}}}," . PHP_EOL;
         }
 
-        if (in_array($type, ['VARCHAR2', 'VARCHAR'])) {
+        //if (in_array($type, ['VARCHAR2', 'VARCHAR'])) {
+        if ($type == "textbox") {
             return "{field: '$col', title: '$colt', $with editor: {type: 'textbox', options: {required: true}}, sortable: true}," . PHP_EOL;
         }
-        if (in_array($type, ['NUMBER'])) {
+        //if (in_array($type, ['NUMBER'])) {
+        if ($type == "numberbox") {
             $with = "width: '50px',";
             return "{field: '$col', title: '$colt', $with editor: {type: 'numberbox', options: {required: true}}, sortable: true}," . PHP_EOL;
         }
-        if (in_array($type, ['DATE'])) {
+        //if (in_array($type, ['DATE'])) {
+        if ($type == "datebox") {
             $with = "width: '100px',";
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
             $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
@@ -523,14 +530,12 @@ class easyuigii {
 
             $table = $this->table_name;
 
-
             $str_col_w_a = "";
             $str_col = "";
             $ncol = 0;
             $model = $this->table_model;
-            //for ($i = 1; $i <= $ncols; $i++) {
             foreach ($model as $value) {
-                $col_name = $value["COL"]; //oci_field_name($db, $i);
+                $col_name = $value["COL"];
                 $col_name_w_a = "A." . $col_name;
                 $col_type = $value["TYPE"];
                 //skip cols
@@ -555,7 +560,7 @@ class easyuigii {
     /** create sql string
      *
      * @return type string
-     * deprecato
+     * deprecata
      */
     private function get_sql_for_select() {
         try {
@@ -609,14 +614,18 @@ class easyuigii {
 
     /** get table model
      *
-     * @return type array
+     * @param type $from_json if true get from custom model (json file)
+     * @return type
+     * @throws Exception
      */
-    public function get_table_model() {
+    public function get_table_model($from_json) {
         try {
 
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-            $app = Slim\Slim::getInstance();
+            if (!$from_json) {
+
+                $app = Slim\Slim::getInstance();
             $table = $this->table_name;
             $sql = "
                 SELECT
@@ -628,6 +637,9 @@ class easyuigii {
                                    else A.DATA_TYPE
                 end TYPE
                 , B.CONSTRAINT_TYPE
+                , 0 SKIP
+                , 0 HIDE
+                , 0 CK
                 FROM ALL_TAB_COLUMNS A LEFT JOIN
                 (
                 SELECT
@@ -651,7 +663,19 @@ class easyuigii {
             $rs = oci_execute($db);
 
             oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+            
+
+            //save json model
+            $json = json_encode($data);
+            $file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
+            file_put_contents($file, $json);
             return $data;
+            } else {
+                $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
+                $json = file_get_contents($file);
+                $data = json_decode($json, true);
+                return $data;
+            }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
@@ -748,8 +772,9 @@ class easyuigii {
     private function get_api_fn_crud($api_fn_name) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $tmp = $this->get_sql_for_select2();
+
         $sql_select = $this->get_sql_for_select(); //for template
+        $sql_select = $this->get_sql_for_select2();
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template
         $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
