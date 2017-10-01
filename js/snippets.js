@@ -57,11 +57,21 @@ function init_app() {
         pagination: true,
         pageSize: 100,
         pageList: [100, 250, 500, 1000],
+        destroyMsg: {
+            norecord: {// when no record is selected
+                title: T('attenzione'),
+                msg: T('Nessun record selezionato'),
+            },
+            confirm: {// when select a row
+                title: T('conferma'),
+                msg: T('Sei sicuro che vuoi cancellare?')
+            }
+        },
         queryParams: {filter: "", name: "*"},
         onClickRow: click_row,
         onLoadSuccess: function (data) {
             if (!data.isError) {
-            set_star_readonly();
+                set_star_readonly();
             }
         },
         onSuccess: function (index, row) {
@@ -280,14 +290,14 @@ function init_app() {
         }
     });
     /*
-    $('#mm').menu('appendItem', {
-        text: 'php',
-        iconCls: 'icon-ok',
-        onclick: function () {
-            alert('New Item')
-        }
-    });
-    */
+     $('#mm').menu('appendItem', {
+     text: 'php',
+     iconCls: 'icon-ok',
+     onclick: function () {
+     alert('New Item')
+     }
+     });
+     */
     $('#ss_search').searchbox({
         searcher: function (value, name) {
             var filter_content = $('#bt_filter_content').linkbutton('options').selected;

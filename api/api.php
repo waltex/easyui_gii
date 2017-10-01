@@ -341,7 +341,7 @@ function del_upload_image() {
         $file = $app->request->params('file'); // file name start
 
         $gii = new easyuigii();
-        $filename = $gii->script_path . "/snippets/image/" . $file . ".jpg";
+        $filename = $gii->root_gii . "/snippets/image/" . $file . ".jpg";
         if (file_exists($filename)) {
             unlink($filename);
             $app->render(200, ['success' => true, 'msg' => $gii->T("E' stato cancellato il file"), 'title' => 'info']);

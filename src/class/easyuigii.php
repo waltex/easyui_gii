@@ -6,6 +6,7 @@ class easyuigii {
 
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
+    private $root_gii = ""; // path root easyui gii
     private $ar_col_type = []; // for tamplate crud
     private $primary_key = ""; // auto find from table structure
     private $app_setting = []; // array app setting from json file
@@ -34,7 +35,7 @@ class easyuigii {
     public $dg_cols_ck = ["ATTIVO"]; //cols datagrid with checkbox
 
     function __construct() {
-        $this->script_path = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
+        $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
         $this->set_app_setting(); //set to class method the array of setting
         $this->limit_size_log();
 
@@ -51,7 +52,7 @@ class easyuigii {
     public function upload_image($name_file) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $uploadfile = $this->script_path . "/snippets/image/" . $name_file . ".jpg";
+        $uploadfile = $this->root_gii . "/snippets/image/" . $name_file . ".jpg";
         $filetmp = $_FILES['file']['tmp_name'];
         move_uploaded_file($filetmp, $uploadfile);
     }
@@ -65,7 +66,7 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
         $star = round($star);
 
-        $file_star = $this->script_path . "/snippets/star.json";
+        $file_star = $this->root_gii . "/snippets/star.json";
 
         if (file_exists($file_star)) {
             $ar_star = file_get_contents($file_star);
@@ -88,7 +89,7 @@ class easyuigii {
     public function rename_snippets($file_from, $file_to) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $dir = $this->script_path . "/snippets";
+        $dir = $this->root_gii . "/snippets";
         $filename_to = $dir . '/' . $file_to;
         $filename_from = $dir . '/' . $file_from;
         $filename_img_to = $dir . '/image/' . $file_to . ".jpg";
@@ -118,7 +119,7 @@ class easyuigii {
     public function delete_snippets($name) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $dir = $this->script_path . "/snippets";
+        $dir = $this->root_gii . "/snippets";
         $file = $dir . '/' . $name;
 
 
@@ -137,7 +138,7 @@ class easyuigii {
 
         $filename = $name;
 
-        $dir = $this->script_path . "/snippets";
+        $dir = $this->root_gii . "/snippets";
         $file = $dir . '/' . $name;
 
         if (!file_exists($file)) {
@@ -181,7 +182,7 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
-        $dir = $this->script_path . "/snippets/";
+        $dir = $this->root_gii . "/snippets/";
         if (!is_dir($dir . 'image')) {
             mkdir($dir . 'image', 0777, true); //create folder
         }
@@ -200,7 +201,7 @@ class easyuigii {
             return self::filter_file($value, $filter, $ext, $filter_content);
         });
 
-        $file_star = $this->script_path . "/snippets/star.json";
+        $file_star = $this->root_gii . "/snippets/star.json";
         if (file_exists($file_star)) {
             $ar_star = file_get_contents($file_star);
             $ar_file_star = json_decode($ar_star, true);
@@ -233,7 +234,7 @@ class easyuigii {
         $path_info = pathinfo($file);
 
         if ($filter_content === "true") {
-            $file_content = $this->script_path . '/snippets/' . $file;
+            $file_content = $this->root_gii . '/snippets/' . $file;
             $text = file_get_contents($file_content); //filter the content file and not the name file
         } else {
             $text = $name; //filter the name file
@@ -359,7 +360,7 @@ class easyuigii {
     public function set_app_setting() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $file = $this->script_path . "/app_setting.json";
+        $file = $this->root_gii . "/app_setting.json";
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);
         $this->app_setting = $ar_file;
@@ -378,7 +379,7 @@ class easyuigii {
         $this->create_folder($dir);
 
         //build template html
-        $root_template = $this->script_path . $this->template_root_path;
+        $root_template = $this->root_gii . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);
         $twig = new Twig_Environment($loader);
         //Transalte Tamplate with Function T - Very Super
@@ -389,11 +390,11 @@ class easyuigii {
 
         $this->copy_file_framework($dir); // copy file/folder framework
         //create asset template
-        $html = $twig->render('/base/asset.html.twig', array(
+        $js = $twig->render('/base/js/asset.js.twig', array(
             'language_default' => $this->current_languange  // current language
         ));
-        $file = $dir . "/asset.html";
-        file_put_contents($file, $html); //write generated html
+        $file = $dir . "/js/asset.js";
+        file_put_contents($file, $js); //write generated html
         //create page js and html
         $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig'
             , 'n' => $this->html_prefix
@@ -645,7 +646,7 @@ class easyuigii {
         $bind_update = $this->get_param_for_bind_insert_update(true);
 
         //build template html
-        $root_template = $this->script_path . $this->template_root_path;
+        $root_template = $this->root_gii . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);
         $twig = new Twig_Environment($loader);
 
@@ -908,10 +909,10 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
-        $file1_api = $this->script_path . $this->template_base_path . "/api/api_1_declare.php";
+        $file1_api = $this->root_gii . $this->template_base_path . "/api/api_1_declare.php";
         $api_declare = file_get_contents($file1_api);
 
-        $file2_api = $this->script_path . $this->template_base_path . "/api/api_2_fn.php";
+        $file2_api = $this->root_gii . $this->template_base_path . "/api/api_2_fn.php";
         $api_fn = str_replace("<?php", "", file_get_contents($file2_api));
 
         $api = $api_declare . PHP_EOL . $api_url . PHP_EOL . $api_fn . PHP_EOL . $fn_api; //create File Api
@@ -949,18 +950,18 @@ class easyuigii {
         try {
             $this->create_folder($dir . "/api");
 
-            $zip_file = $this->script_path . $this->template_base_path . '/lib.zip';
+            $zip_file = $this->root_gii . $this->template_base_path . '/lib.zip';
             $this->unzip($zip_file, $dir);
-            $zip_file = $this->script_path . $this->template_base_path . '/css.zip';
+            $zip_file = $this->root_gii . $this->template_base_path . '/css.zip';
             $this->unzip($zip_file, $dir);
-            $zip_file = $this->script_path . $this->template_base_path . '/js.zip';
+            $zip_file = $this->root_gii . $this->template_base_path . '/js.zip';
             $this->unzip($zip_file, $dir);
 
 
-            $zip_file = $this->script_path . $this->template_base_path . '/vendor.zip';
+            $zip_file = $this->root_gii . $this->template_base_path . '/vendor.zip';
             $this->unzip($zip_file, $dir . "/");
 
-            $template_path = $this->script_path . $this->template_base_path;
+            $template_path = $this->root_gii . $this->template_base_path;
             $ar_files = [
                 [$template_path . "/LICENSE", $dir . "/"],
                 [$template_path . "/composer.json", $dir . "/"],
@@ -1050,7 +1051,7 @@ class easyuigii {
         $lang2to = $ar_file["traduci alla lingua"];
         $langDefault = $ar_file["lingua corrente"];
 
-        $file = $this->script_path . "/language/$lang2from" . "2" . "$lang2to.json";
+        $file = $this->root_gii . "/language/$lang2from" . "2" . "$lang2to.json";
         //write file if not exists
         if (!file_exists($file)) {
             file_put_contents($file, json_encode([]));
