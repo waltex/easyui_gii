@@ -24,7 +24,7 @@ class easyuigii {
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
-    public $model_from_json = false; // true for custom model
+    public $model_from_json = 0; // 1 for custom model, 0 from db
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "1";
     public $api_url = "/crud/ABB_CRUD";
@@ -45,7 +45,7 @@ class easyuigii {
 
         $this->set_db_setting();
 
-        $model_from_json = $this->model_from_json;
+        $model_from_json = ($this->model_from_json == 1) ? true : false;
         $this->table_model = $this->get_table_model($model_from_json); // true get from custom model, false from db
         $this->primary_key = $this->get_primary_key_from_model();
     }

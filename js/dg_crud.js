@@ -62,7 +62,7 @@ function init_app() {
                     var app_name = $('#tb_app_name').textbox('getValue');
                     var app_folder = $('#tb_app_folder').textbox('getValue');
                     var table_name = $('#tb_table_name').textbox('getValue');
-                    var model_from_json = $("#sb_model").switchbutton('options').checked;
+                    var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
                     $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
                     $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name, model_from_json: model_from_json})
                             .done(function (data) {

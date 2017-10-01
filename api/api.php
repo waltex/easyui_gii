@@ -161,7 +161,7 @@ function crud_generate() {
         $gii->app_name = $app->request->params('app_name');
         $gii->app_folder = $app->request->params('app_folder');
         $gii->table_name = $app->request->params('table_name');
-        $gii->model_from_json = $app->request->params('table_name');
+        $gii->model_from_json = $app->request->params('model_from_json');
 
 
         $gii->build_app_crud();
