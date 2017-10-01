@@ -228,9 +228,6 @@ function init_app() {
             $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice')}); //panel west
             $('#image_snippets').panel({content: '<div></div>'});
         });
-
-
-
     }
 
     $('#label_fb_upload').html(T('File immagine:'));

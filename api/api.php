@@ -31,7 +31,6 @@ $app->post('/dg/snippets/delete', 'snippets_delete'); //deleet snippets
 $app->post('/dg/snippets/rename', 'snippets_rename'); //rename snippets
 $app->post('/uoload/image', 'upload_image'); //upload image snippets
 $app->post('/delete/uoload/image', 'del_upload_image'); //delete uploadet image snippets
-
 include 'fn_api.php';
 $start = new easyuigii();
 
