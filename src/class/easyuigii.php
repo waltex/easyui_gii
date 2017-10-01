@@ -7,7 +7,7 @@ class easyuigii {
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
     private $root_gii = ""; // path root easyui gii
-    private $ar_col_type = []; // for tamplate crud //deprecato
+    private $ar_col_type = []; // deprecato - for tamplate crud
     private $primary_key = ""; // auto find from table structure
     private $app_setting = []; // array app setting from json file
     private $host_api = "api"; // for remote/local host es. (local) api or remote) http:/192.168.20/easui_gii/api
@@ -434,7 +434,7 @@ class easyuigii {
         $this->set_api($dir, $api_url, $fn_api); //create file api
     }
 
-       /** cretate code for crud type column
+    /** cretate code for crud type column
      *
      * @return string es. "columns: [[ {field: 'ck', checkbox: true}, {field: 'ID', title: 'ID', width: '30px'
      */
@@ -462,12 +462,10 @@ class easyuigii {
             if (($value["HIDE"] == "0") && ($value["SKIP"] == "0")) {
                 $code.= $this->get_js_crud_col($value);
             }
-
         }
         $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
         return $code;
     }
-
 
     /** return string code js for columns grid
      *
@@ -479,8 +477,9 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $col = $row["COL"];
-        $type = $row["CONSTRAINT_TYPE"];
-
+        $type = $row["TYPE"];
+        $type_pk_fk = $row["CONSTRAINT_TYPE"];
+        $pk = $this->primary_key;
 
         $with = "";
         $colt = $this->T($col); //translate
@@ -489,14 +488,14 @@ class easyuigii {
             $with = "width: '$px',";
         }
 
-        if ($type == "PRIMARY_KEY") {
+        if ($type_pk_fk == $pk) {
             $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
             return $ck . "{field: '$col', title: '$colt', $with sortable: true}," . PHP_EOL;
         }
 
         if ($row["CK"] == "1") {
             //{field: 'ID_CLONE', title: 'Fase<br>Duplicata', formatter: mycheck},
-            return "{field: '$col', title: '$colt', editor: {type: 'checkbox', options: {on: '1', off: '0',formatter: mycheck,required: true}}}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', editor: {type: 'checkbox', options: {on: '1', off: '0'}},formatter: mycheck,required: true}," . PHP_EOL;
         }
 
         //if (in_array($type, ['VARCHAR2', 'VARCHAR'])) {
@@ -539,7 +538,7 @@ class easyuigii {
                 $col_name_w_a = "A." . $col_name;
                 $col_type = $value["TYPE"];
                 //skip cols
-                if (!in_array($col_name, $this->cols_table_skip)) {
+                if ($value["SKIP"] == "0") {
                     $ncol+=1;
                     if ($col_type == "datebox") {
                         $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
@@ -611,7 +610,6 @@ class easyuigii {
         }
     }
 
-
     /** get table model
      *
      * @param type $from_json if true get from custom model (json file)
@@ -626,8 +624,8 @@ class easyuigii {
             if (!$from_json) {
 
                 $app = Slim\Slim::getInstance();
-            $table = $this->table_name;
-            $sql = "
+                $table = $this->table_name;
+                $sql = "
                 SELECT
                  A.COLUMN_NAME COL
                  ,case A.DATA_TYPE when 'NUMBER' then  'numberbox'
@@ -654,22 +652,22 @@ class easyuigii {
                 WHERE table_name='$table'
                 ";
 
-            error_log(LogTime() . ' Sql, get model table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+                error_log(LogTime() . ' Sql, get model table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
 
-            //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
-            $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
-            $db = oci_parse($conn, $sql);
-            $rs = oci_execute($db);
+                //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+                $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
+                $db = oci_parse($conn, $sql);
+                $rs = oci_execute($db);
 
-            oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
-            
+                oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
 
-            //save json model
-            $json = json_encode($data);
-            $file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
-            file_put_contents($file, $json);
-            return $data;
+
+                //save json model
+                $json = json_encode($data);
+                $file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
+                file_put_contents($file, $json);
+                return $data;
             } else {
                 $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
                 $json = file_get_contents($file);
@@ -688,7 +686,7 @@ class easyuigii {
     private function get_primary_key_from_model() {
         $model = $this->table_model;
         foreach ($model as $value) {
-        if ($value["CONSTRAINT_TYPE"] == "PRIMARY_KEY") {
+            if ($value["CONSTRAINT_TYPE"] == "PRIMARY_KEY") {
                 return $value["COL"];
             }
         }
@@ -840,19 +838,17 @@ class easyuigii {
     private function get_param_for_bind_insert_update($isUpdate) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-
-        $pk = $this->primary_key;
         $str_bind = "";
-        $ar = $this->ar_col_type;
-        while ($row = current($ar)) {
-            $col_name = key($row);
-            $col_type = $row[$col_name];
-            if (!in_array($col_name, $this->cols_table_skip)) {
-                ($col_name == $pk) ? $type_param = "OCI_B_ROWID" : $type_param = "-1";
+        $model = $this->table_model;
+        //while ($row = current($ar)) {
+        foreach ($model as $value) {
+
+            $col_name = $value["COL"];
+            if ($value["SKIP"] == "0") {
+                ($col_name == $this->primary_key) ? $type_param = "OCI_B_ROWID" : $type_param = "-1";
                 ($isUpdate) ? $type_param = "-1" : false;
                 $str_bind.="oci_bind_by_name(\$db, \":$col_name\", \$$col_name, $type_param);" . PHP_EOL;
             }
-            next($ar);
         }
         return $str_bind;
     }
@@ -864,16 +860,13 @@ class easyuigii {
     private function get_param_insert_update_return() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-
         $str_par = "";
-        $ar = $this->ar_col_type;
-        while ($row = current($ar)) {
-            $col_name = key($row);
-            $col_type = $row[$col_name];
-            if (!in_array($col_name, $this->cols_table_skip)) {
+        $model = $this->table_model;
+        foreach ($model as $value) {
+            $col_name = $value["COL"];
+            if ($value["SKIP"] == "0") {
                 $str_par.= "'$col_name' => \$$col_name," . PHP_EOL;
             }
-            next($ar);
         }
         return $str_par;
     }
@@ -888,6 +881,7 @@ class easyuigii {
 
         $str_par = "";
         $ar = $this->ar_col_type;
+        $model = $this->model;
         while ($row = current($ar)) {
             $col_name = key($row);
             $col_type = $row[$col_name];
@@ -1005,18 +999,18 @@ class easyuigii {
 
         try {
             $code = "";
-            $ar = $this->ar_col_type;
-            while ($row = current($ar)) {
-                $key = key($row);
-                $value = $row[$key];
-                if ($key != $this->primary_key) {
-                    $code.= "\$$key = \$app->request->params('$key'); // Param from Post user" . PHP_EOL;
-                } else {
-                    if ($add_id) { //primary key
-                        $code.= "\$$key = \$app->request->params('$key'); // Param from Post user" . PHP_EOL;
+            $model = $this->table_model;
+            foreach ($model as $value) {
+                $col = $value["COL"];
+                if ($value["SKIP"] == "0") {
+                    if ($col != $this->primary_key) {
+                        $code.= "\$$col= \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
+                    } else {
+                        if ($add_id) { //primary key
+                            $code.= "\$$col = \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
+                        }
                     }
                 }
-                next($ar);
             }
             return $code;
         } catch (Exception $e) {

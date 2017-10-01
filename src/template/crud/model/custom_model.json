@@ -20,15 +20,15 @@
         "HIDE": "0",
         "CK": "0"
     }, {
-        "COL": "CAMPO1",
-        "TYPE": "textbox",
+        "COL": "DTFI",
+        "TYPE": "datebox",
         "CONSTRAINT_TYPE": null,
         "SKIP": "0",
         "HIDE": "0",
         "CK": "0"
     }, {
-        "COL": "DTFI",
-        "TYPE": "datebox",
+        "COL": "CAMPO1",
+        "TYPE": "textbox",
         "CONSTRAINT_TYPE": null,
         "SKIP": "0",
         "HIDE": "0",
