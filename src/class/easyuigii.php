@@ -7,7 +7,7 @@ class easyuigii {
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
     private $root_gii = ""; // path root easyui gii
-    private $ar_col_type = []; // for tamplate crud
+    private $ar_col_type = []; // for tamplate crud //deprecato
     private $primary_key = ""; // auto find from table structure
     private $app_setting = []; // array app setting from json file
     private $host_api = "api"; // for remote/local host es. (local) api or remote) http:/192.168.20/easui_gii/api
@@ -33,6 +33,7 @@ class easyuigii {
     public $api_fn_name = "crud_ABB_CRUD";
     public $dg_col_px_auto = true; //auto calc px, if false not set with length for datagrid col
     public $dg_cols_ck = ["ATTIVO"]; //cols datagrid with checkbox
+    public $table_model = []; //tabel model structure
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -46,7 +47,11 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $this->set_db_setting();
-        $this->primary_key = $this->get_primary_key();
+        //$this->primary_key = $this->get_primary_key();//deprecato
+
+        $this->table_model = $this->get_table_model();
+        $this->primary_key = $this->get_primary_key_from_model();
+        $test = 1;
     }
 
     public function upload_image($name_file) {
@@ -411,7 +416,7 @@ class easyuigii {
             , 'api_url' => $this->api_url
             , 'title' => $this->app_name
             , 'col_crud' => $this->get_template_js_crud() //this function use after $this->get_api_fn_crud
-            , 'id' => $this->primary_key
+            , 'pk' => $this->primary_key
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
@@ -430,6 +435,10 @@ class easyuigii {
         $this->set_api($dir, $api_url, $fn_api); //create file api
     }
 
+    /** cretate code for crud type column
+     *
+     * @return string es. "columns: [[ {field: 'ck', checkbox: true}, {field: 'ID', title: 'ID', width: '30px'
+     */
     private function get_template_js_crud() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
@@ -506,6 +515,48 @@ class easyuigii {
      *
      * @return type string
      */
+    private function get_sql_for_select2() {
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+            $app = Slim\Slim::getInstance();
+
+            $table = $this->table_name;
+
+
+            $str_col_w_a = "";
+            $str_col = "";
+            $ncol = 0;
+            $model = $this->table_model;
+            //for ($i = 1; $i <= $ncols; $i++) {
+            foreach ($model as $value) {
+                $col_name = $value["COL"]; //oci_field_name($db, $i);
+                $col_name_w_a = "A." . $col_name;
+                $col_type = $value["TYPE"];
+                //skip cols
+                if (!in_array($col_name, $this->cols_table_skip)) {
+                    $ncol+=1;
+                    if ($col_type == "datebox") {
+                        $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
+                    }
+                    $strComma = ($ncol > 1) ? ", " : "";
+                    $str_col_w_a.=$strComma . $col_name_w_a; //list col with alias
+                    $str_col.=$strComma . $col_name; //list col without alias
+                }
+            }
+            $strSql = "SELECT $str_col_w_a FROM $table A";
+            return $strSql;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
+    /** create sql string
+     *
+     * @return type string
+     * deprecato
+     */
     private function get_sql_for_select() {
         try {
 
@@ -552,6 +603,70 @@ class easyuigii {
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
+        }
+    }
+
+
+    /** get table model
+     *
+     * @return type array
+     */
+    public function get_table_model() {
+        try {
+
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+            $app = Slim\Slim::getInstance();
+            $table = $this->table_name;
+            $sql = "
+                SELECT
+                 A.COLUMN_NAME COL
+                 ,case A.DATA_TYPE when 'NUMBER' then  'numberbox'
+                                   when 'VARCHAR' then  'textbox'
+                                   when 'VARCHAR2' then 'textbox'
+                                   when 'DATE' then 'datebox'
+                                   else A.DATA_TYPE
+                end TYPE
+                , B.CONSTRAINT_TYPE
+                FROM ALL_TAB_COLUMNS A LEFT JOIN
+                (
+                SELECT
+                cols.column_name,
+                case cons.constraint_type when 'P' then 'PRIMARY_KEY' when 'R' then 'FOREIGN_KEY' else  cons.constraint_type end CONSTRAINT_TYPE
+                FROM all_constraints cons,
+                all_cons_columns cols
+                WHERE cols.table_name='$table'
+                AND cons.constraint_name = cols.constraint_name
+                AND cons.owner = cols.owner
+                ) B on (A.COLUMN_NAME=b.COLUMN_NAME)
+                WHERE table_name='$table'
+                ";
+
+            error_log(LogTime() . ' Sql, get model table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+
+
+            //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
+            $db = oci_parse($conn, $sql);
+            $rs = oci_execute($db);
+
+            oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+            return $data;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
+    /** get column name primary key
+     * @return type strin column name primary key
+     */
+    private function get_primary_key_from_model() {
+        $model = $this->table_model;
+        foreach ($model as $value) {
+        if ($value["CONSTRAINT_TYPE"] == "PRIMARY_KEY") {
+                return $value["COL"];
+            }
         }
     }
 
@@ -633,7 +748,7 @@ class easyuigii {
     private function get_api_fn_crud($api_fn_name) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-
+        $tmp = $this->get_sql_for_select2();
         $sql_select = $this->get_sql_for_select(); //for template
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template
@@ -644,7 +759,6 @@ class easyuigii {
         $param_log_update = $this->get_param_sql_for_log_insert_update(true);
         $sql_update = $this->get_sql_for_update();
         $bind_update = $this->get_param_for_bind_insert_update(true);
-
         //build template html
         $root_template = $this->root_gii . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);

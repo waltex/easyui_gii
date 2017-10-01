@@ -185,8 +185,6 @@ function init_app() {
         (!g_dg_edit) ? view_file() : false;
     }
 
-
-
     function view_file() {
         var file = $('#dg_snippets').datagrid('getSelected').file;
         var param = $.param({protocol: 'FTP',
