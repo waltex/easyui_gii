@@ -164,17 +164,23 @@ function init_app() {
             checkOnSelect: false,
             selectOnCheck: false,
             fitColumns: true,
+                        dragSelection: true,
+                        onLoadSuccess: function(){
+                        $(this).datagrid('enableDnd');
+            },
             columns: [[
                     {field: 'ck', checkbox: true},
-                    {field: "COL", title: T('Nome Colonna'), editor: "text"},
-                    {field: "TYPE", title: T('Tipo Campo'), editor: {type: 'combobox', options: {
+                    {field: "COL", title: BR(T('Nome Campo')), editor: "text"},
+                    {field: "TITLE", title: BR(T('Titolo Campo')), editor: "text"},
+                    {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
+                    {field: "TYPE", title: BR(T('Tipo Campo')), editor: {type: 'combobox', options: {
                                 valueField: 'text',
                                 textField: 'text',
                                 editable: false,
                                 panelWidth: 100,
                                 data: data_type
                             }}},
-                    {field: "CONSTRAINT_TYPE", title: T('Pk - Fk'), editor: {type: 'combobox', options: {
+                    {field: "CONSTRAINT_TYPE", title: T('Primary Key <br> Foreign Key'), editor: {type: 'combobox', options: {
                                 valueField: 'id',
                                 textField: 'text',
                                 editable: false,
@@ -186,9 +192,12 @@ function init_app() {
                             return data;
                         }
                     },
-                    {field: "SKIP", title: T('Campo') + '<br>' + T('Scartato'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "HIDE", title: T('Campo') + '<br>' + T('Nascosto'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "CK", title: T('Campo') + '<br>' + T('Si, No'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "SKIP", title: BR(T('Campo Scartato')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "HIDE", title: BR(T('Campo Nascosto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "CK", title: BR(T('Campo Si|No')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "EDIT", title: BR(T('Campo Modificabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "REQUIRED", title: BR(T('Campo Richiesto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "SORTABLE", title: BR(T('Campo Ordinabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                 ]]
         });
     }

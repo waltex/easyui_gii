@@ -361,6 +361,7 @@ function del_upload_image() {
         error_log(LogTime() . 'error - delete uploadet image ' . PHP_EOL, 3, 'logs/error.log');
     }
 }
+
 /** Read from json file
  */
 function dg_model_read_from_json() {
@@ -370,8 +371,9 @@ function dg_model_read_from_json() {
         $gii = new easyuigii();
         $data = $gii->read_dg_model_from_json();
 
-
-        $app->response()->body(json_encode($data));
+        $result['rows'] = $data;
+        $result['total'] = Count($data);
+        $app->response()->body(json_encode($result));
 
         ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
     } catch (Exception $e) {

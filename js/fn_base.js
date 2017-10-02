@@ -89,3 +89,8 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     link.click();
     document.body.removeChild(link);
 }
+
+// replace space with <br>
+function BR(value) {
+    return value.replace(" ", "<br>");
+}

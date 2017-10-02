@@ -604,16 +604,21 @@ class easyuigii {
                 $sql = "
                 SELECT
                  A.COLUMN_NAME COL
+                 ,A.COLUMN_NAME TITLE
                  ,case A.DATA_TYPE when 'NUMBER' then  'numberbox'
                                    when 'VARCHAR' then  'textbox'
                                    when 'VARCHAR2' then 'textbox'
                                    when 'DATE' then 'datebox'
                                    else A.DATA_TYPE
                 end TYPE
-                , B.CONSTRAINT_TYPE
+                , NVL(B.CONSTRAINT_TYPE,' ') CONSTRAINT_TYPE
                 , 0 SKIP
                 , 0 HIDE
                 , 0 CK
+                , 1 EDIT
+                , case A.NULLABLE when 'Y' then 1 when 'N' then 0 end REQUIRED
+                , 1 SORTABLE
+                ,'' WITDH
                 FROM ALL_TAB_COLUMNS A LEFT JOIN
                 (
                 SELECT
@@ -626,6 +631,7 @@ class easyuigii {
                 AND cons.owner = cols.owner
                 ) B on (A.COLUMN_NAME=b.COLUMN_NAME)
                 WHERE table_name='$table'
+                ORDER BY A.COLUMN_ID
                 ";
 
                 error_log(LogTime() . ' Sql, get model table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
