@@ -26,7 +26,7 @@ class easyuigii {
     public $table_name = "";
     public $model_from_json = 0; // 1 for custom model, 0 from db
     public $date_format = "DD-MM-YYYY";
-    public $html_prefix = "1";
+    public $html_prefix = "17";
     public $api_url = "/crud/ABB_CRUD";
     public $api_fn_name = "crud_ABB_CRUD";
     public $dg_col_px_auto = true; //auto calc px, if false not set with length for datagrid col
