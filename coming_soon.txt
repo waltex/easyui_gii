@@ -7,6 +7,7 @@ _ nel modello crud, conferma su importazione modello dal db
 _ nel modello crud, esclusione campi per modiifca
 _ nel modello crud, gestire su interfaccia il parametro prefix
 _ nel modello, rendere opzionale alias della tabella
+_ fare modello con solo select (custom sql), gestire il drill down
 bug:
 _ nel modello crud, non gestisce il prefix per la funzione js load_dgXXX()
 
