@@ -1,6 +1,9 @@
+new feature:
 _ nel modello, ordinare i campi
 _ nel modello, aggiungere importazione di un solo campo selezionandolo
 _ nel modello, validazione campi, es solo una primary key
 _ nel modello, aggiungere esclusione campi su selezione multipla
+_ nel modello, conferma su importazione modello dal db
+
 
 
