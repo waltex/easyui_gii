@@ -1,15 +1,13 @@
 new feature:
-V nel modello crud, ordinare i campi
 _ nel modello crud, aggiungere importazione di un solo campo selezionandolo
 _ nel modello crud, validazione campi, es solo una primary key
 _ nel modello crud, aggiungere esclusione campi su selezione multipla
 _ nel modello crud, conferma su importazione modello dal db
 _ nel modello crud, esclusione campi per modiifca
-_ nel modello crud, gestire su interfaccia il parametro prefix
 _ nel modello, rendere opzionale alias della tabella
 _ fare modello con solo select (custom sql), gestire il drill down
 _ aggiungere pulsante backup (snippets, model, language, settings ....)
 bug:
-_ nel modello crud, non gestisce il prefix per la funzione js load_dgXXX()
+
 
 

@@ -26,7 +26,7 @@ class easyuigii {
     public $table_name = "";
     public $model_from_json = 0; // 1 for custom model, 0 from db
     public $date_format = "DD-MM-YYYY";
-    public $html_prefix = "17";
+    public $html_prefix = "";
     public $api_url = "/crud/ABB_CRUD";
     public $api_fn_name = "crud_ABB_CRUD";
     public $dg_col_px_auto = true; //auto calc px, if false not set with length for datagrid col
@@ -508,6 +508,10 @@ class easyuigii {
         $col = $row["COL"];
         $type = $row["TYPE"];
         $type_pk_fk = $row["CONSTRAINT_TYPE"];
+        $edit = $row["EDIT"];
+        $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
+        $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
+
         $pk = $this->primary_key;
 
         $with = "";
@@ -519,32 +523,36 @@ class easyuigii {
 
         if ($type_pk_fk == "PRIMARY_KEY") {
             $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
-            return $ck . "{field: '$col', title: '$colt', $with sortable: true}," . PHP_EOL;
+            return $ck . "{field: '$col', title: '$colt', $with $sortable}," . PHP_EOL;
         }
 
         if ($row["CK"] == "1") {
-            //{field: 'ID_CLONE', title: 'Fase<br>Duplicata', formatter: mycheck},
-            return "{field: '$col', title: '$colt', editor: {type: 'checkbox', options: {on: '1', off: '0'}},formatter: mycheck,required: true}," . PHP_EOL;
+            $editor = ($edit == "1") ? "editor: {type: 'checkbox', options: {on: '1', off: '0'}}," : "";
+            return "{field: '$col', title: '$colt', $editor formatter: mycheck, $required $sortable}," . PHP_EOL;
         }
 
 
         if ($type == "textbox") {
-            return "{field: '$col', title: '$colt', $with editor: {type: 'textbox', options: {required: true}}, sortable: true}," . PHP_EOL;
+            $editor = ($edit == "1") ? "editor: {type: 'textbox', options: { $required }}," : "";
+            return "{field: '$col', title: '$colt', $with  $editor $sortable}," . PHP_EOL;
         }
 
         //escludo the column primary key for edit
         if ($type == "numberbox") {
             $with = "width: '50px',";
-            return "{field: '$col', title: '$colt', $with editor: {type: 'numberbox', options: {required: true}}, sortable: true}," . PHP_EOL;
+            $editor = ($edit == "1") ? "editor: {type: 'numberbox', options: { $required }}," : "";
+            return "{field: '$col', title: '$colt', $with $editor $sortable}," . PHP_EOL;
         }
 
         if ($type == "datebox") {
             $with = "width: '100px',";
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
             $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
-            return "{field: '$col', title: '$colt', $with editor: {type: 'datebox', options: { $date_format required: true}}, sortable: true}," . PHP_EOL;
+            $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
+            return "{field: '$col', title: '$colt', $with $editor $sortable}," . PHP_EOL;
         }
-        return "{field: '$col', title: '$colt', $with editor: {type: '??$type??', options: {required: true}}, sortable: true}," . PHP_EOL;
+        $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
+        return "{field: '$col', title: '$colt', $with $editor $sortable}," . PHP_EOL;
     }
 
     /** create sql string

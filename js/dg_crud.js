@@ -52,10 +52,13 @@ function init_app() {
         (hide) ? $('#p_crud').panel('expand', true) : $('#p_crud').panel('collapse', true);
     });
     $('#bt_gencode').on('click', function () {
+        /*
         var validate = true;
         (!$('#tb_app_name').textbox('isValid')) ? validate = false : false;
         (!$('#tb_app_folder').textbox('isValid')) ? validate = false : false;
         (!$('#tb_table_name').textbox('isValid')) ? validate = false : false;
+        */
+        var validate = $('#ff_crud').form('validate');
         if (validate) {
             $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
                 if (r) {
@@ -63,8 +66,9 @@ function init_app() {
                     var app_folder = $('#tb_app_folder').textbox('getValue');
                     var table_name = $('#tb_table_name').textbox('getValue');
                     var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
+                    var html_prefix = $('#nn_prefix').numberspinner('getValue');
                     $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
-                    $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name, model_from_json: model_from_json})
+                    $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name, model_from_json: model_from_json, html_prefix: html_prefix})
                             .done(function (data) {
                                 $.messager.progress('close');
                                 if (data.success) {
@@ -180,7 +184,7 @@ function init_app() {
                                 panelWidth: 100,
                                 data: data_type
                             }}},
-                    {field: "CONSTRAINT_TYPE", title: T('Primary Key <br> Foreign Key'), editor: {type: 'combobox', options: {
+                    {field: "CONSTRAINT_TYPE", title: T('Primary Key <br> Foreing Key'), editor: {type: 'combobox', options: {
                                 valueField: 'id',
                                 textField: 'text',
                                 editable: false,
@@ -228,6 +232,14 @@ function init_app() {
                     $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
                 });
     }
+    $('#nn_prefix').numberspinner({
+        min: 1,
+        precision: 0,
+        spinAlign: 'horizontal',
+        value: 1,
+        required: true,
+    });
+    $('#nn_prefix_label').html(T('Prefisso numerico elemento es. #dg1, #dg2...'));
 }
 
 

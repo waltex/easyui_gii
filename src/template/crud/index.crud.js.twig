@@ -1,11 +1,11 @@
 $(document).ready(function () {
     $('#dg{{n}}_reload').bind('click', function () {
-        load_dg1();
+        load_dg{{n}}();
     });
     $('#dg1_export').bind('click', function () {
-        JSONToCSVConvertor($('#dg1').datagrid('getRows'), "{{T('dati')}}", 'label')
+        JSONToCSVConvertor($('#dg{{n}}').datagrid('getRows'), "{{T('dati')}}", 'label')
     });
-    function load_dg1() {
+    function load_dg{{n}}() {
         //$('#tt').tabs('select', 'Tab{{n}}');
         $('#dg{{n}}').datagrid('uncheckAll');
         $('#dg{{n}}').datagrid('disableFilter');
@@ -26,7 +26,6 @@ $(document).ready(function () {
             remoteSort: false,
             multiSort: false,
             autoRowHeight: false, //For Speed refresh
-            //editorHeight: 32,
             destroyMsg: {
                 norecord: {// when no record is selected
                     title: "{{T('Attenzione')}}",
@@ -53,5 +52,5 @@ $(document).ready(function () {
         $('#dg{{n}}').datagrid('enableFilter');
     }
 
-    load_dg1();
+    load_dg{{n}}();
 });
