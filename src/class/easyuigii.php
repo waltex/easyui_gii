@@ -29,7 +29,6 @@ class easyuigii {
     public $html_prefix = "";
     public $api_url = "/crud/ABB_CRUD";
     public $api_fn_name = "crud_ABB_CRUD";
-    public $dg_col_px_auto = true; //auto calc px, if false not set with length for datagrid col
     public $table_model = []; //tabel model structure
 
     function __construct() {
@@ -506,7 +505,9 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $col = $row["COL"];
+        $title = $row["TITLE"];
         $type = $row["TYPE"];
+        $width_field = $row["WIDTH"];
         $type_pk_fk = $row["CONSTRAINT_TYPE"];
         $edit = $row["EDIT"];
         $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
@@ -514,16 +515,18 @@ class easyuigii {
 
         $pk = $this->primary_key;
 
-        $with = "";
-        $colt = $this->T($col); //translate
-        if ($this->dg_col_px_auto) {
-            $px = (strlen($colt) * 15) . "px";
-            $with = "width: '$px',";
+        $width = "";
+        $colt = $this->T($title); //translate
+        if ($width_field == "") {
+            //$px = (strlen($colt) * 10) . "px";
+            //$width = "width: '$px',";
+        } else {
+            $width = "width: '$width_field',";
         }
 
         if ($type_pk_fk == "PRIMARY_KEY") {
             $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
-            return $ck . "{field: '$col', title: '$colt', $with $sortable}," . PHP_EOL;
+            return $ck . "{field: '$col', title: '$colt', $width $sortable}," . PHP_EOL;
         }
 
         if ($row["CK"] == "1") {
@@ -534,14 +537,14 @@ class easyuigii {
 
         if ($type == "textbox") {
             $editor = ($edit == "1") ? "editor: {type: 'textbox', options: { $required }}," : "";
-            return "{field: '$col', title: '$colt', $with  $editor $sortable}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
         }
 
         //escludo the column primary key for edit
         if ($type == "numberbox") {
             $with = "width: '50px',";
             $editor = ($edit == "1") ? "editor: {type: 'numberbox', options: { $required }}," : "";
-            return "{field: '$col', title: '$colt', $with $editor $sortable}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
         }
 
         if ($type == "datebox") {
@@ -549,10 +552,10 @@ class easyuigii {
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
             $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
             $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
-            return "{field: '$col', title: '$colt', $with $editor $sortable}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
         }
         $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
-        return "{field: '$col', title: '$colt', $with $editor $sortable}," . PHP_EOL;
+        return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
     }
 
     /** create sql string
@@ -626,7 +629,7 @@ class easyuigii {
                 , 1 EDIT
                 , case A.NULLABLE when 'Y' then 1 when 'N' then 0 end REQUIRED
                 , 1 SORTABLE
-                ,'' WITDH
+                ,'' WIDTH
                 FROM ALL_TAB_COLUMNS A LEFT JOIN
                 (
                 SELECT

@@ -1,5 +1,4 @@
 new feature:
-_ nel modello crud, aggiungere importazione di un solo campo selezionandolo
 _ nel modello crud, validazione campi, es solo una primary key
 _ nel modello crud, aggiungere esclusione campi su selezione multipla
 _ nel modello crud, conferma su importazione modello dal db

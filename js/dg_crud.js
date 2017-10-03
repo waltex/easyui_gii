@@ -14,7 +14,6 @@ function init_app() {
     $('#tb_app_name').textbox('textbox').bind('keydown', function (e) {
         var $this = $(this);
         window.setTimeout(function () {
-            //g_debug = e;
             //console.log($this.val() + '--' + $this.val().length);
             var add = $this.val();
             if (add.length == 1) {
@@ -53,11 +52,11 @@ function init_app() {
     });
     $('#bt_gencode').on('click', function () {
         /*
-        var validate = true;
-        (!$('#tb_app_name').textbox('isValid')) ? validate = false : false;
-        (!$('#tb_app_folder').textbox('isValid')) ? validate = false : false;
-        (!$('#tb_table_name').textbox('isValid')) ? validate = false : false;
-        */
+         var validate = true;
+         (!$('#tb_app_name').textbox('isValid')) ? validate = false : false;
+         (!$('#tb_app_folder').textbox('isValid')) ? validate = false : false;
+         (!$('#tb_table_name').textbox('isValid')) ? validate = false : false;
+         */
         var validate = $('#ff_crud').form('validate');
         if (validate) {
             $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
@@ -105,6 +104,7 @@ function init_app() {
             } else {
                 $('#div_model').hide();
             }
+            load_menu_opt();
         }
     });
     $("#sb_model_label").html(T("impostare un modello personalizzato per la tabella"));
@@ -145,7 +145,10 @@ function init_app() {
                 } else {
                     $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
                 }
-            }}];
+            }}, '-', {
+            id: 'bt_model_opt',
+        }];
+
     var data_pk_fk = [{
             text: 'Primary Key',
             id: 'PRIMARY_KEY'
@@ -168,9 +171,10 @@ function init_app() {
             checkOnSelect: false,
             selectOnCheck: false,
             fitColumns: true,
-                        dragSelection: true,
-                        onLoadSuccess: function(){
-                        $(this).datagrid('enableDnd');
+            dragSelection: true,
+            onLoadSuccess: function () {
+                $(this).datagrid('enableDnd');
+                load_menu_opt();
             },
             columns: [[
                     {field: 'ck', checkbox: true},
@@ -240,6 +244,58 @@ function init_app() {
         required: true,
     });
     $('#nn_prefix_label').html(T('Prefisso numerico elemento es. #dg1, #dg2...'));
+    $('#opt_test').on('click', function () {
+        $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+    });
+    function load_menu_opt() {
+        $('#bt_model_opt').menubutton({
+            menu: '#mm_opt',
+            text: T('Altre opzioni'),
+            iconCls: 'icon-setting-mini',
+        });
+    }
+
+    $('#opt_import_field_model').on('click', function () {
+        var table = $('#tb_table_name').textbox('getValue');
+        if (table != "") {
+            var dlg_msg = $.messager.prompt(T('modello'), T('Seleziona un campo del modello da importare'), function (r) {
+                if (r === undefined) {
+                    //console.log('press cancel');
+                } else {
+                    var model = $('#cc_model_field').combobox('getData');
+                    var field = $('#cc_model_field').combobox('getValue');
+
+                    for (var i = 0; i < model.length; i++) {
+                        if (model[i].COL == field) {
+                            var row = model[i];
+                            $('#dg_model').datagrid('appendRow', row);//add row select to model
+                            $('#dg_model').datagrid('enableDnd');
+                        }
+
+                    }
+                }
+
+            });
+            dlg_msg.find('.messager-input').combobox({
+                url: 'api/dg/model/read/db/' + table,
+                valueField: 'COL',
+                textField: 'COL',
+                required: true,
+                panelWidth: 300,
+                editable: false,
+                prompt: T('attendere caricamento...'),
+                onLoadSuccess: function () {
+                    $(this).combobox({prompt: T('seleziona')});
+                },
+                label: T('Campo: ' + table),
+                labelPosition: 'left',
+                width: 240,
+            }).attr('id', 'cc_model_field');
+        } else {
+            $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
+        }
+    });
+    $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
 }
 
 
