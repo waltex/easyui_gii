@@ -48,6 +48,51 @@ class easyuigii {
         $this->table_model = $this->get_table_model($model_from_json); // true get from custom model, false from db
         $this->primary_key = $this->get_primary_key_from_model();
     }
+    /** replace title of model  with array param asscociation es ID ->#, DTIN ->Data inizio
+     *
+     * @param type $json
+     * @return type
+     */
+    private function set_title_model_from_ar_setting($json) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $ar_title = $this->app_setting["imposta il titolo in automatico sul campo del modello"];
+        $ar_field = explode(";", $ar_title);
+        $ar_title = [];
+        foreach ($ar_field as $value) {
+            $data = explode(":", $value);
+            $key = $data[0];
+            $value = $data[1];
+            $ar_title[$key] = $value;
+        }
+        $model = [];
+        foreach ($json as $value) {
+            $new_value = $this->replace_title_of_model_row($value, $ar_title);
+            $model[] = $new_value;
+        }
+        return $model;
+    }
+    /** replace title of model row with array param asscociation es ID ->#, DTIN ->Data inizio
+     *
+     * @param type $row
+     * @param type $ar_title
+     * @return type
+     */
+    private function replace_title_of_model_row($row, $ar_title) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        foreach ($row as $value) {
+            if (array_key_exists($value, $ar_title)) {
+                if (($row["COL"] == $row["TITLE"]) || ($row["TITLE"] == "") || ($row["TITLE"] == null)) {
+                    $key = $row["COL"];
+                    $new_val = $ar_title[$key];
+                    $row["TITLE"] = $new_val;
+                }
+                return $row;
+            } else {
+                return $row;
+            }
+        }
+    }
 
     /** save model to json file
      *
@@ -79,7 +124,8 @@ class easyuigii {
         $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
         $json = file_get_contents($file);
         $data = json_decode($json, true);
-        return $data;
+        $data_r = $this->set_title_model_from_ar_setting($data);
+        return $data_r;
     }
 
     public function upload_image($name_file) {
@@ -654,18 +700,19 @@ class easyuigii {
                 $rs = oci_execute($db);
 
                 oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
-
+                $data_r = $this->set_title_model_from_ar_setting($data);
 
                 //save json model
-                $json = json_encode($data);
-                $file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
-                file_put_contents($file, $json);
-                return $data;
+                //$json = json_encode($data);
+                //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
+                //file_put_contents($file, $json);
+                return $data_r;
             } else {
                 $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
                 $json = file_get_contents($file);
                 $data = json_decode($json, true);
-                return $data;
+                $data_r = $this->set_title_model_from_ar_setting($json);
+                return $data_r;
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
