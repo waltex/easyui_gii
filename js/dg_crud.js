@@ -134,7 +134,8 @@ function init_app() {
             text: T('Ricarica'),
             iconCls: 'icon-reload',
             handler: function () {
-                $('#dg_model').datagrid({url: 'api/dg/model/read/json'});
+                $('#dg_model').datagrid('options').url = 'api/dg/model/read/json';
+                $('#dg_model').datagrid('reload');
             }}, '-', {
             text: T('Importa dal db'),
             iconCls: 'icon-add',
@@ -172,6 +173,16 @@ function init_app() {
             selectOnCheck: false,
             fitColumns: true,
             dragSelection: true,
+            destroyMsg: {
+                norecord: {// when no record is selected
+                    title: T('attenzione'),
+                    msg: T('Nessun record selezionato'),
+                },
+                confirm: {// when select a row
+                    title: T('conferma'),
+                    msg: T('Sei sicuro che vuoi cancellare?')
+                }
+            },
             onLoadSuccess: function () {
                 $(this).datagrid('enableDnd');
                 load_menu_opt();

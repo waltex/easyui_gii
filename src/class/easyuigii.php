@@ -708,11 +708,11 @@ class easyuigii {
                 //file_put_contents($file, $json);
                 return $data_r;
             } else {
+                //custom model
                 $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
                 $json = file_get_contents($file);
                 $data = json_decode($json, true);
-                $data_r = $this->set_title_model_from_ar_setting($json);
-                return $data_r;
+                return $data;
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
