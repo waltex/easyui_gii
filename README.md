@@ -1,13 +1,26 @@
 # Easyui Gii Code Generator
 
-Questa App è un generatore di codice avanzato, che incorpora utility, per generare ritagli di codice da copiare e riutilizzare per le proprie applicazioni.
+This App is an advanced code generator that incorporates utilities to generate code snippets to be copied and reused for your applications.
 
 ## Funzionalità
 
-* crud generator per oracle
-* gestione snippet 
-* App tradotte in 30 lingue
+* crud generator for oracle
+*  snippet editor
+* App translate in 30 language
 
+### System Requirements
+
+You need **PHP >= 5.4.0**. If you use encrypted cookies, you'll also need the `mcrypt` extension.
+
+Installation
+------------
+
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+
+
+    composer update
+
+Enable 0777 permition on folder app
 
 ## License
 
