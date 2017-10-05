@@ -49,7 +49,27 @@ class easyuigii {
         $this->primary_key = $this->get_primary_key_from_model();
     }
 
-       /** set flag hide of model  with array param asscociation es -> DT_INS;DT_MOD
+    /** list table of db
+     * @return type
+     */
+    public function list_table_db() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $sql = "
+                SELECT table_name TEXT FROM dba_tables WHERE OWNER=user ORDER BY 1
+                ";
+        error_log(LogTime() . ' Sql, get list table of db: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+
+
+        $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
+        $db = oci_parse($conn, $sql);
+        $rs = oci_execute($db);
+
+        oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+        return $data;
+    }
+
+    /** set flag hide of model  with array param asscociation es -> DT_INS;DT_MOD
      *
      * @param type $json
      * @return type

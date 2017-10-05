@@ -34,7 +34,10 @@ function init_app() {
         prompt: T("digita qui..."), //type here
         labelPosition: 'top',
     });
-    $('#tb_table_name').textbox({
+    $('#tb_table_name').combobox({
+        url: 'api/list/table/db',
+        valueField: 'TEXT',
+        textField: 'TEXT',
         label: T("Nome tabella:"), //path app
         required: true,
         prompt: T("digita qui..."), //type here
@@ -63,7 +66,7 @@ function init_app() {
                 if (r) {
                     var app_name = $('#tb_app_name').textbox('getValue');
                     var app_folder = $('#tb_app_folder').textbox('getValue');
-                    var table_name = $('#tb_table_name').textbox('getValue');
+                    var table_name = $('#tb_table_name').combobox('getValue');
                     var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
                     var html_prefix = $('#nn_prefix').numberspinner('getValue');
                     $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
@@ -140,7 +143,7 @@ function init_app() {
             text: T('Importa dal db'),
             iconCls: 'icon-add',
             handler: function () {
-                var table = $('#tb_table_name').textbox('getValue');
+                var table = $('#tb_table_name').combobox('getValue');
                 if (table != "") {
                     $('#dg_model').datagrid({url: 'api/dg/model/read/db/' + table});
                 } else {
@@ -267,7 +270,7 @@ function init_app() {
     }
 
     $('#opt_import_field_model').on('click', function () {
-        var table = $('#tb_table_name').textbox('getValue');
+        var table = $('#tb_table_name').combobox('getValue');
         if (table != "") {
             var dlg_msg = $.messager.prompt(T('modello'), T('Seleziona un campo del modello da importare'), function (r) {
                 if (r === undefined) {
