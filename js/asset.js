@@ -15,4 +15,6 @@ document.write('\
 \
 \<link href="lib/easyui_extension/ribbon/ribbon-icon.css" rel="stylesheet" type="text/css"/>\
 \<script src="lib/easyui_extension/ribbon/jquery.ribbon.js" type="text/javascript"></script>\
+\
+\<link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>\
 ');
