@@ -274,7 +274,7 @@ function init_app() {
         $('#bt_model_opt').menubutton({
             menu: '#mm_opt',
             text: T('Altre opzioni'),
-            iconCls: 'icon-setting-mini',
+            iconCls: 'fa fa fa-bars fa-red fa-lg',
         });
     }
 

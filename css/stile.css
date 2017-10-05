@@ -4,3 +4,33 @@ body {
 .datagrid-header-row, .datagrid-row{
     height:22px;
 }
+.fa-red{
+    color:red
+}
+.fa-brown{
+    color:brown
+}
+.fa-jellow{
+    color:yellow
+}
+.fa-yellowgreen{
+    color:yellowgreen
+}
+.fa-green{
+    color:green
+}
+.fa-blue{
+    color:blue
+}
+.fa-blueviolet{
+    color:blueviolet
+}
+.fa-dodgerblue{
+    color: dodgerblue
+}
+.fa-grey{
+    color: grey
+}
+.fa-darkgrey{
+    color: darkgrey
+}
