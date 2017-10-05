@@ -4,7 +4,7 @@ This App is an advanced code generator that incorporates utilities to generate c
 
 This [demo](https://waltex.github.io/easyui_gii/) interface without functionality api written in php.
 
-## Funzionalità
+### Features
 
 * crud generator for oracle
 *  snippet editor
@@ -16,8 +16,7 @@ This [demo](https://waltex.github.io/easyui_gii/) interface without functionalit
 * Oci oracle driver
 
 
-Installation
-------------
+### Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
@@ -26,7 +25,8 @@ The preferred way to install this extension is through [composer](http://getcomp
 
 Enable 0777 permition on folder app
 
-## License
+### License
+
 
 The Easyui Gii is released under the MIT public license.
 
