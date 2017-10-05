@@ -10,7 +10,9 @@ This App is an advanced code generator that incorporates utilities to generate c
 
 ### System Requirements
 
-You need **PHP >= 5.4.0**. If you use encrypted cookies, you'll also need the `mcrypt` extension.
+* You need **PHP >= 5.4.0**. 
+* Oci oracle driver
+
 
 Installation
 ------------
