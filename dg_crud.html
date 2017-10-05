@@ -12,7 +12,7 @@
     <body>
         <form id="ff_crud" >
             <div id="p_crud" class="easyui-panel"
-                 style="width:100%;height:400px;background:#fafafa;padding: 1%"
+                 style="width:100%;height:450px;background:#fafafa;padding:1% 1% 1% 1%"
                  data-options="iconCls:'icon-setting-mini',
                  collapsible:true,collapsed:true">
                 <input id="sb_model" class="easyui-switchbutton" checked>
@@ -25,16 +25,20 @@
                     <label id="nn_prefix_label" for="nn_prefix"></label><br>
                     <input type="text" id="nn_prefix" style="width:90px;margin-top: 10px">
                 </div>
-
-
-
+            </div>
+            <div style="height: 5px"></div>
+            <div id="p_base" class="easyui-panel"
+                 style="width:100%;height:auto;background:#fafafa;padding:0% 1% 1% 1%;"
+                 data-options="iconCls:'icon-setting-mini',title:' ',collapsible:true">
+                <input id="tb_app_name" class="easyui-textbox" style="width:350px"><br>
+                <input id="tb_app_folder" class="easyui-textbox" style="width:350px"><br>
+                <input id="tb_table_name" class="easyui-combobox" style="width:350px">
             </div>
 
-            <input id="tb_app_name" class="easyui-textbox" style="width:350px"><br>
-            <input id="tb_app_folder" class="easyui-textbox" style="width:350px"><br>
-            <input id="tb_table_name" class="easyui-combobox" style="width:350px"><br><br>
+
         </form>
-        <a id="bt_gencode" class="easyui-linkbutton" data-options="iconCls:'icon-ok'">RunCode</a>
+
+        <a id="bt_gencode" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="margin-top: 5px">RunCode</a>
 
         <div id="mm_opt" style="width:300px;display:none">
             <div id="opt_import_field_model" data-options="iconCls:'icon-undo'">.Importa un campo del modello dal db</div>

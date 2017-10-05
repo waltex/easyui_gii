@@ -46,13 +46,22 @@ function init_app() {
     $('#p_crud').panel({
         title: T("Altri Parametri"),
     });
-
-    $('#bt_gencode').linkbutton({text: T('Genera il codice')});
-    // expand and collapse on click
     $('#p_crud').panel('header').click(function () {
         var hide = $($('#p_crud').panel('body')[0]).css('display') == 'none';
         (hide) ? $('#p_crud').panel('expand', true) : $('#p_crud').panel('collapse', true);
     });
+
+    $('#p_base').panel({
+        title: T("Parametri principali"),
+    });
+    $('#p_base').panel('header').click(function () {
+        var hide = $($('#p_base').panel('body')[0]).css('display') == 'none';
+        (hide) ? $('#p_base').panel('expand', true) : $('#p_base').panel('collapse', true);
+    });
+
+    $('#bt_gencode').linkbutton({text: T('Genera il codice')});
+    // expand and collapse on click
+
     $('#bt_gencode').on('click', function () {
         /*
          var validate = true;
