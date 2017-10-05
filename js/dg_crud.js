@@ -199,7 +199,7 @@ function init_app() {
                                 panelWidth: 100,
                                 data: data_type
                             }}},
-                    {field: "CONSTRAINT_TYPE", title: T('Primary Key <br> Foreing Key'), editor: {type: 'combobox', options: {
+                    {field: "CONSTRAINT_TYPE", title: BR(T('Vincoli Campo')), editor: {type: 'combobox', options: {
                                 valueField: 'id',
                                 textField: 'text',
                                 editable: false,
