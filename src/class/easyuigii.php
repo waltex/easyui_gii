@@ -48,6 +48,53 @@ class easyuigii {
         $this->table_model = $this->get_table_model($model_from_json); // true get from custom model, false from db
         $this->primary_key = $this->get_primary_key_from_model();
     }
+
+       /** set flag hide of model  with array param asscociation es -> DT_INS;DT_MOD
+     *
+     * @param type $json
+     * @return type
+     */
+    private function set_flag_hide_model_from_ar_setting($json) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $value = $this->app_setting["imposta il flag scartato sul campo del modello CRUD"];
+        $ar_field = explode("|", $value);
+        $model = [];
+        foreach ($json as $value) {
+            $col_find = $value["COL"];
+            if (in_array($col_find, $ar_field)) {
+                $value["SKIP"] = "1";
+                $model[] = $value;
+            } else {
+                $model[] = $value;
+            }
+        }
+        return $model;
+    }
+
+    /** set flag on/off of model  with array param asscociation es -> ACTIVED;CK
+     *
+     * @param type $json
+     * @return type
+     */
+    private function set_flag_onoff_model_from_ar_setting($json) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $value = $this->app_setting["imposta il flag on/off sul campo del modello CRUD"];
+        $ar_field = explode("|", $value);
+        $model = [];
+        foreach ($json as $value) {
+            $col_find = $value["COL"];
+            if (in_array($col_find, $ar_field)) {
+                $value["CK"] = "1";
+                $model[] = $value;
+            } else {
+                $model[] = $value;
+            }
+        }
+        return $model;
+    }
+
     /** replace title of model  with array param asscociation es ID ->#, DTIN ->Data inizio
      *
      * @param type $json
@@ -56,8 +103,8 @@ class easyuigii {
     private function set_title_model_from_ar_setting($json) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $ar_title = $this->app_setting["imposta il titolo in automatico sul campo del modello"];
-        $ar_field = explode(";", $ar_title);
+        $ar_title = $this->app_setting["imposta il titolo sul campo del modello CRUD"];
+        $ar_field = explode("|", $ar_title);
         $ar_title = [];
         foreach ($ar_field as $value) {
             $data = explode(":", $value);
@@ -115,7 +162,7 @@ class easyuigii {
         return $data;
     }
 
-    /** read model table from db
+    /** read model table from file json
      * @return type
      */
     public function read_dg_model_from_json() {
@@ -124,8 +171,7 @@ class easyuigii {
         $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
         $json = file_get_contents($file);
         $data = json_decode($json, true);
-        $data_r = $this->set_title_model_from_ar_setting($data);
-        return $data_r;
+        return $data;
     }
 
     public function upload_image($name_file) {
@@ -670,7 +716,7 @@ class easyuigii {
                 end TYPE
                 , NVL(B.CONSTRAINT_TYPE,' ') CONSTRAINT_TYPE
                 , 0 SKIP
-                , 0 HIDE
+                , case when B.CONSTRAINT_TYPE='PRIMARY_KEY' then 1 else 0 end  HIDE
                 , 0 CK
                 , 1 EDIT
                 , case A.NULLABLE when 'Y' then 1 when 'N' then 0 end REQUIRED
@@ -701,12 +747,14 @@ class easyuigii {
 
                 oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
                 $data_r = $this->set_title_model_from_ar_setting($data);
+                $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
+                $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
 
                 //save json model
                 //$json = json_encode($data);
                 //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
                 //file_put_contents($file, $json);
-                return $data_r;
+                return $data_r3;
             } else {
                 //custom model
                 $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
