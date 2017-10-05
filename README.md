@@ -1,8 +1,6 @@
-## Welcome to GitHub Pages
+## Easyui Gii Code Generator
 
-You can use the [editor on GitHub](https://github.com/waltex/easyui_gii/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Questa App è un generatore di codice avanzato, che incorpora utility, per generare ritagli di codice da copiare e riutilizzare per le proprie applicazioni.
 
 ### Markdown
 
