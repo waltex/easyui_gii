@@ -199,11 +199,10 @@ function init_app() {
                 $(this).datagrid('enableDnd');
                 load_menu_opt();
             },
-            columns: [[
+            frozenColumns: [[
                     {field: 'ck', checkbox: true},
                     {field: "COL", title: BR(T('Nome Campo')), editor: "text"},
                     {field: "TITLE", title: BR(T('Titolo Campo')), editor: "text"},
-                    {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
                     {field: "TYPE", title: BR(T('Tipo Campo')), editor: {type: 'combobox', options: {
                                 valueField: 'text',
                                 textField: 'text',
@@ -211,6 +210,15 @@ function init_app() {
                                 panelWidth: 100,
                                 data: data_type
                             }}},
+                ]],
+            columns: [[
+                    {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
+                    {field: "SKIP", title: BR(T('Campo Scartato')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "HIDE", title: BR(T('Campo Nascosto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "CK", title: BR(T('Campo Si|No')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "EDIT", title: BR(T('Campo Modificabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "REQUIRED", title: BR(T('Campo Richiesto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "SORTABLE", title: BR(T('Campo Ordinabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "CONSTRAINT_TYPE", title: BR(T('Vincoli Campo')), editor: {type: 'combobox', options: {
                                 valueField: 'id',
                                 textField: 'text',
@@ -223,12 +231,9 @@ function init_app() {
                             return data;
                         }
                     },
-                    {field: "SKIP", title: BR(T('Campo Scartato')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "HIDE", title: BR(T('Campo Nascosto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "CK", title: BR(T('Campo Si|No')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "EDIT", title: BR(T('Campo Modificabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "REQUIRED", title: BR(T('Campo Richiesto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "SORTABLE", title: BR(T('Campo Ordinabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: "text"},
+                    {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('Tabella Collegata'), editor: "text"},
+                    {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('Tabella Collegata'), editor: "text"},
                 ]]
         });
     }
