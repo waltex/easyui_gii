@@ -172,7 +172,7 @@ function init_app() {
             text: T('Nessuna'),
             id: null
         }];
-    var data_type = [{text: 'tetxbox'}, {text: 'datebox', }, {text: 'numberbox'}];
+    var data_type = [{text: 'tetxbox'}, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox'}];
     function load_dg_model() {
         $('#dg_model').edatagrid({
             //url: url: 'api/dg/model/read/json',

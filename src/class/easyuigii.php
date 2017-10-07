@@ -139,6 +139,7 @@ class easyuigii {
         }
         return $model;
     }
+
     /** replace title of model row with array param asscociation es ID ->#, DTIN ->Data inizio
      *
      * @param type $row
@@ -549,7 +550,12 @@ class easyuigii {
         file_put_contents($file, $html); //write generated html
 
         $api_url = $this->get_api_name($this->api_url . "/:command", $this->api_fn_name); //create code url api + function
+        $api_url_combo = $this->get_api_name_for_combobox();
+        $api_url = array_merge([$api_url], $api_url_combo);
+
         $fn_api = $this->get_api_fn_crud($this->api_fn_name); //template redered api function
+        $fn_combo = $this->get_api_fn_combo();
+        $fn_api = array_merge([$fn_api], $fn_combo);
 
         $js = $twig->render('/crud/index.crud.js.twig', array('n' => $this->html_prefix
             , 'host_api' => $this->host_api
@@ -572,7 +578,26 @@ class easyuigii {
         $file = $dir . "/api/api_setup.php";
         file_put_contents($file, $api_setup); //write generated html
         //create api
-        $this->set_api($dir, $api_url, $fn_api); //create file api
+        $this->union_api_code($dir, $api_url, $fn_api); //create file api
+    }
+
+    /** return all api url code
+     *
+     * @return type
+     */
+    private function get_api_name_for_combobox() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        $api_url = [];
+        $model = $this->table_model;
+        foreach ($model as $value) {
+            if ($value["SKIP"] == "0") {
+                if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
+                    $table = $value["NAME_TABLE_EXT"];
+                    $api_url[] = "\$app->post('/combo/$table/:ws', 'combo_$table');";
+                }
+            }
+        }
+        return $api_url;
     }
 
     /** cretate code for crud type column
@@ -624,6 +649,11 @@ class easyuigii {
         $edit = $row["EDIT"];
         $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
         $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
+        $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
+        $value_field = $row["VALUE_FIELD"]; // value for combobox
+        $text_field = $row["TEXT_FIELD"];   // text for combobox
+        $url_combobox = "api/combo/$table_ext/1"; //url api combobox
+
 
         $pk = $this->primary_key;
 
@@ -666,6 +696,12 @@ class easyuigii {
             $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
             return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
         }
+        if ($type == "combobox") {
+            $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'post',url: '$url_combobox',$required panelWidth: 250,}},";
+            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+        }
+
         $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
         return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
     }
@@ -971,6 +1007,48 @@ class easyuigii {
         return $php;
     }
 
+    /** get string code  function api for crud combo
+     *
+     */
+    private function get_api_fn_combo() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        $api_url = [];
+        $model = $this->table_model;
+        $return = [];
+        foreach ($model as $value) {
+            if ($value["SKIP"] == "0") {
+                if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
+                    $table = $value["NAME_TABLE_EXT"];
+                    $value_field = $value["VALUE_FIELD"];
+                    $text_field = $value["TEXT_FIELD"];
+
+                    $api_fn_name = "combo_$table";
+                    $var_fn = "\$ws";
+
+                    $sql_select = "SELECT $value_field, $text_field from $table ";
+                    //build template html
+                    $root_template = $this->root_gii . $this->template_root_path;
+                    $loader = new Twig_Loader_Filesystem($root_template);
+                    $twig = new Twig_Environment($loader);
+
+                    $php = $twig->render('/crud/api/combobox.api.oci.php.twig', array(
+                        'api_fn_name' => $api_fn_name
+                        , 'var_fn' => $var_fn
+                        , 'sql_select' => $sql_select
+                        , 'table' => $table
+                        , 'drv_cn_var' => $this->oci_cn_var
+                        , 'drv_user_var' => $this->oci_user_var
+                        , 'drv_password_var' => $this->oci_password_var
+                        , 'drv_charset' => $this->oci_charset
+                    ));
+
+                    $return[] = $php;
+                }
+            }
+        }
+        return $return;
+    }
+
     /** list col from type col table es. field1, field2, field3
      */
     private function get_list_col() {
@@ -1193,9 +1271,18 @@ class easyuigii {
      * @param type $api_url string rest api url
      * @param type $fn_api string rest functions
      */
-    private function set_api($dir, $api_url, $fn_api) {
+    private function union_api_code($dir, $api_url, $fn_api) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
+
+        $api_url_all = "";
+        for ($i = 0; $i <= Count($api_url); $i++) {
+            $api_url_all .= $api_url[$i] . PHP_EOL;
+        }
+        $fn_api_all = "";
+        for ($i = 0; $i <= Count($api_url); $i++) {
+            $fn_api_all .=$fn_api[$i] . PHP_EOL;
+        }
 
         $file1_api = $this->root_gii . $this->template_base_path . "/api/api_1_declare.php";
         $api_declare = file_get_contents($file1_api);
@@ -1203,7 +1290,10 @@ class easyuigii {
         $file2_api = $this->root_gii . $this->template_base_path . "/api/api_2_fn.php";
         $api_fn = str_replace("<?php", "", file_get_contents($file2_api));
 
-        $api = $api_declare . PHP_EOL . $api_url . PHP_EOL . $api_fn . PHP_EOL . $fn_api; //create File Api
+
+        $api = $api_declare . PHP_EOL . $api_url_all . PHP_EOL . $api_fn . PHP_EOL . $fn_api_all; //create File Api
+
+
         $file = $dir . "/api/api.php";
         file_put_contents($file, $api); //write api
     }
