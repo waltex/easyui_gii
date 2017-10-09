@@ -2,7 +2,7 @@
 
 This App is an advanced code generator that incorporates utilities to generate code snippets to be copied and reused for your applications.
 
-This [demo](https://waltex.github.io/easyui_gii/) interface without functionality api written in php.
+This [demo](http://gii.freecluster.eu/easyui_gii/).
 
 ### Features
 
