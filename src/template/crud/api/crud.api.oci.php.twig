@@ -25,7 +25,11 @@
 
             oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
 
+            $combo1 = combo_ABB_CRUD_COMBO();
+
             $app->response()->body(json_encode($data));
+
+            {{var_combo|raw}}
 
     }
 

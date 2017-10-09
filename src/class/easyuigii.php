@@ -581,6 +581,29 @@ class easyuigii {
         $this->union_api_code($dir, $api_url, $fn_api); //create file api
     }
 
+    /** return code es. var combo1 = combo_ABB_COMBO_CRUD()
+     *
+     * @return type
+     */
+    private function get_code_var_return_combo() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        $code_combo = "";
+
+        $model = $this->table_model;
+        $i = 0;
+        foreach ($model as $value) {
+            if ($value["SKIP"] == "0") {
+                if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
+                    $i+=1;
+                    $table = $value["NAME_TABLE_EXT"];
+                    $ar_code_combo.= "var combo$i = combo_$table()" . PHP_EOL;
+                }
+            }
+        }
+
+        return $code_combo;
+    }
+
     /** return all api url code
      *
      * @return type
@@ -588,15 +611,17 @@ class easyuigii {
     private function get_api_name_for_combobox() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
         $api_url = [];
-        $model = $this->table_model;
-        foreach ($model as $value) {
-            if ($value["SKIP"] == "0") {
-                if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
-                    $table = $value["NAME_TABLE_EXT"];
-                    $api_url[] = "\$app->post('/combo/$table/:ws', 'combo_$table');";
-                }
-            }
-        }
+        /*
+          $model = $this->table_model;
+          foreach ($model as $value) {
+          if ($value["SKIP"] == "0") {
+          if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
+          $table = $value["NAME_TABLE_EXT"];
+          $api_url[] = "\$app->post('/combo/$table/:ws', 'combo_$table');";
+          }
+          }
+          }
+         */
         return $api_url;
     }
 
@@ -652,7 +677,7 @@ class easyuigii {
         $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
         $value_field = $row["VALUE_FIELD"]; // value for combobox
         $text_field = $row["TEXT_FIELD"];   // text for combobox
-        $url_combobox = "api/combo/$table_ext/1"; //url api combobox
+        $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
 
 
         $pk = $this->primary_key;
@@ -697,7 +722,7 @@ class easyuigii {
             return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
         }
         if ($type == "combobox") {
-            $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'post',url: '$url_combobox',$required panelWidth: 250,}},";
+            $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250,}},";
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
         }
@@ -979,6 +1004,9 @@ class easyuigii {
         $param_log_update = $this->get_param_sql_for_log_insert_update(true);
         $sql_update = $this->get_sql_for_update();
         $bind_update = $this->get_param_for_bind_insert_update(true);
+
+        $var_combo = $this->get_code_var_return_combo();
+
         //build template html
         $root_template = $this->root_gii . $this->template_root_path;
         $loader = new Twig_Loader_Filesystem($root_template);
@@ -987,6 +1015,7 @@ class easyuigii {
         $php = $twig->render('/crud/api/crud.api.oci.php.twig', array(
             'api_fn_name' => $api_fn_name
             , 'sql_select' => $sql_select
+            , 'var_combo' => $var_combo
             , 'sql_insert' => $sql_insert
             , 'table' => $this->table_name
             , 'pk' => $this->primary_key
@@ -1023,7 +1052,6 @@ class easyuigii {
                     $text_field = $value["TEXT_FIELD"];
 
                     $api_fn_name = "combo_$table";
-                    $var_fn = "\$ws";
 
                     $sql_select = "SELECT $value_field, $text_field from $table ";
                     //build template html
@@ -1033,7 +1061,6 @@ class easyuigii {
 
                     $php = $twig->render('/crud/api/combobox.api.oci.php.twig', array(
                         'api_fn_name' => $api_fn_name
-                        , 'var_fn' => $var_fn
                         , 'sql_select' => $sql_select
                         , 'table' => $table
                         , 'drv_cn_var' => $this->oci_cn_var
@@ -1276,11 +1303,12 @@ class easyuigii {
 
 
         $api_url_all = "";
-        for ($i = 0; $i <= Count($api_url); $i++) {
+        for ($i = 0; $i <= Count($api_url) - 1; $i++) {
             $api_url_all .= $api_url[$i] . PHP_EOL;
         }
         $fn_api_all = "";
-        for ($i = 0; $i <= Count($api_url); $i++) {
+        $i = 0;
+        for ($i = 0; $i <= Count($fn_api) - 1; $i++) {
             $fn_api_all .=$fn_api[$i] . PHP_EOL;
         }
 
