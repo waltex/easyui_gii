@@ -22,14 +22,11 @@
             $db = oci_parse($conn, $sql);
             $rs = oci_execute($db);
 
-
             oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
 
-            $combo1 = combo_ABB_CRUD_COMBO();
+            {{var_combo|raw}}
 
             $app->response()->body(json_encode($data));
-
-            {{var_combo|raw}}
 
     }
 

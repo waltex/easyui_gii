@@ -596,7 +596,11 @@ class easyuigii {
                 if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
                     $i+=1;
                     $table = $value["NAME_TABLE_EXT"];
-                    $ar_code_combo.= "var combo$i = combo_$table()" . PHP_EOL;
+                    $value_field = $value["VALUE_FIELD"];
+                    $text_field = $value["TEXT_FIELD"];
+                    $col_combo = $value["COL"];
+                    $code_combo.= "\$combo$i = combo_$table();" . PHP_EOL;
+                    $code_combo.= "\$data = add_col_combo(\$combo$i, \$data, \"$col_combo\", \"$value_field\", \"$text_field\");" . PHP_EOL;
                 }
             }
         }
@@ -722,9 +726,11 @@ class easyuigii {
             return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
         }
         if ($type == "combobox") {
+            $formatter = PHP_EOL . "formatter: function (value, row, index) {return row.$col" . "_DESC;},";
+            $formatter = str_replace(",", "," . PHP_EOL, $formatter);
             $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250,}},";
             $editor = str_replace(",", "," . PHP_EOL, $editor);
-            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
         }
 
         $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
@@ -1355,6 +1361,7 @@ class easyuigii {
 
         try {
             $this->create_folder($dir . "/api");
+            $this->create_folder($dir . "/api/data");
 
             $zip_file = $this->root_gii . $this->template_base_path . '/lib.zip';
             $this->unzip($zip_file, $dir);
