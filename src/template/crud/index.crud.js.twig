@@ -39,6 +39,7 @@ $(document).ready(function () {
             onError: function (index, row) {
                 $.messager.alert("{{T('Contattare assistenza')}}", row.msg, 'error');
                 },
+            {{on_after_edit|raw}}
                 {#
                 columns: [[
                     {field: 'SEQ', title: 'Ord', width: '25px', editor: {type: 'numberbox', options: {required: true}}, sortable: true},

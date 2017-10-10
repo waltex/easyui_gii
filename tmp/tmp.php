@@ -1,15 +1,33 @@
 <?php
 
-function add_col_combo($ar_combo, $ar_dg, $field_dg, $value_field, $text_field) {
-    $key = array_search(["ID" => 2], $ar_combo);
-    $text = $ar_combo[$key]["DESCRI"];
-    $ar_dg2 = [];
-    foreach ($ar_dg as $value) {
-        $find = $value[$field_dg];
-        $key = array_search([$value_field => $find], $ar_combo);
-        $text = $ar_combo[$key][$text_field];
-        $value[$field_dg . "_DESC"] = $text;
-        array_push($ar_dg2, $value);
-    }
-    return $ar_dg2;
-}
+$combo1 = combo_ABB_CRUD_COMBO();
+$key = array_search_multi($COMBO, "ID", $combo1);
+$COMBO_DESC = $combo1[$key]["DESCRI"];
+?>
+<script>
+                onAfterEdit: function (index, row) {
+                $(this).edatagrid('updateRow', {
+                    index: index,
+            row: {COMBO_DESC: row.COMBO_DESC}
+    });
+    },
+                    {field: 'COMBO', title: 'COMBO',
+                        formatter: function (value, row, index) {
+                            return row.COMBO_DESC;
+                                },
+                                editor: {type: 'combobox',
+                                        options: {
+                                        valueField: 'ID',
+                                                textField: 'DESCRI',
+                                                method: 'get',
+                                                url: 'api/data/combo_ABB_CRUD_COMBO.json',
+                                                required: true,
+                                                panelWidth: 250,
+                                                onSelect: function (record) {
+                                                var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
+                                                var row = $('#dg1').datagrid('getRows')[index];
+                                                row['COMBO_DESC'] = record.DESCRI
+                                                },
+                                        }},
+                                sortable: true, },
+</script>

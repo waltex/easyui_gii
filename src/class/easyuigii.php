@@ -557,12 +557,15 @@ class easyuigii {
         $fn_combo = $this->get_api_fn_combo();
         $fn_api = array_merge([$fn_api], $fn_combo);
 
+        $on_after_edit = $this->get_crud_js_fn__on_after_edit();
+
         $js = $twig->render('/crud/index.crud.js.twig', array('n' => $this->html_prefix
             , 'host_api' => $this->host_api
             , 'api_url' => $this->api_url
             , 'title' => $this->app_name
             , 'col_crud' => $this->get_template_js_crud() //this function use after $this->get_api_fn_crud
             , 'pk' => $this->primary_key
+            , 'on_after_edit' => $on_after_edit
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
@@ -682,7 +685,7 @@ class easyuigii {
         $value_field = $row["VALUE_FIELD"]; // value for combobox
         $text_field = $row["TEXT_FIELD"];   // text for combobox
         $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
-
+        $n_dg = $this->html_prefix;
 
         $pk = $this->primary_key;
 
@@ -726,9 +729,15 @@ class easyuigii {
             return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
         }
         if ($type == "combobox") {
-            $formatter = PHP_EOL . "formatter: function (value, row, index) {return row.$col" . "_DESC;},";
-            $formatter = str_replace(",", "," . PHP_EOL, $formatter);
-            $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250,}},";
+            $on_select = "
+                        onSelect: function (record) {
+                            var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
+                            var row = $('#dg$n_dg').datagrid('getRows')[index];
+                            row['$col" . "_DESC'] = record.$text_field
+                        },
+                        ";
+            $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "_DESC;}," . PHP_EOL;
+            $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, $on_select}},";
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
         }
@@ -1040,6 +1049,35 @@ class easyuigii {
         ));
         $php = str_replace("<?php", "", $php);
         return $php;
+    }
+
+    /** get string code  for js function onAfterEit
+     *
+     */
+    private function get_crud_js_fn__on_after_edit() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        $api_url = [];
+        $model = $this->table_model;
+        $code = "";
+        foreach ($model as $value) {
+            if ($value["SKIP"] == "0") {
+                if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
+                    $col = $value["COL"];
+                    $code .= "$col" . "_DESC: row.$col" . "_DESC,";
+                    //row: {COMBO_DESC: row.COMBO_DESC}
+                }
+            }
+        }
+        $js = "
+                                    onAfterEdit: function (index, row) {
+                                        $(this).edatagrid('updateRow', {
+                                            index: index,
+                                            row: { $code }
+                                        });
+                                    },
+                          ";
+
+        return $js;
     }
 
     /** get string code  function api for crud combo
