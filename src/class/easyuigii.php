@@ -854,7 +854,10 @@ class easyuigii {
                                         FROM
 
                                         ALL_CONSTRAINTS D INNER JOIN ALL_CONS_COLUMNS C
-                                        ON  (D.CONSTRAINT_NAME =C.CONSTRAINT_NAME AND D.OWNER =C.OWNER AND C.OWNER=USER AND  C.TABLE_NAME='$table')
+                                        ON  (
+                                                D.CONSTRAINT_NAME =C.CONSTRAINT_NAME AND D.OWNER =C.OWNER AND C.OWNER=USER AND  C.TABLE_NAME='$table'
+                                                AND D.CONSTRAINT_TYPE IN ('P','R')
+                                        )
                         )
                         SELECT
                                          A.COLUMN_NAME COL
