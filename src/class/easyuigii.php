@@ -27,7 +27,6 @@ class easyuigii {
     public $model_from_json = 0; // 1 for custom model, 0 from db
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "";
-    public $api_fn_name = "crud_ABB_CRUD";
     public $table_model = []; //tabel model structure
 
     function __construct() {
@@ -547,14 +546,15 @@ class easyuigii {
         ));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
-        
-        $url_api_crud = "/crud/" . $this->table_name;
 
-        $api_url = $this->get_api_name($url_api_crud . "/:command", $this->api_fn_name); //create code url api + function
+        $url_api_crud = "/crud/" . $this->table_name;
+        $api_fn_name_crud = "crud_" . $this->table_name;
+
+        $api_url = $this->get_api_name($url_api_crud . "/:command", $api_fn_name_crud); //create code url api + function
         $api_url_combo = $this->get_api_name_for_combobox();
         $api_url = array_merge([$api_url], $api_url_combo);
 
-        $fn_api = $this->get_api_fn_crud($this->api_fn_name); //template redered api function
+        $fn_api = $this->get_api_fn_crud($api_fn_name_crud); //template redered api function
         $fn_combo = $this->get_api_fn_combo();
         $fn_api = array_merge([$fn_api], $fn_combo);
 
