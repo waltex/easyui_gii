@@ -22,7 +22,9 @@ $(document).ready(function () {
             striped: true,
             fit: true,
             idField: '{{pk|raw}}', /** {{T('importante')}} **/
-            singleSelect: false,
+            singleSelect: true,
+            checkOnSelect: false,
+            selectOnCheck: false,
             remoteSort: false,
             multiSort: false,
             autoRowHeight: false, //For Speed refresh
