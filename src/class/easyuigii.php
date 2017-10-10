@@ -881,7 +881,7 @@ class easyuigii {
                                     ,( select G.COLUMN_NAME
                                        from ALL_TAB_COLUMNS G where G.owner=user
                                        and G.TABLE_NAME=B.NAME_TABLE_EXT
-                                       and G.COLUMN_NAME<>(select h.pk_table_ext from COL_CONSTRAINT h where h.name_table_ext=B.NAME_TABLE_EXT)
+                                       and G.COLUMN_NAME<>(select h.pk_table_ext from COL_CONSTRAINT h where h.name_table_ext=B.NAME_TABLE_EXT and rownum=1)
                                        and rownum=1
                                     ) text_field
 
