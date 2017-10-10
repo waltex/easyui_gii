@@ -656,8 +656,9 @@ class easyuigii {
         foreach ($model_ord as $value) {
             $col = $value["COL"];
             $type = $value["CONSTRAINT_TYPE"];
-            if (($value["HIDE"] == "0") && ($value["SKIP"] == "0")) {
-                $code.= $this->get_js_crud_col($value);
+            if ($value["SKIP"] == "0") {
+                $hide = ($value["HIDE"] == "1") ? true : false;
+                $code.= $this->get_js_crud_col($value, $hide);
             }
         }
         $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
@@ -670,7 +671,7 @@ class easyuigii {
      *
      * @param type $col string name column
      */
-    private function get_js_crud_col($row) {
+    private function get_js_crud_col($row, $hide) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $col = $row["COL"];
@@ -686,6 +687,7 @@ class easyuigii {
         $text_field = $row["TEXT_FIELD"];   // text for combobox
         $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
         $n_dg = $this->html_prefix;
+        $hiden = ($hide) ? "hidden:true," : "";
 
         $pk = $this->primary_key;
 
@@ -700,7 +702,7 @@ class easyuigii {
 
         if ($type_pk_fk == "PRIMARY_KEY") {
             $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
-            return $ck . "{field: '$col', title: '$colt', $width $sortable}," . PHP_EOL;
+            return $ck . "{field: '$col', title: '$colt', $width $sortable $hiden}," . PHP_EOL;
         }
 
         if ($row["CK"] == "1") {
