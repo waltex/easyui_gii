@@ -27,7 +27,6 @@ class easyuigii {
     public $model_from_json = 0; // 1 for custom model, 0 from db
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "";
-    public $api_url = "/crud/ABB_CRUD";
     public $api_fn_name = "crud_ABB_CRUD";
     public $table_model = []; //tabel model structure
 
@@ -548,8 +547,10 @@ class easyuigii {
         ));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
+        
+        $url_api_crud = "/crud/" . $this->table_name;
 
-        $api_url = $this->get_api_name($this->api_url . "/:command", $this->api_fn_name); //create code url api + function
+        $api_url = $this->get_api_name($url_api_crud . "/:command", $this->api_fn_name); //create code url api + function
         $api_url_combo = $this->get_api_name_for_combobox();
         $api_url = array_merge([$api_url], $api_url_combo);
 
@@ -561,7 +562,7 @@ class easyuigii {
 
         $js = $twig->render('/crud/index.crud.js.twig', array('n' => $this->html_prefix
             , 'host_api' => $this->host_api
-            , 'api_url' => $this->api_url
+            , 'api_url' => $url_api_crud
             , 'title' => $this->app_name
             , 'col_crud' => $this->get_template_js_crud() //this function use after $this->get_api_fn_crud
             , 'pk' => $this->primary_key
