@@ -1342,6 +1342,15 @@ class easyuigii {
         return '$' . "app->post('$url', '$fn'); ";
     }
 
+    private function array_unique_multi($array) {
+        foreach ($array as $k => $na)
+            $new[$k] = serialize($na);
+        $uniq = array_unique($new);
+        foreach ($uniq as $k => $ser)
+            $new1[$k] = unserialize($ser);
+        return ($new1);
+    }
+
     /** create rest api
      *
      * @param type $dir directory api
@@ -1351,6 +1360,7 @@ class easyuigii {
     private function union_api_code($dir, $api_url, $fn_api) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
+        $fn_api = $this->array_unique_multi($fn_api);
 
         $api_url_all = "";
         for ($i = 0; $i <= Count($api_url) - 1; $i++) {
