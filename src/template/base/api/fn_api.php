@@ -7,9 +7,13 @@ function add_col_combo($ar_combo, $ar_dg, $field_dg, $value_field, $text_field) 
     foreach ($ar_dg as $value) {
         $find = $value[$field_dg];
         $key = array_search_multi($find, $value_field, $ar_combo);
-        if ($key) {
+        if ($key >= 0) {
             $text = $ar_combo[$key][$text_field];
             $value[$field_dg . "_DESC"] = $text;
+            array_push($ar_dg2, $value);
+        } else {
+            // not find
+            $value[$field_dg . "_DESC"] = null;
             array_push($ar_dg2, $value);
         }
     }
@@ -22,7 +26,7 @@ function array_search_multi($value, $key, $array) {
             return $k;
         }
     }
-    return false;
+    return -1;
 }
 
 /**
