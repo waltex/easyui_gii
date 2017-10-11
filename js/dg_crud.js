@@ -132,6 +132,7 @@ function init_app() {
             handler: function () {
                 $('#dg_model').edatagrid('saveRow');
                 dg_model_save2json();
+
             }}, '-', {
             text: T('Annulla'),
             iconCls: 'icon-undo',
@@ -154,7 +155,8 @@ function init_app() {
             handler: function () {
                 var table = $('#tb_table_name').combobox('getValue');
                 if (table != "") {
-                    $('#dg_model').datagrid({url: 'api/dg/model/read/db/' + table});
+                    $('#dg_model').datagrid('options').url = 'api/dg/model/read/db/' + table;
+                    $('#dg_model').datagrid('reload');
                 } else {
                     $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
                 }
@@ -174,11 +176,14 @@ function init_app() {
         }];
     var data_type = [{text: 'tetxbox'}, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox'}];
     function load_dg_model() {
+        $('#dg_model').datagrid('removeFilterRule');
+        $('#dg_model').datagrid('disableFilter');
         $('#dg_model').edatagrid({
             //url: url: 'api/dg/model/read/json',
             //updateUrl: 'api/xx',
             toolbar: dg_model_tb,
             fit: true,
+            rownumbers: true,
             striped: true,
             singleSelect: true,
             checkOnSelect: false,
@@ -236,6 +241,7 @@ function init_app() {
                     {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('Tabella Collegata'), editor: "text"},
                 ]]
         });
+        $('#dg_model').datagrid('enableFilter');
     }
     function combo_get_text(id, data) {
         for (var i = 0; i < data.length; i++) {
@@ -245,6 +251,8 @@ function init_app() {
 
     }
     function dg_model_save2json() {
+        $('#dg_model').datagrid('removeFilterRule');
+        $('#dg_model').datagrid('disableFilter');
         var rows = $('#dg_model').datagrid('getRows');
         $.post('api/dg/model/save/json', {data: rows})
                 .done(function (data) {
@@ -263,6 +271,7 @@ function init_app() {
                     $.messager.progress('close');
                     $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
                 });
+        $('#dg_model').datagrid('enableFilter');
     }
     $('#nn_prefix').numberspinner({
         min: 1,
@@ -311,9 +320,9 @@ function init_app() {
                 required: true,
                 panelWidth: 300,
                 editable: false,
-                prompt: T('attendere caricamento...'),
+                prompt: T('seleziona'),
                 onLoadSuccess: function () {
-                    $(this).combobox({prompt: T('seleziona')});
+                    //$(this).combobox({prompt: T('seleziona')});
                 },
                 label: T('Campo: ' + table),
                 labelPosition: 'left',
