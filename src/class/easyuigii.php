@@ -47,6 +47,26 @@ class easyuigii {
         $this->primary_key = $this->get_primary_key_from_model();
     }
 
+    /** list column of table
+     * @return type
+     */
+    public function list_column_of_table($table) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $sql = "
+               SELECT COLUMN_NAME COL FROM ALL_TAB_COLUMNS WHERE OWNER=USER AND TABLE_NAME='$table'
+                ";
+        error_log(LogTime() . ' Sql, get list column of table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+
+
+        $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
+        $db = oci_parse($conn, $sql);
+        $rs = oci_execute($db);
+
+        oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+        return $data;
+    }
+
     /** list table of db
      * @return type
      */

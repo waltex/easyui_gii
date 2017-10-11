@@ -35,6 +35,8 @@ $app->post('/dg/model/read/json', 'dg_model_read_from_json'); //read model from 
 $app->post('/dg/model/read/db/:table', 'dg_model_read_from_db'); //read model from db
 $app->post('/dg/model/save/json', 'dg_model_save2json'); //save model to json
 $app->post('/list/table/db', 'list_table_db'); //for combobox, list table db
+$app->post('/list/column/:table', 'list_column'); //for combobox, list table db
+
 
 include 'fn_api.php';
 $start = new easyuigii();
@@ -437,5 +439,22 @@ function list_table_db() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - list table of db  ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+function list_column($table) {
+    try {
+        $app = Slim\Slim::getInstance();
+
+        $gii = new easyuigii();
+        $gii->set_db_setting();
+        $data = $gii->list_column_of_table($table);
+
+        $app->response()->body(json_encode($data));
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - list column table  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }

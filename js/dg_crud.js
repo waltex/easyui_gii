@@ -204,6 +204,14 @@ function init_app() {
                 $(this).datagrid('enableDnd');
                 load_menu_opt();
             },
+            onEdit: function (index, row) {
+
+                var ed = $(this).datagrid('getEditor', {index: index, field: "TEXT_FIELD"});
+                $(ed.target).combobox({
+                    url: 'api/list/column/' + row.NAME_TABLE_EXT,
+                });
+
+            },
             frozenColumns: [[
                     {field: 'ck', checkbox: true},
                     {field: "COL", title: BR(T('Nome Campo')), editor: "text"},
@@ -238,7 +246,13 @@ function init_app() {
                     },
                     {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: "text"},
                     {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('Tabella Collegata'), editor: "text"},
-                    {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('Tabella Collegata'), editor: "text"},
+                    {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('Tabella Collegata'), editor: {type: 'combobox',
+                            options: {
+                                valueField: 'COL',
+                                textField: 'COL',
+                                method: 'post',
+                                panelWidth: 250,
+                            }}, },
                 ]]
         });
         $('#dg_model').datagrid('enableFilter');
