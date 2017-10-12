@@ -389,7 +389,7 @@ function init_app() {
             labelPosition: 'left',
             width: 180,
         }).attr('id', 'nn_n_row');
-        var input_cel = '<input id="cc_title" style="margin-top:10px"><input id="cc_value" style="margin-top:10px">';
+        var input_cel = '<div style="margin-top:5px"><input id="cc_title"><div style="margin-top:5px"><input id="cc_value">';
         dlg_msg.find('div').end().append(input_cel);
         $('#cc_title').combobox({
             data: get_titles_model(),
