@@ -165,16 +165,16 @@ function init_app() {
         }];
 
     var data_pk_fk = [{
-            text: 'Primary Key',
+            text: T('Chiave Primaria'),
             id: 'PRIMARY_KEY'
         }, {
-            text: 'Foreing Key',
+            text: T('Tabella Collegata'),
             id: 'FOREIGN_KEY'
         }, {
             text: T('Nessuna'),
             id: null
         }];
-    var data_type = [{text: 'tetxbox'}, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox'}];
+    var data_type = [{text: 'tetxbox'}, {text: 'textarea'}, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox'}];
     function load_dg_model() {
         $('#dg_model').datagrid('removeFilterRule');
         $('#dg_model').datagrid('disableFilter');
@@ -205,12 +205,14 @@ function init_app() {
                 load_menu_opt();
             },
             onEdit: function (index, row) {
+                var ed = $(this).datagrid('getEditor', {index: index, field: "NAME_TABLE_EXT"});
+                $(ed.target).combobox('reload', 'api/list/table/db');
 
                 var ed = $(this).datagrid('getEditor', {index: index, field: "TEXT_FIELD"});
-                $(ed.target).combobox({
-                    url: 'api/list/column/' + row.NAME_TABLE_EXT,
-                });
+                $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
 
+                var ed = $(this).datagrid('getEditor', {index: index, field: "VALUE_FIELD"});
+                $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
             },
             frozenColumns: [[
                     {field: 'ck', checkbox: true},
@@ -236,7 +238,7 @@ function init_app() {
                                 valueField: 'id',
                                 textField: 'text',
                                 editable: false,
-                                panelWidth: 100,
+                                panelWidth: 150,
                                 data: data_pk_fk
                             }}
                         , formatter: function (value, row, index) {
@@ -244,12 +246,24 @@ function init_app() {
                             return data;
                         }
                     },
-                    {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: "text"},
-                    {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('Tabella Collegata'), editor: "text"},
+                    {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: {type: 'combobox',
+                            options: {
+                                valueField: 'TEXT',
+                                textField: 'TEXT',
+                                method: 'post',
+                                panelWidth: 250,
+                            }}},
+                    {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('Tabella Collegata'), editor: {type: 'combobox',
+                            options: {
+                                valueField: 'TEXT',
+                                textField: 'TEXT',
+                                method: 'post',
+                                panelWidth: 250,
+                            }}},
                     {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('Tabella Collegata'), editor: {type: 'combobox',
                             options: {
-                                valueField: 'COL',
-                                textField: 'COL',
+                                valueField: 'TEXT',
+                                textField: 'TEXT',
                                 method: 'post',
                                 panelWidth: 250,
                             }}, },

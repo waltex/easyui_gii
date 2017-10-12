@@ -9,11 +9,11 @@ function add_col_combo($ar_combo, $ar_dg, $field_dg, $value_field, $text_field) 
         $key = array_search_multi($find, $value_field, $ar_combo);
         if ($key >= 0) {
             $text = $ar_combo[$key][$text_field];
-            $value[$field_dg . "_DESC"] = $text;
+            $value[$field_dg . "__TEXT"] = $text;
             array_push($ar_dg2, $value);
         } else {
             // not find
-            $value[$field_dg . "_DESC"] = null;
+            $value[$field_dg . "__TEXT"] = null;
             array_push($ar_dg2, $value);
         }
     }

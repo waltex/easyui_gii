@@ -54,7 +54,7 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $sql = "
-               SELECT COLUMN_NAME COL FROM ALL_TAB_COLUMNS WHERE OWNER=USER AND TABLE_NAME='$table'
+               SELECT COLUMN_NAME TEXT FROM ALL_TAB_COLUMNS WHERE OWNER=USER AND TABLE_NAME='$table'
                 ";
         error_log(LogTime() . ' Sql, get list column of table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
@@ -736,6 +736,10 @@ class easyuigii {
             $editor = ($edit == "1") ? "editor: {type: 'textbox', options: { $required }}," : "";
             return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
         }
+        if ($type == "textarea") {
+            $editor = ($edit == "1") ? "editor: {type: 'textarea', options: { $required }}," : "";
+            return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
+        }
 
         //escludo the column primary key for edit
         if ($type == "numberbox") {
@@ -756,10 +760,10 @@ class easyuigii {
                         onSelect: function (record) {
                             var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
                             var row = $('#dg$n_dg').datagrid('getRows')[index];
-                            row['$col" . "_DESC'] = record.$text_field
+                            row['$col" . "__TEXT'] = record.$text_field
                         },
                         ";
-            $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "_DESC;}," . PHP_EOL;
+            $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
             $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, $on_select}},";
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
@@ -1089,8 +1093,8 @@ class easyuigii {
             if ($value["SKIP"] == "0") {
                 if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
                     $col = $value["COL"];
-                    $code .= "$col" . "_DESC: row.$col" . "_DESC,";
-                    //row: {COMBO_DESC: row.COMBO_DESC}
+                    $code .= "$col" . "__TEXT: row.$col" . "__TEXT,";
+                    //row: {COMBO__TEXT: row.COMBO__TEXT}
                 }
             }
         }
