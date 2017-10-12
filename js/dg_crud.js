@@ -365,32 +365,31 @@ function init_app() {
 
     $('#opt_copy_multi').on('click', function () {
 
-        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Verranno copiati i valori della cella con campo e titolo sotto, sulle righe selezionate:'), function (r) {
+        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Verranno copiati i valori della cella sulle righe selezionate:'), function (r) {
             if (r === undefined) {
                 //console.log('press cancel');
             } else {
-                var title = $('#cc_title').numberspinner('getValue');//number row
-                var field = $('cc_dg_field').combobox('getValue');// field name
+
+                var field = $('#cc_title').combobox('getValue');//number row
+                var n_row = $('#nn_n_row').numberspinner('getValue') - 1;// field name
                 var value = $('#cc_value').textbox('getValue');
+
+                copy_value_model(field, value);
             }
 
         });
 
-        var model = $('#dg_model').datagrid('getRows');
-        dlg_msg.find('.messager-input').combobox({
-            data: model,
-            mode: 'local',
-            valueField: 'COL',
-            textField: 'COL',
-            required: true,
-            panelWidth: 300,
-            editable: false,
-            prompt: T('seleziona'),
-            label: T('Campo:'),
+
+        dlg_msg.find('.messager-input').numberspinner({
+            precision: 0,
+            min: 1,
+            spinAlign: 'horizontal',
+            required: false,
+            label: T('Riga:'),
             labelPosition: 'left',
-            width: 240,
-        }).attr('id', 'cc_dg_field');
-        var input_cel = '<input id="cc_title"><input id="cc_value">';
+            width: 180,
+        }).attr('id', 'nn_n_row');
+        var input_cel = '<input id="cc_title" style="margin-top:10px"><input id="cc_value" style="margin-top:10px">';
         dlg_msg.find('div').end().append(input_cel);
         $('#cc_title').combobox({
             data: get_titles_model(),
@@ -401,37 +400,43 @@ function init_app() {
             panelWidth: 300,
             editable: false,
             prompt: T('seleziona'),
-            label: T('Titolo Colonna:'),
+            label: T('Colonna:'),
             labelPosition: 'left',
             width: 240,
         });
         $('#cc_value').textbox({
             data: get_titles_model(),
-            editable: false,
+            editable: true,
+            required: true,
             prompt: T('valore da copiare'),
             label: T('Valore:'),
             labelPosition: 'left',
             width: 240,
+            buttonText: T('leggi'),
+            //iconCls: 'icon-reload',
+            onClickButton: function (index) {
+                var field = $('#cc_title').combobox('getValue');//number row
+                var n_row = $('#nn_n_row').numberspinner('getValue') - 1;// field name
+                var rows = $('#dg_model').datagrid('getRows');
+                var value = rows[n_row][field];
+                $('#cc_value').textbox('setValue', value);
+            }
         });
 
     });
     $('#opt_copy_multi').html(T('Copia multipla valori di una cella'));
 
-
-
     function copy_value_model(field, value) {
         var rows = $('#dg_model').datagrid('getChecked');
-        for (var i = 0; i < rows.length - 1; i++) {
-            if (rows[i].COL == field) {
-                var row = rows[i];
-
-                $('#dg_model').datagrid('updateRow', {
-                    [field]: index,
-                    row: {
-                        field: value
-                    }
-                });
-            }
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var index = $('#dg_model').datagrid('getRowIndex', row);
+            $('#dg_model').datagrid('updateRow', {
+                index: index,
+                row: {
+                    [field]: value
+                }
+            });
         }
     }
     function get_titles_model() {
@@ -445,7 +450,6 @@ function init_app() {
         }
         return titles;
     }
-
 }
 
 
