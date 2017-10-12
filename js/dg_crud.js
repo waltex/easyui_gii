@@ -365,11 +365,12 @@ function init_app() {
 
     $('#opt_copy_multi').on('click', function () {
 
-        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Seleziona un campo e una riga, verranno copiati i valori della cella sulle righe selezionate:'), function (r) {
+        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Verranno copiati i valori della cella sulle righe selezionate:'), function (r) {
             if (r === undefined) {
                 //console.log('press cancel');
             } else {
-
+                var title = $('#cc_title').numberspinner('getValue');//number row
+                var field = $('cc_dg_field').combobox('getValue');// field name
             }
 
         });
@@ -377,33 +378,47 @@ function init_app() {
         var model = $('#dg_model').datagrid('getRows');
         dlg_msg.find('.messager-input').combobox({
             data: model,
+            mode: 'local',
             valueField: 'COL',
             textField: 'COL',
             required: true,
             panelWidth: 300,
             editable: false,
             prompt: T('seleziona'),
-            onLoadSuccess: function () {
-                //$(this).combobox({prompt: T('seleziona')});
-            },
             label: T('Campo:'),
             labelPosition: 'left',
             width: 240,
-        }).attr('id', 'cc_model_field');
-        var input_cel = '<br><input id="ss_n_cell">';
+        }).attr('id', 'cc_dg_field');
+        var input_cel = '<br><input id="cc_title">';
         dlg_msg.find('div').end().append(input_cel);
-        $('#ss_n_cell').numberspinner({
-            label: T('Riga:'),
-            width: 180,
-            value: 1,
-            min: 1,
-            spinAlign: 'horizontal',
-            precision: 0,
+        $('#cc_title').combobox({
+            data: get_titles_model(),
+            mode: 'local',
+            valueField: 'TITLE',
+            textField: 'TITLE',
             required: true,
+            panelWidth: 300,
+            editable: false,
+            prompt: T('seleziona'),
+            label: T('Titolo:'),
+            labelPosition: 'left',
+            width: 240,
         });
 
     });
     $('#opt_copy_multi').html(T('Copia multipla valori di una cella'));
+
+    function get_titles_model() {
+        var titles = [];
+        var cols = $('#dg_model').datagrid('getColumnFields');
+        for (var i = 0; i < cols.length - 1; i++) {
+            var col = cols[i];
+            var title = $('#dg_model').datagrid('getColumnOption', col).title
+            var title = title.replace("<br>", " ");
+            titles.push({TITLE: title, TITLE: title});
+        }
+        return titles;
+    }
 
 }
 
