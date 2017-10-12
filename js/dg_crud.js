@@ -365,12 +365,13 @@ function init_app() {
 
     $('#opt_copy_multi').on('click', function () {
 
-        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Verranno copiati i valori della cella sulle righe selezionate:'), function (r) {
+        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Verranno copiati i valori della cella con campo e titolo sotto, sulle righe selezionate:'), function (r) {
             if (r === undefined) {
                 //console.log('press cancel');
             } else {
                 var title = $('#cc_title').numberspinner('getValue');//number row
                 var field = $('cc_dg_field').combobox('getValue');// field name
+                var value = $('#cc_value').textbox('getValue');
             }
 
         });
@@ -389,18 +390,26 @@ function init_app() {
             labelPosition: 'left',
             width: 240,
         }).attr('id', 'cc_dg_field');
-        var input_cel = '<br><input id="cc_title">';
+        var input_cel = '<input id="cc_title"><input id="cc_value">';
         dlg_msg.find('div').end().append(input_cel);
         $('#cc_title').combobox({
             data: get_titles_model(),
             mode: 'local',
-            valueField: 'TITLE',
+            valueField: 'FIELD',
             textField: 'TITLE',
             required: true,
             panelWidth: 300,
             editable: false,
             prompt: T('seleziona'),
-            label: T('Titolo:'),
+            label: T('Titolo Colonna:'),
+            labelPosition: 'left',
+            width: 240,
+        });
+        $('#cc_value').textbox({
+            data: get_titles_model(),
+            editable: false,
+            prompt: T('valore da copiare'),
+            label: T('Valore:'),
             labelPosition: 'left',
             width: 240,
         });
@@ -408,6 +417,23 @@ function init_app() {
     });
     $('#opt_copy_multi').html(T('Copia multipla valori di una cella'));
 
+
+
+    function copy_value_model(field, value) {
+        var rows = $('#dg_model').datagrid('getChecked');
+        for (var i = 0; i < rows.length - 1; i++) {
+            if (rows[i].COL == field) {
+                var row = rows[i];
+
+                $('#dg_model').datagrid('updateRow', {
+                    [field]: index,
+                    row: {
+                        field: value
+                    }
+                });
+            }
+        }
+    }
     function get_titles_model() {
         var titles = [];
         var cols = $('#dg_model').datagrid('getColumnFields');
@@ -415,7 +441,7 @@ function init_app() {
             var col = cols[i];
             var title = $('#dg_model').datagrid('getColumnOption', col).title
             var title = title.replace("<br>", " ");
-            titles.push({TITLE: title, TITLE: title});
+            titles.push({FIELD: col, TITLE: title});
         }
         return titles;
     }
