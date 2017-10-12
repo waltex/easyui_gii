@@ -352,7 +352,7 @@ function init_app() {
                 onLoadSuccess: function () {
                     //$(this).combobox({prompt: T('seleziona')});
                 },
-                label: T('Campo: ' + table),
+                label: T('Campo:'),
                 labelPosition: 'left',
                 width: 240,
             }).attr('id', 'cc_model_field');
@@ -361,6 +361,50 @@ function init_app() {
         }
     });
     $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
+
+
+    $('#opt_copy_multi').on('click', function () {
+
+        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Seleziona un campo e una riga, verranno copiati i valori della cella sulle righe selezionate:'), function (r) {
+            if (r === undefined) {
+                //console.log('press cancel');
+            } else {
+
+            }
+
+        });
+
+        var model = $('#dg_model').datagrid('getRows');
+        dlg_msg.find('.messager-input').combobox({
+            data: model,
+            valueField: 'COL',
+            textField: 'COL',
+            required: true,
+            panelWidth: 300,
+            editable: false,
+            prompt: T('seleziona'),
+            onLoadSuccess: function () {
+                //$(this).combobox({prompt: T('seleziona')});
+            },
+            label: T('Campo:'),
+            labelPosition: 'left',
+            width: 240,
+        }).attr('id', 'cc_model_field');
+        var input_cel = '<br><input id="ss_n_cell">';
+        dlg_msg.find('div').end().append(input_cel);
+        $('#ss_n_cell').numberspinner({
+            label: T('Riga:'),
+            width: 180,
+            value: 1,
+            min: 1,
+            spinAlign: 'horizontal',
+            precision: 0,
+            required: true,
+        });
+
+    });
+    $('#opt_copy_multi').html(T('Copia multipla valori di una cella'));
+
 }
 
 
