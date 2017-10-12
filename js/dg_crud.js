@@ -365,7 +365,7 @@ function init_app() {
 
     $('#opt_copy_multi').on('click', function () {
 
-        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Verranno copiati i valori della cella sulle righe selezionate:'), function (r) {
+        var dlg_msg = $.messager.prompt(T('copia multipla'), T('Verranno copiati i valori della cella in colonna sulle righe selezionate:'), function (r) {
             if (r === undefined) {
                 //console.log('press cancel');
             } else {
