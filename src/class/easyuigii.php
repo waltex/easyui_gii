@@ -28,6 +28,7 @@ class easyuigii {
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "";
     public $table_model = []; //tabel model structure
+    public $pagination = 0;
     public $pagination_list = "";  //string list es. [25,50]
     public $pagination_size = "";
 
