@@ -78,8 +78,17 @@ function init_app() {
                     var table_name = $('#tb_table_name').combobox('getValue');
                     var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
                     var html_prefix = $('#nn_prefix').numberspinner('getValue');
+                    var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
                     $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
-                    $.post('api/dg/crud/generate', {app_name: app_name, app_folder: app_folder, table_name: table_name, model_from_json: model_from_json, html_prefix: html_prefix})
+                    var param = {
+                        app_name: app_name,
+                        app_folder: app_folder,
+                        table_name: table_name,
+                        model_from_json: model_from_json,
+                        html_prefix: html_prefix,
+                        pagination: pagination
+                    };
+                    $.post('api/dg/crud/generate', param)
                             .done(function (data) {
                                 $.messager.progress('close');
                                 if (data.success) {
@@ -106,7 +115,6 @@ function init_app() {
 
 
     $("#sb_model").switchbutton({
-        label: 'jskjshjs',
         checked: false,
         onText: T('si'), offText: T('no'),
         onChange: function (checked) {
@@ -450,6 +458,38 @@ function init_app() {
         }
         return titles;
     }
+    $("#sb_pagination_label").html(T("Paginazione Tabella"));
+    $("#sb_pagination").switchbutton({
+        checked: false,
+        onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            if (checked) {
+                $('#div_pagination').show();
+            } else {
+                $('#div_pagination').hide();
+            }
+            load_menu_opt();
+        }
+    });
+    $('#cc_pagination_list').combobox({
+        label: T('lista righe per pagina impostabili'),
+        labelPosition: 'top',
+        multiple: true,
+        valueField: 'val',
+        textField: 'val',
+        value: '25,50,100',
+        editable: false,
+        data: [{val: 25}, {val: 50}, {val: 100}, {val: 150}, {val: 250}, {val: 500}, {val: 1000}]
+    });
+    $('#cc_pagination_size').combobox({
+        label: T('righe per pagina predefinito'),
+        labelPosition: 'top',
+        value: 50,
+        valueField: 'val',
+        textField: 'val',
+        editable: false,
+        data: [{val: 25}, {val: 50}, {val: 100}, {val: 150}, {val: 250}, {val: 500}, {val: 1000}]
+    });
 }
 
 
