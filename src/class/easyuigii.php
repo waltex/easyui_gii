@@ -28,6 +28,8 @@ class easyuigii {
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "";
     public $table_model = []; //tabel model structure
+    public $pagination_list = "";  //string list es. [25,50]
+    public $pagination_size = "";
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -577,7 +579,7 @@ class easyuigii {
         $fn_api = $this->get_api_fn_crud($api_fn_name_crud); //template redered api function
         $fn_combo = $this->get_api_fn_combo();
         $fn_api = array_merge([$fn_api], $fn_combo);
-
+        $pagination = $this->get_pagination();
         $on_after_edit = $this->get_crud_js_fn__on_after_edit();
 
         $js = $twig->render('/crud/index.crud.js.twig', array('n' => $this->html_prefix
@@ -587,6 +589,7 @@ class easyuigii {
             , 'col_crud' => $this->get_template_js_crud() //this function use after $this->get_api_fn_crud
             , 'pk' => $this->primary_key
             , 'on_after_edit' => $on_after_edit
+            , 'pagination' => $pagination
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
@@ -603,6 +606,19 @@ class easyuigii {
         file_put_contents($file, $api_setup); //write generated html
         //create api
         $this->union_api_code($dir, $api_url, $fn_api); //create file api
+    }
+
+    /** return param javascript for pagination
+     * @return string
+     */
+    private function get_pagination() {
+        $tmp = $this->pagination;
+        if ($this->pagination == 1) {
+            $str = "pagination:true," . PHP_EOL;
+            $str .= "pageSize:" . $this->pagination_size . "," . PHP_EOL;
+            $str .= "pageList:" . $this->pagination_list . "," . PHP_EOL;
+            return $str;
+        }
     }
 
     /** return code es. var combo1 = combo_ABB_COMBO_CRUD()

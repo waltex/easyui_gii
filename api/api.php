@@ -165,8 +165,8 @@ function crud_generate() {
         $gii->table_name = $app->request->params('table_name');
         $gii->model_from_json = $app->request->params('model_from_json');
         $gii->html_prefix = $app->request->params('html_prefix');
-
-
+        $gii->pagination_list = $app->request->params('pagination_list');
+        $gii->pagination_size = $app->request->params('pagination_size');
 
         $gii->build_app_crud();
 

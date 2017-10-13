@@ -79,6 +79,10 @@ function init_app() {
                     var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
                     var html_prefix = $('#nn_prefix').numberspinner('getValue');
                     var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
+                    var pagination_list = $('#cc_pagination_list').combobox('getValues');
+                    pagination_list = JSON.stringify(pagination_list).replaceAll('\"', '')
+                    var pagination_size = $('#cc_pagination_size').combobox('getValue');
+
                     $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
                     var param = {
                         app_name: app_name,
@@ -86,7 +90,9 @@ function init_app() {
                         table_name: table_name,
                         model_from_json: model_from_json,
                         html_prefix: html_prefix,
-                        pagination: pagination
+                        pagination: pagination,
+                        pagination_list: pagination_list,
+                        pagination_size: pagination_size,
                     };
                     $.post('api/dg/crud/generate', param)
                             .done(function (data) {
@@ -490,6 +496,10 @@ function init_app() {
         editable: false,
         data: [{val: 25}, {val: 50}, {val: 100}, {val: 150}, {val: 250}, {val: 500}, {val: 1000}]
     });
+    String.prototype.replaceAll = function (search, replacement) {
+        var target = this;
+        return target.split(search).join(replacement);
+    };
 }
 
 
