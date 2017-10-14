@@ -512,7 +512,6 @@ function init_app() {
                 //console.log('press cancel');
             } else {
 
-
             }
 
         });
