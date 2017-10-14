@@ -2,7 +2,6 @@ var g_debug
 var g_keydown
 function init_app() {
     $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
-    $('#opt_export2file_model').html(T('Esporta la configurazione su file'));
     $('#tb_app_name').textbox({
         required: true,
         label: T("Nome app:"), //path app
@@ -54,7 +53,7 @@ function init_app() {
     });
 
     $('#p_base').panel({
-        title: T("Parametri principali"),
+        title: T("Parametri Principali"),
     });
     $('#p_base').panel('header').click(function () {
         var hide = $($('#p_base').panel('body')[0]).css('display') == 'none';
@@ -504,59 +503,31 @@ function init_app() {
         return target.split(search).join(replacement);
     };
 
+    $('#bt_save_cfg').linkbutton({
+        text: T('salva configurazione'),
+        onClick: function () {
+            var dlg_msg = $.messager.prompt(T('salva configurazione'), T('Verranno salvati tutti i parametri impostati'), function (r) {
+                if (r === undefined) {
+                    //console.log('press cancel');
+                } else {
 
-    $('#opt_export2file_model').on('click', function () {
+                }
+            });
+            dlg_msg.find('.messager-input').textbox({
+                label: T('Nome Configurazione'),
+                prompt: T('digita qui'),
+                labelPosition: 'top',
+                width: '95%',
+            }).attr('id', 'file_cfg_app');
+            //$('#file_cfg_app').focus().select();
+        }
+    })
+    $('#bt_open_cfg').linkbutton({
+        text: T('apri configurazione'),
+        onClick: function () {
 
-        var dlg_msg = $.messager.prompt(T('Esportazione Configurazione'), T('Verra salvata la configurazione di tutti i parametri su file'), function (r) {
-            if (r === undefined) {
-                //console.log('press cancel');
-            } else {
-
-            }
-
-        });
-
-
-        dlg_msg.find('.messager-input').filebox({
-            buttonText: 'file',
-            buttonAlign: 'left'
-        }).attr('id', 'nn_n_row');
-        var input_cel = '<div style="margin-top:5px"><input id="cc_title"><div style="margin-top:5px"><input id="cc_value">';
-        dlg_msg.find('div').end().append(input_cel);
-        $('#cc_title').combobox({
-            data: get_titles_model(),
-            mode: 'local',
-            valueField: 'FIELD',
-            textField: 'TITLE',
-            required: true,
-            panelWidth: 300,
-            editable: false,
-            prompt: T('seleziona'),
-            label: T('Colonna:'),
-            labelPosition: 'left',
-            width: 240,
-        });
-        $('#cc_value').textbox({
-            data: get_titles_model(),
-            editable: true,
-            required: true,
-            prompt: T('valore da copiare'),
-            label: T('Valore:'),
-            labelPosition: 'left',
-            width: 240,
-            buttonText: T('leggi'),
-            //iconCls: 'icon-reload',
-            onClickButton: function (index) {
-                var field = $('#cc_title').combobox('getValue');//number row
-                var n_row = $('#nn_n_row').numberspinner('getValue') - 1;// field name
-                var rows = $('#dg_model').datagrid('getRows');
-                var value = rows[n_row][field];
-                $('#cc_value').textbox('setValue', value);
-            }
-        });
-
-    });
-
+        }
+    })
 }
 
 
