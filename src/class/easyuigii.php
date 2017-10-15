@@ -34,6 +34,7 @@ class easyuigii {
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
+        //chmod($this->root_gii, 0777);
         $this->set_app_setting(); //set to class method the array of setting
         $this->limit_size_log();
 
@@ -183,7 +184,20 @@ class easyuigii {
         }
     }
 
-    /** save model to json file
+    /** savve configuration crud
+     *
+     * @param type $cfg configuration array
+     * @param type $cfg_name name configurayion
+     */
+    public function save_cfg_crud_to_json($cfg, $cfg_name) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $file = $this->root_gii . "/cfg/" . $cfg_name . ".json";
+        $json = json_encode($cfg);
+        file_put_contents($file, $json);
+    }
+
+    /** save model to json file - deprecated
      *
      * @param type $data array model
      */
@@ -338,6 +352,29 @@ class easyuigii {
         } else {
             return false;
         }
+    }
+
+    /** list configuration saved
+     * @return type
+     */
+    public function list_configuration_saved() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+
+        $dir = $this->root_gii . "/cfg/";
+        if (!is_dir($dir . 'cfg')) {
+            mkdir($dir . 'cfg', 0777, true); //create folder
+        }
+        $list = scandir($dir);
+        $data = [];
+        foreach ($list as $file) {
+            if (!in_array($file, ["..", ".", ".DS_Store"])) {
+                $path_info = pathinfo($file);
+                $name = $path_info['filename'];
+                $data[] = ["file" => $name,];
+            }
+        }
+        return $data;
     }
 
     /** lsit file on the folder snippets
@@ -635,13 +672,13 @@ class easyuigii {
         foreach ($model as $value) {
             if ($value["SKIP"] == "0") {
                 if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
-                    $i+=1;
+                    $i += 1;
                     $table = $value["NAME_TABLE_EXT"];
                     $value_field = $value["VALUE_FIELD"];
                     $text_field = $value["TEXT_FIELD"];
                     $col_combo = $value["COL"];
-                    $code_combo.= "\$combo$i = combo_$table();" . PHP_EOL;
-                    $code_combo.= "\$data = add_col_combo(\$combo$i, \$data, \"$col_combo\", \"$value_field\", \"$text_field\");" . PHP_EOL;
+                    $code_combo .= "\$combo$i = combo_$table();" . PHP_EOL;
+                    $code_combo .= "\$data = add_col_combo(\$combo$i, \$data, \"$col_combo\", \"$value_field\", \"$text_field\");" . PHP_EOL;
                 }
             }
         }
@@ -696,7 +733,7 @@ class easyuigii {
             $type = $value["CONSTRAINT_TYPE"];
             if ($value["SKIP"] == "0") {
                 $hide = ($value["HIDE"] == "1") ? true : false;
-                $code.= $this->get_js_crud_col($value, $hide);
+                $code .= $this->get_js_crud_col($value, $hide);
             }
         }
         $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
@@ -812,13 +849,13 @@ class easyuigii {
                 $col_type = $value["TYPE"];
                 //skip cols
                 if ($value["SKIP"] == "0") {
-                    $ncol+=1;
+                    $ncol += 1;
                     if ($col_type == "datebox") {
                         $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
                     }
                     $strComma = ($ncol > 1) ? ", " : "";
-                    $str_col_w_a.=$strComma . $col_name_w_a; //list col with alias
-                    $str_col.=$strComma . $col_name; //list col without alias
+                    $str_col_w_a .= $strComma . $col_name_w_a; //list col with alias
+                    $str_col .= $strComma . $col_name; //list col without alias
                 }
             }
             $strSql = "SELECT $str_col_w_a FROM $table A";
@@ -1178,9 +1215,9 @@ class easyuigii {
         foreach ($model as $value) {
             $col_name = $value["COL"];
             if ($value["SKIP"] == 0) {
-                $ncol+=1;
+                $ncol += 1;
                 $str_comma = ($ncol > 1) ? ", " : "";
-                $str_col.=$str_comma . $col_name; //list col without alias
+                $str_col .= $str_comma . $col_name; //list col without alias
             }
         }
         return $str_col;
@@ -1202,7 +1239,7 @@ class easyuigii {
             if ($value["SKIP"] == "0") {
                 ($col_name == $this->primary_key) ? $type_param = "OCI_B_ROWID" : $type_param = "-1";
                 ($isUpdate) ? $type_param = "-1" : false;
-                $str_bind.="oci_bind_by_name(\$db, \":$col_name\", \$$col_name, $type_param);" . PHP_EOL;
+                $str_bind .= "oci_bind_by_name(\$db, \":$col_name\", \$$col_name, $type_param);" . PHP_EOL;
             }
         }
         return $str_bind;
@@ -1220,7 +1257,7 @@ class easyuigii {
         foreach ($model as $value) {
             $col_name = $value["COL"];
             if ($value["SKIP"] == "0") {
-                $str_par.= "'$col_name' => \$$col_name," . PHP_EOL;
+                $str_par .= "'$col_name' => \$$col_name," . PHP_EOL;
             }
         }
         return $str_par;
@@ -1241,12 +1278,12 @@ class easyuigii {
             $col_name = $value["COL"];
             if ($this->primary_key != $col_name) {
                 if ($value["SKIP"] == "0") {
-                    $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
+                    $str_par .= "':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
                 }
             } else { //add primary key
                 if ($add_idd) {
                     if ($value["SKIP"] == "0") {
-                        $str_par.="':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
+                        $str_par .= "':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
                     }
                 }
             }
@@ -1268,7 +1305,7 @@ class easyuigii {
             $col_type = $value["TYPE"];
             if ($this->primary_key != $col_name) {
                 if ($value["SKIP"] == "0") {
-                    $ncol+=1;
+                    $ncol += 1;
                     $str_comma = ($ncol > 1) ? ", " : "";
 
                     if ($col_type == "datebox") {
@@ -1277,7 +1314,7 @@ class easyuigii {
                     } else {
                         $col_name = "$col_name=:$col_name";
                     }
-                    $str_col.=$str_comma . $col_name; //list col -> :field1, :field2
+                    $str_col .= $str_comma . $col_name; //list col -> :field1, :field2
                 }
             }
         }
@@ -1303,13 +1340,13 @@ class easyuigii {
             $col_type = $value["TYPE"];
             if ($this->primary_key != $col_name) {
                 if ($value["SKIP"] == "0") {
-                    $ncol+=1;
+                    $ncol += 1;
                     $str_comma = ($ncol > 1) ? ", " : "";
                     $col_name = ":" . $col_name;
                     if ($col_type == "datebox") {
                         $col_name = $this->format_dt2todate($col_name);
                     }
-                    $str_col.=$str_comma . $col_name; //list col -> :field1, :field2
+                    $str_col .= $str_comma . $col_name; //list col -> :field1, :field2
                 }
             }
         }
@@ -1355,10 +1392,10 @@ class easyuigii {
                 $col = $value["COL"];
                 if ($value["SKIP"] == "0") {
                     if ($col != $this->primary_key) {
-                        $code.= "\$$col= \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
+                        $code .= "\$$col= \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
                     } else {
                         if ($add_id) { //primary key
-                            $code.= "\$$col = \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
+                            $code .= "\$$col = \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
                         }
                     }
                 }
@@ -1410,7 +1447,7 @@ class easyuigii {
         $fn_api_all = "";
         $i = 0;
         for ($i = 0; $i <= Count($fn_api) - 1; $i++) {
-            $fn_api_all .=$fn_api[$i] . PHP_EOL;
+            $fn_api_all .= $fn_api[$i] . PHP_EOL;
         }
 
         $file1_api = $this->root_gii . $this->template_base_path . "/api/api_1_declare.php";

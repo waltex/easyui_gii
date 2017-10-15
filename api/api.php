@@ -36,6 +36,9 @@ $app->post('/dg/model/read/db/:table', 'dg_model_read_from_db'); //read model fr
 $app->post('/dg/model/save/json', 'dg_model_save2json'); //save model to json
 $app->post('/list/table/db', 'list_table_db'); //for combobox, list table db
 $app->post('/list/column/:table', 'list_column'); //for combobox, list table db
+$app->post('/crud/save/cfg2json', 'save_cfg2json'); //save configuration to json
+$app->post('/list/all/cfg', 'list_cfg'); //list name all configuration saved
+
 
 
 include 'fn_api.php';
@@ -407,6 +410,7 @@ function dg_model_read_from_db($table) {
     }
 }
 
+//deprecato
 function dg_model_save2json() {
     try {
         $app = Slim\Slim::getInstance();
@@ -457,5 +461,44 @@ function list_column($table) {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - list column table  ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+
+/** Save configuration crud
+ */
+function save_cfg2json() {
+    try {
+        $app = Slim\Slim::getInstance();
+        $cfg = $app->request->params('cfg'); // cofiguration
+        $cfg_name = $app->request->params('cfg_name'); // cofiguration
+
+        $gii = new easyuigii();
+        $gii->save_cfg_crud_to_json($cfg, $cfg_name);
+
+        $app->render(200, ['success' => true, 'msg' => $gii->T('Salvata configurazione')]);
+
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - save configuration to json  ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+/** list name configuration saved
+ */
+function list_cfg() {
+    try {
+        $app = Slim\Slim::getInstance();
+
+        $gii = new easyuigii();
+        $data = $gii->list_configuration_saved();
+        $app->response()->body(json_encode($data));
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - list configuration ' . PHP_EOL, 3, 'logs/error.log');
     }
 }

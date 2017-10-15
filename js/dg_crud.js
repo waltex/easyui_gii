@@ -146,7 +146,7 @@ function init_app() {
             iconCls: 'icon-save',
             handler: function () {
                 $('#dg_model').edatagrid('saveRow');
-                dg_model_save2json();
+                dg_model_save2json();//deprecated
 
             }}, '-', {
             text: T('Annulla'),
@@ -293,6 +293,7 @@ function init_app() {
         }
 
     }
+    //deprecated
     function dg_model_save2json() {
         $('#dg_model').datagrid('removeFilterRule');
         $('#dg_model').datagrid('disableFilter');
@@ -510,24 +511,156 @@ function init_app() {
                 if (r === undefined) {
                     //console.log('press cancel');
                 } else {
-
+                    var cfg_name = $('#cfg_name').combobox('getValue');
+                    if (cfg_name != "") {
+                        var cfg = read_cfg_from_input();
+                        $.post('api/crud/save/cfg2json', {cfg: cfg, cfg_name: cfg_name})
+                                .done(function (data) {
+                                    $.messager.progress('close');
+                                    if (data.success) {
+                                        $.messager.show({
+                                            title: T('salvataggio'),
+                                            msg: data.msg,
+                                            showType: 'slide'
+                                        });
+                                    } else {
+                                        $.messager.alert(T('errore'), data.msg, 'error');
+                                    }
+                                })
+                                .fail(function () {
+                                    $.messager.progress('close');
+                                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                                });
+                    } else {
+                        $.messager.alert(T('attenzione'), T('non è stato messo un nome alla configurazione'), 'warning');
+                    }
                 }
+
             });
-            dlg_msg.find('.messager-input').textbox({
+            dlg_msg.find('.messager-input').combobox({
+                url: 'api/list/all/cfg',
+                valueField: 'file',
+                textField: 'file',
+                hasDownArrow: false,
                 label: T('Nome Configurazione'),
                 prompt: T('digita qui'),
                 labelPosition: 'top',
                 width: '95%',
-            }).attr('id', 'file_cfg_app');
+                required: true,
+            }).attr('id', 'cfg_name');
             //$('#file_cfg_app').focus().select();
         }
     })
     $('#bt_open_cfg').linkbutton({
         text: T('apri configurazione'),
         onClick: function () {
+            var dlg_msg = $.messager.prompt(T('apri configurazione'), T('Verranno letti tutti i parametri dalla configurazione selezionata'), function (r) {
+                if (r === undefined) {
+                    //console.log('press cancel');
+                } else {
+                    var cfg_name = $('#cfg_name').combobox('getValue');
 
+
+                    $.post('api/crud/open/cfg2json', {cfg_name: cfg_name})
+                                .done(function (data) {
+                                    $.messager.progress('close');
+                                    if (data.success) {
+                                        $.messager.show({
+                                            title: T('configurazione'),
+                                            msg: data.msg,
+                                            showType: 'slide'
+                                        });
+                                    } else {
+                                        $.messager.alert(T('errore'), data.msg, 'error');
+                                    }
+                                })
+                                .fail(function () {
+                                    $.messager.progress('close');
+                                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                                });
+
+                }
+
+            });
+            dlg_msg.find('.messager-input').combobox({
+                url: 'api/list/all/cfg',
+                valueField: 'file',
+                textField: 'file',
+                label: T('Nome Configurazione'),
+                prompt: T('seleziona'),
+                labelPosition: 'top',
+                width: '95%',
+                required: true,
+            }).attr('id', 'cfg_name');
+            //$('#file_cfg_app').focus().select();
         }
     })
+
+    /** read configuration from input
+     *
+     * @returns {init_app.read_cfg.cfg}
+     */
+    function read_cfg_from_input() {
+        $('#dg_model').datagrid('removeFilterRule');
+        $('#dg_model').datagrid('disableFilter');
+        var model = $('#dg_model').datagrid('getRows');
+        $('#dg_model').datagrid('enableFilter');
+
+        var app_name = $('#tb_app_name').textbox('getValue');
+        var app_folder = $('#tb_app_folder').textbox('getValue');
+        var table_name = $('#tb_table_name').combobox('getValue');
+        var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
+        var html_prefix = $('#nn_prefix').numberspinner('getValue');
+        var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
+        var pagination_list = $('#cc_pagination_list').combobox('getValues');
+        pagination_list = JSON.stringify(pagination_list).replaceAll('\"', '')
+        var pagination_size = $('#cc_pagination_size').combobox('getValue');
+        var cfg = {
+            app_name: app_name,
+            app_folder: app_folder,
+            table_name: table_name,
+            model_from_json: model_from_json,
+            html_prefix: html_prefix,
+            pagination: pagination,
+            pagination_list: pagination_list,
+            pagination_size: pagination_size,
+            model: model,
+        };
+        return cfg;
+    }
+
+    /** read configuration from input
+     *
+     * @returns {init_app.read_cfg.cfg}
+     */
+    function write_cfg_to_input() {
+        $('#dg_model').datagrid('removeFilterRule');
+        $('#dg_model').datagrid('disableFilter');
+        var model = $('#dg_model').datagrid('getRows');
+        $('#dg_model').datagrid('enableFilter');
+
+        var app_name = $('#tb_app_name').textbox('getValue');
+        var app_folder = $('#tb_app_folder').textbox('getValue');
+        var table_name = $('#tb_table_name').combobox('getValue');
+        var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
+        var html_prefix = $('#nn_prefix').numberspinner('getValue');
+        var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
+        var pagination_list = $('#cc_pagination_list').combobox('getValues');
+        pagination_list = JSON.stringify(pagination_list).replaceAll('\"', '')
+        var pagination_size = $('#cc_pagination_size').combobox('getValue');
+        var cfg = {
+            app_name: app_name,
+            app_folder: app_folder,
+            table_name: table_name,
+            model_from_json: model_from_json,
+            html_prefix: html_prefix,
+            pagination: pagination,
+            pagination_list: pagination_list,
+            pagination_size: pagination_size,
+            model: model,
+        };
+        return cfg;
+    }
 }
 
 
