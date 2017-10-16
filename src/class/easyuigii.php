@@ -25,9 +25,9 @@ class easyuigii {
     public $app_folder = "";
     public $table_name = "";
     public $model_from_json = 0; // 1 for custom model, 0 from db
+    public $table_model = []; //tabel model structure
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "";
-    public $table_model = []; //tabel model structure
     public $pagination = 0;
     public $pagination_list = "";  //string list es. [25,50]
     public $pagination_size = "";
@@ -46,8 +46,9 @@ class easyuigii {
 
         $this->set_db_setting();
 
-        $model_from_json = ($this->model_from_json == 1) ? true : false;
-        $this->table_model = $this->get_table_model($model_from_json); // true get from custom model, false from db
+        if ($this->model_from_json == 0) {
+            $this->table_model = $this->get_table_model_from_db();
+        }
         $this->primary_key = $this->get_primary_key_from_model();
     }
 
@@ -209,39 +210,6 @@ class easyuigii {
         $file = $this->root_gii . "/cfg/" . $cfg_name . ".json";
         $json = json_encode($cfg);
         file_put_contents($file, $json);
-    }
-
-    /** save model to json file - deprecated
-     *
-     * @param type $data array model
-     */
-    public function save_dg_model_to_json($data) {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-
-        $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
-        $json = json_encode($data);
-        file_put_contents($file, $json);
-    }
-
-    /** read model table from db
-     * @return type
-     */
-    public function read_dg_model_from_db() {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-        $data = $this->get_table_model(false);
-        return $data;
-    }
-
-    /** read model table from file json
-     * @return type
-     */
-    public function read_dg_model_from_json() {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-
-        $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
-        $json = file_get_contents($file);
-        $data = json_decode($json, true);
-        return $data;
     }
 
     public function upload_image($name_file) {
@@ -880,18 +848,16 @@ class easyuigii {
         }
     }
 
-    /** get table model
+    /** get table model from db
      *
-     * @param type $from_json if true get from custom model (json file)
      * @return type
      * @throws Exception
      */
-    public function get_table_model($from_json) {
+    public function get_table_model_from_db() {
         try {
 
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-            if (!$from_json) {
 
                 $app = Slim\Slim::getInstance();
                 $table = $this->table_name;
@@ -1003,13 +969,8 @@ class easyuigii {
                 //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
                 //file_put_contents($file, $json);
                 return $data_r3;
-            } else {
-                //custom model
-                $file = $this->root_gii . $this->template_root_path . "/crud/model/custom_model.json";
-                $json = file_get_contents($file);
-                $data = json_decode($json, true);
-                return $data;
-            }
+         
+            
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));

@@ -31,9 +31,7 @@ $app->post('/dg/snippets/delete', 'snippets_delete'); //deleet snippets
 $app->post('/dg/snippets/rename', 'snippets_rename'); //rename snippets
 $app->post('/uoload/image', 'upload_image'); //upload image snippets
 $app->post('/delete/uoload/image', 'del_upload_image'); //delete uploadet image snippets
-$app->post('/dg/model/read/json', 'dg_model_read_from_json'); //read model from json (custom)
 $app->post('/dg/model/read/db/:table', 'dg_model_read_from_db'); //read model from db
-$app->post('/dg/model/save/json', 'dg_model_save2json'); //save model to json
 $app->post('/list/table/db', 'list_table_db'); //for combobox, list table db
 $app->post('/list/column/:table', 'list_column'); //for combobox, list table db
 $app->post('/crud/save/cfg2json', 'save_cfg2json'); //save configuration to json
@@ -168,6 +166,8 @@ function crud_generate() {
         $gii->app_folder = $app->request->params('app_folder');
         $gii->table_name = $app->request->params('table_name');
         $gii->model_from_json = $app->request->params('model_from_json');
+        $gii->table_model = $app->request->params('table_model');
+
         $gii->html_prefix = $app->request->params('html_prefix');
         $gii->pagination = $app->request->params('pagination');
         $gii->pagination_list = $app->request->params('pagination_list');
@@ -371,25 +371,7 @@ function del_upload_image() {
     }
 }
 
-/** Read from json file
- */
-function dg_model_read_from_json() {
-    try {
-        $app = Slim\Slim::getInstance();
 
-        $gii = new easyuigii();
-        $data = $gii->read_dg_model_from_json();
-
-        $result['rows'] = $data;
-        $result['total'] = Count($data);
-        $app->response()->body(json_encode($result));
-
-        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-    } catch (Exception $e) {
-        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . 'error - read dg model  ' . PHP_EOL, 3, 'logs/error.log');
-    }
-}
 
 /** Read from db
  */
@@ -400,7 +382,7 @@ function dg_model_read_from_db($table) {
         $gii = new easyuigii();
         $gii->set_db_setting();
         $gii->table_name = $table;
-        $data = $gii->read_dg_model_from_db();
+        $data = $gii->get_table_model_from_db();
 
         $app->response()->body(json_encode($data));
 
@@ -411,24 +393,6 @@ function dg_model_read_from_db($table) {
     }
 }
 
-//deprecato
-function dg_model_save2json() {
-    try {
-        $app = Slim\Slim::getInstance();
-        $data = $app->request->params('data'); // file name start
-
-        $gii = new easyuigii();
-        $gii->save_dg_model_to_json($data);
-
-        $app->render(200, ['success' => true, 'msg' => $gii->T('Salvato modello')]);
-
-
-        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-    } catch (Exception $e) {
-        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
-        error_log(LogTime() . 'error - save model to json  ' . PHP_EOL, 3, 'logs/error.log');
-    }
-}
 
 
 function list_table_db() {

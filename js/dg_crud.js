@@ -75,10 +75,16 @@ function init_app() {
         if (validate) {
             $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
                 if (r) {
+                    $('#dg_model').datagrid('removeFilterRule');
+                    $('#dg_model').datagrid('disableFilter');
+                    var model = $('#dg_model').datagrid('getRows');
+                    $('#dg_model').datagrid('enableFilter');
+
                     var app_name = $('#tb_app_name').textbox('getValue');
                     var app_folder = $('#tb_app_folder').textbox('getValue');
                     var table_name = $('#tb_table_name').combobox('getValue');
                     var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
+
                     var html_prefix = $('#nn_prefix').numberspinner('getValue');
                     var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
                     var pagination_list = $('#cc_pagination_list').combobox('getValues');
@@ -91,6 +97,7 @@ function init_app() {
                         app_folder: app_folder,
                         table_name: table_name,
                         model_from_json: model_from_json,
+                        table_model: model,
                         html_prefix: html_prefix,
                         pagination: pagination,
                         pagination_list: pagination_list,
@@ -147,8 +154,6 @@ function init_app() {
             iconCls: 'icon-save',
             handler: function () {
                 $('#dg_model').edatagrid('saveRow');
-                dg_model_save2json();//deprecated
-
             }}, '-', {
             text: T('Annulla'),
             iconCls: 'icon-undo',
@@ -159,12 +164,6 @@ function init_app() {
             iconCls: 'icon-remove',
             handler: function () {
                 $('#dg_model').edatagrid('destroyRow');
-            }}, '-', {
-            text: T('Ricarica'),
-            iconCls: 'icon-reload',
-            handler: function () {
-                $('#dg_model').datagrid('options').url = 'api/dg/model/read/json';
-                $('#dg_model').datagrid('reload');
             }}, '-', {
             text: T('Importa dal db'),
             iconCls: 'icon-add',
@@ -221,6 +220,7 @@ function init_app() {
                 load_menu_opt();
             },
             onEdit: function (index, row) {
+                if (row.NAME_TABLE_EXT != "") {
                 var ed = $(this).datagrid('getEditor', {index: index, field: "NAME_TABLE_EXT"});
                 $(ed.target).combobox('reload', 'api/list/table/db');
 
@@ -228,7 +228,8 @@ function init_app() {
                 $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
 
                 var ed = $(this).datagrid('getEditor', {index: index, field: "VALUE_FIELD"});
-                $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
+                    $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
+                }
             },
             frozenColumns: [[
                     {field: 'ck', checkbox: true},
@@ -294,30 +295,7 @@ function init_app() {
         }
 
     }
-    //deprecated
-    function dg_model_save2json() {
-        $('#dg_model').datagrid('removeFilterRule');
-        $('#dg_model').datagrid('disableFilter');
-        var rows = $('#dg_model').datagrid('getRows');
-        $.post('api/dg/model/save/json', {data: rows})
-                .done(function (data) {
-                    $.messager.progress('close');
-                    if (data.success) {
-                        $.messager.show({
-                            title: T('salvataggio'),
-                            msg: data.msg,
-                            showType: 'slide'
-                        });
-                    } else {
-                        $.messager.alert(T('errore'), data.msg, 'error');
-                    }
-                })
-                .fail(function () {
-                    $.messager.progress('close');
-                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
-                });
-        $('#dg_model').datagrid('enableFilter');
-    }
+
     $('#nn_prefix').numberspinner({
         min: 1,
         precision: 0,
@@ -520,6 +498,7 @@ function init_app() {
                                     $.messager.progress('close');
                                     if (data.success) {
                                         g_cfg_name = cfg_name;
+                                        set_name_cfg(g_cfg_name);
                                         $.messager.show({
                                             title: T('salvataggio'),
                                             msg: data.msg,
@@ -569,6 +548,7 @@ function init_app() {
                                     $.messager.progress('close');
                                 if (data.success) {
                                     g_cfg_name = cfg_name;
+                                    set_name_cfg(g_cfg_name);
                                     read_cfg_from_json(data.cfg);
                                         $.messager.show({
                                         title: T('configurazione'),
@@ -593,6 +573,7 @@ function init_app() {
                 textField: 'file',
                 label: T('Nome Configurazione'),
                 prompt: T('seleziona'),
+                value: g_cfg_name,
                 labelPosition: 'top',
                 width: '95%',
                 required: true,
@@ -660,6 +641,11 @@ function init_app() {
 
         $('#cc_pagination_list').combobox('setValue', JSON.parse(cfg.pagination_list));
         $('#cc_pagination_size').combobox('setValue', cfg.pagination_size);
+    }
+    function set_name_cfg(cfg_name) {
+        $('#p_base').panel({
+            title: T("Parametri Principali") + " - " + "[" + T("configurazione:") + cfg_name + "]",
+        });
     }
 }
 
