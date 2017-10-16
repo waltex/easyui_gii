@@ -150,8 +150,8 @@ function init_app() {
             handler: function (e) {
                 $('#dg_model').edatagrid('addRow');
             }}, '-', {
-            text: T('Salva'),
-            iconCls: 'icon-save',
+            text: T('Conferma'),
+            iconCls: 'icon-ok',
             handler: function () {
                 $('#dg_model').edatagrid('saveRow');
             }}, '-', {
