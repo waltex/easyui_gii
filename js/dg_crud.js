@@ -1,5 +1,6 @@
 var g_debug
 var g_keydown
+var g_cfg_name
 function init_app() {
     $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
     $('#tb_app_name').textbox({
@@ -518,6 +519,7 @@ function init_app() {
                                 .done(function (data) {
                                     $.messager.progress('close');
                                     if (data.success) {
+                                        g_cfg_name = cfg_name;
                                         $.messager.show({
                                             title: T('salvataggio'),
                                             msg: data.msg,
@@ -544,6 +546,7 @@ function init_app() {
                 hasDownArrow: false,
                 label: T('Nome Configurazione'),
                 prompt: T('digita qui'),
+                value: g_cfg_name,
                 labelPosition: 'top',
                 width: '95%',
                 required: true,
@@ -561,12 +564,14 @@ function init_app() {
                     var cfg_name = $('#cfg_name').combobox('getValue');
 
 
-                    $.post('api/crud/open/cfg2json', {cfg_name: cfg_name})
+                    $.post('api/crud/open/cfg/json', {cfg_name: cfg_name})
                                 .done(function (data) {
                                     $.messager.progress('close');
-                                    if (data.success) {
+                                if (data.success) {
+                                    g_cfg_name = cfg_name;
+                                    read_cfg_from_json(data.cfg);
                                         $.messager.show({
-                                            title: T('configurazione'),
+                                        title: T('configurazione'),
                                             msg: data.msg,
                                             showType: 'slide'
                                         });
@@ -629,37 +634,32 @@ function init_app() {
         return cfg;
     }
 
-    /** read configuration from input
-     *
-     * @returns {init_app.read_cfg.cfg}
+    /** read configuration from json
+     * @param {type} cfg json configuration
+     * @returns {undefined}
      */
-    function write_cfg_to_input() {
-        $('#dg_model').datagrid('removeFilterRule');
-        $('#dg_model').datagrid('disableFilter');
-        var model = $('#dg_model').datagrid('getRows');
-        $('#dg_model').datagrid('enableFilter');
+    function read_cfg_from_json(cfg) {
+        if (cfg.model_from_json == 1) {
+            $("#sb_model").switchbutton('check');
+        } else {
+            $("#sb_model").switchbutton('uncheck');
+        }
+        $('#dg_model').datagrid('loadData', cfg.model);
 
-        var app_name = $('#tb_app_name').textbox('getValue');
-        var app_folder = $('#tb_app_folder').textbox('getValue');
-        var table_name = $('#tb_table_name').combobox('getValue');
-        var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
-        var html_prefix = $('#nn_prefix').numberspinner('getValue');
-        var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
-        var pagination_list = $('#cc_pagination_list').combobox('getValues');
-        pagination_list = JSON.stringify(pagination_list).replaceAll('\"', '')
-        var pagination_size = $('#cc_pagination_size').combobox('getValue');
-        var cfg = {
-            app_name: app_name,
-            app_folder: app_folder,
-            table_name: table_name,
-            model_from_json: model_from_json,
-            html_prefix: html_prefix,
-            pagination: pagination,
-            pagination_list: pagination_list,
-            pagination_size: pagination_size,
-            model: model,
-        };
-        return cfg;
+        $('#tb_app_name').textbox('setValue', cfg.app_name);
+        $('#tb_app_folder').textbox('setValue', cfg.app_folder);
+        $('#tb_table_name').combobox('setValue', cfg.table_name);
+
+        $('#nn_prefix').numberspinner('setValue', cfg.html_prefix);
+
+        if (cfg.pagination == 1) {
+            $("#sb_pagination").switchbutton('check');
+        } else {
+            $("#sb_pagination").switchbutton('uncheck');
+        }
+
+        $('#cc_pagination_list').combobox('setValue', JSON.parse(cfg.pagination_list));
+        $('#cc_pagination_size').combobox('setValue', cfg.pagination_size);
     }
 }
 

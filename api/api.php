@@ -38,6 +38,7 @@ $app->post('/list/table/db', 'list_table_db'); //for combobox, list table db
 $app->post('/list/column/:table', 'list_column'); //for combobox, list table db
 $app->post('/crud/save/cfg2json', 'save_cfg2json'); //save configuration to json
 $app->post('/list/all/cfg', 'list_cfg'); //list name all configuration saved
+$app->post('/crud/open/cfg/json', 'open_cfg_from_json'); //save configuration to json
 
 
 
@@ -500,5 +501,27 @@ function list_cfg() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - list configuration ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+
+
+/** open configuration crud
+ */
+function open_cfg_from_json() {
+    try {
+        $app = Slim\Slim::getInstance();
+        $cfg_name = $app->request->params('cfg_name'); // cofiguration
+
+        $gii = new easyuigii();
+        $data = $gii->open_cfg_crud_from_json($cfg_name);
+
+        $app->render(200, ['success' => true, 'msg' => 'Configurazione caricata', 'cfg' => $data]);
+
+
+        ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - open configuration from json  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }

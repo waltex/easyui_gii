@@ -184,6 +184,20 @@ class easyuigii {
         }
     }
 
+    /**
+     * @param type $cfg_name file configuration crud
+     * @return type
+     */
+    public function open_cfg_crud_from_json($cfg_name) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $file = $this->root_gii . "/cfg/" . $cfg_name . ".json";
+
+        $json = file_get_contents($file);
+        $data = json_decode($json, true);
+        return $data;
+    }
+
     /** savve configuration crud
      *
      * @param type $cfg configuration array
