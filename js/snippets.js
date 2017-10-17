@@ -28,14 +28,6 @@ function init_app() {
             iconCls: 'icon-remove',
             handler: function () {
                 $('#dg_snippets').edatagrid('destroyRow');
-            }}, '-', {
-            id: 'bt_edit',
-            text: T('Modifica'),
-            toggle: true,
-            iconCls: 'icon-edit',
-            handler: function () {
-                g_edit_code = !g_edit_code;
-                view_file();
             }}];
 
     $('#dg_snippets').edatagrid({
@@ -157,9 +149,7 @@ function init_app() {
     $('#bt_add').tooltip({
         content: T('Aggiunge una riga (inserire anche estensione es .php .html)')
     });
-    $('#bt_edit').tooltip({
-        content: T('Abilita la modifica dell immagine a fianco')
-    });
+
 
 
     function set_star_on_edit(index) {
@@ -208,16 +198,33 @@ function init_app() {
         (g_edit_code) ? $('#div_upload').show() : $('#div_upload').hide();
         // check if exists imege
 
+        var bt_name = T('modifca');
+        var bt_image = '<a id="bt_edit" style="margin-left:5px;">' + bt_name + '</a>';
         $.get(url)
                 .done(function () {
-                    $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice con immagine ')}); //panel west
+                    $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice con immagine - ') + bt_image}); //panel west
+                    add_bt_edit();
                     var content = '<img id="image_code" style="max-width:100%;height:auto;max-height:95%;width:auto;margin:0px auto;display:block" align="middle" src="' + url + '"></img>';
                     $('#image_snippets').panel({content: content});
                 }).fail(function () {
-            $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice')}); //panel west
+            $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice senza immagine' + bt_image)}); //panel west
+            add_bt_edit();
             $('#image_snippets').panel({content: '<div></div>'});
         });
     }
+    function add_bt_edit() {
+        $('#bt_edit').linkbutton({
+            height: '20px',
+            toggle: true,
+            selected: g_edit_code,
+            iconCls: 'fa fa-file-image-o fa-blue',
+            onClick: function () {
+                g_edit_code = !g_edit_code;
+                viw_image_code();
+            }
+        });
+    }
+
 
     $('#label_fb_upload').html(T('File immagine:'));
     $('#fb_upload').filebox({
@@ -275,6 +282,10 @@ function init_app() {
             $.messager.alert(T('attenzione'), T('Si è verificvato un errore nel trasferimento'), 'error');
         }
     });
+
+
+
+
     /*
      $('#mm').menu('appendItem', {
      text: 'php',
