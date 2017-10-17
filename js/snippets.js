@@ -1,6 +1,7 @@
 var g_debug
 var g_edit_code = false;
 var g_dg_edit = false;
+var g_font_size = 14;
 function init_app() {
     //translate
     $('#cc_layout').layout('panel', 'west').panel({title: T('elenco esempi di codice')}); //panel west
@@ -176,10 +177,13 @@ function init_app() {
     }
 
     function view_file() {
+        var font_size = g_font_size;
         var file = $('#dg_snippets').datagrid('getSelected').file;
         var file_path = "../../../snippets/" + file;
         var param = $.param({
-            file: file_path});
+            file: file_path,
+            font_size: font_size,
+        });
         var app_url = parent.window.location.pathname.substr(0, parent.window.location.pathname.lastIndexOf('/'));
         var url = app_url + '/lib/BEAR.Ace/web/?' + param;
         var content = '<iframe id="iframe_snippets" scrolling="yes" frameborder="0"  src="' + url + '" style="width:98%;height:96%;padding:0.5%"></iframe>';
@@ -199,7 +203,7 @@ function init_app() {
         // check if exists imege
 
         var bt_name = T('modifca');
-        var bt_image = '<a id="bt_edit" style="margin-left:5px;">' + bt_name + '</a>';
+        var bt_image = '<a id="bt_edit" style="margin-left:5px;">' + bt_name;
         $.get(url)
                 .done(function () {
                     $('#cc_code').layout('panel', 'north').panel({title: T('Pagina codice con immagine - ') + bt_image}); //panel west
@@ -223,6 +227,23 @@ function init_app() {
                 viw_image_code();
             }
         });
+        $('#ss_font').numberspinner({
+            min: 1,
+            precision: 0,
+            spinAlign: 'horizontal',
+            value: g_font_size,
+            required: true,
+            onSpinDown: function () {
+                g_font_size = $(this).numberspinner('getValue');
+                view_file();
+            },
+            onSpinUp: function () {
+                g_font_size = $(this).numberspinner('getValue');
+                view_file();
+            },
+
+        })
+        $('#label_font').html(T('Font px'));
     }
 
 

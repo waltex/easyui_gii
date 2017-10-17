@@ -24,9 +24,13 @@ try {
     $editor = new Editor;
     $html = (string)$editor->setRootPath($rootPath)->handle($_GET, $_POST, $_SERVER);
 
-    
+    if (isset($_GET["font_size"])) {
+        $font_size = $_GET["font_size"];
+    } else {
+        $font_size = "12";
+    }
     //file_put_contents("test.html", $html);
-    $add_Style = "        .ace_editor {position: relative;overflow: hidden;font: 15px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;direction: ltr;text-align: left;}
+    $add_Style = "        .ace_editor {position: relative;overflow: hidden;font: $font_size" . "px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;direction: ltr;text-align: left;}
                             </style>
                  ";
     $html = str_replace("</style>", $add_Style, $html);
