@@ -1,22 +1,17 @@
-<?php
-/**
- * @global $view array
- */
-return <<<EOT
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>{$view['file_path']}</title>
+    <title>../../../snippets/test.php</title>
     <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
     <link rel="icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
     <!--script src="//code.jquery.com/jquery-latest.js"></script-->
     <script src="lib/jquery.js" type="text/javascript"></script>
     <!--script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.0/js/bootstrap.min.js"></script-->
     <script src="lib/bootrap.min.js" type="text/javascript"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
-	<!--script src="lib/ace.js" type="text/javascript"></script-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"></script>
+    <!--script src="lib/ace.js" type="text/javascript"></script-->
     <script>
         $("body").bind("ajaxSend", function(elm, xhr, s){
             if (s.type == "POST") {
@@ -24,7 +19,7 @@ return <<<EOT
             }
         });
         $.codeEdit = {
-            reload : {$view['enable_reload_after_save']},
+            reload : false,
             changed : false,
             factory : function() {
                 var editor = ace.edit("editor");
@@ -40,7 +35,7 @@ return <<<EOT
                 return editor;
             },
             save : function(file_path, data, save_url) {
-                if(typeof save_url === 'undefined') save_url = "{$view['save_url']}";
+                if(typeof save_url === 'undefined') save_url = "index.php";
                 if ($.codeEdit.changed == false) {
                     return;
                 }
@@ -155,18 +150,26 @@ return <<<EOT
 <body>
 
     <div id="label" class="editor_label">
-        {$view['message']}
-        <span class="editor_file">{$view['file_path']}</span>
+        
+        <span class="editor_file">../../../snippets/test.php</span>
         <span class="editor_file_save" id="save_now">Save</span>
     </div>
-    <pre id="editor">{$view['file_contents']}</pre>
+    <pre id="editor">&lt;?php
+$handle = printer_open('\\\\192.168.0.8\\Canon MF4320-4350'); 
+printer_set_option($handle, PRINTER_MODE, &quot;RAW&quot;);
+printer_write($handle, &quot;TEXT To print&quot;);
+
+
+
+
+printer_close($handle);</pre>
     <script>
     $(function(){
         editor = $.codeEdit.factory();
-        editor.gotoLine({$view['line']});
-        editor.setReadOnly({$view['is_read_only']});
-        $.codeEdit.label('{$view['is_writable_label']}');
-        var save = function() {\$.codeEdit.save("{$view['file_path']}", editor.getSession().getValue());};
+        editor.gotoLine(0);
+        editor.setReadOnly(0);
+        $.codeEdit.label('reset');
+        var save = function() {$.codeEdit.save("../../../snippets/test.php", editor.getSession().getValue());};
         editor.commands.addCommand({
             name: 'Save',
             bindKey: {
@@ -180,4 +183,3 @@ return <<<EOT
     </script>
 </body>
 </html>
-EOT;

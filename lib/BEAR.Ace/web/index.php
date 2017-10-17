@@ -23,7 +23,9 @@ $rootPath = __DIR__;
 try {
     $editor = new Editor;
     $html = (string)$editor->setRootPath($rootPath)->handle($_GET, $_POST, $_SERVER);
-    //file_put_contents("file.html", $html);
+
+    
+    //file_put_contents("test.html", $html);
     $add_Style = "        .ace_editor {position: relative;overflow: hidden;font: 15px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;direction: ltr;text-align: left;}
                             </style>
                  ";

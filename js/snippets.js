@@ -158,7 +158,7 @@ function init_app() {
         content: T('Aggiunge una riga (inserire anche estensione es .php .html)')
     });
     $('#bt_edit').tooltip({
-        content: T('Abilita la modifica del codice nella pagina a fianco')
+        content: T('Abilita la modifica dell immagine a fianco')
     });
 
 
@@ -187,29 +187,20 @@ function init_app() {
 
     function view_file() {
         var file = $('#dg_snippets').datagrid('getSelected').file;
-        var param = $.param({protocol: 'FTP',
-            ftpserver: 'localhost',
-            ftpserverport: 21,
-            sshfingerprint: '',
-            username: 'daemon',
-            password_encrypted: '7B98661E4E',
-            language: g_param["lingua corrente"],
-            skin: 'shinra',
-            ftpmode: 'automatic',
-            passivemode: 'no',
-            viewmode: 'list',
-            sort: '',
-            sortorder: '',
-            state: (g_edit_code) ? 'edit' : 'view',
-            directory: '/easyui_gii/snippets',
-            entry: file});
-        var url = 'http://localhost/easyui_gii/lib/net2ftp/index.php?' + param;
+        var file_path = "../../../snippets/" + file;
+        var param = $.param({
+            file: file_path});
+        var app_url = parent.window.location.pathname.substr(0, parent.window.location.pathname.lastIndexOf('/'));
+        var url = app_url + '/lib/BEAR.Ace/web/?' + param;
         var content = '<iframe id="iframe_snippets" scrolling="yes" frameborder="0"  src="' + url + '" style="width:99%;height:97.3%;padding:0.5%"></iframe>';
         $('#cc_code').layout('panel', 'center').panel({
             content: content,
         });
         viw_image_code();
     }
+
+
+
     function viw_image_code() {
         var file = $('#dg_snippets').datagrid('getSelected').file
         var url = "snippets/image/" + file + '.jpg';
