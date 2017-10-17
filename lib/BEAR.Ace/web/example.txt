@@ -1,0 +1,2 @@
+http://localhost/easyui_gii/lib/BEAR.Ace/web/?file=hello.php
+http://localhost/easyui_gii/lib/BEAR.Ace/web/?file=../../../snippets/test.php

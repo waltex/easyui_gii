@@ -13,7 +13,7 @@
         "slim/slim": "^2.0",
         "dogancelik/slim-json": "^0.4.0",
         "statickidz/php-google-translate-free": "^1.0",
-        "twig/twig": "~1.0"
+        "twig/twig": "1.34.4"
     },
     "autoload": {
         "classmap": ["src/class/easyuigii.php"]
