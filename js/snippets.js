@@ -192,7 +192,7 @@ function init_app() {
             file: file_path});
         var app_url = parent.window.location.pathname.substr(0, parent.window.location.pathname.lastIndexOf('/'));
         var url = app_url + '/lib/BEAR.Ace/web/?' + param;
-        var content = '<iframe id="iframe_snippets" scrolling="yes" frameborder="0"  src="' + url + '" style="width:99%;height:97.3%;padding:0.5%"></iframe>';
+        var content = '<iframe id="iframe_snippets" scrolling="yes" frameborder="0"  src="' + url + '" style="width:98%;height:96%;padding:0.5%"></iframe>';
         $('#cc_code').layout('panel', 'center').panel({
             content: content,
         });
