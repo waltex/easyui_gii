@@ -344,7 +344,7 @@ class easyuigii {
 
 
         $dir = $this->root_gii . "/cfg/";
-        if (!is_dir($dir . 'cfg')) {
+        if (!is_dir($dir)) {
             mkdir($dir . 'cfg', 0777, true); //create folder
         }
         $list = scandir($dir);
