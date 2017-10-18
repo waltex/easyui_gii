@@ -118,8 +118,14 @@ function setting_read() {
         $imp = file_get_contents($file);
         $ar_file = json_decode($imp, true);
         $ar_out = [];
+        $cat = "generica";
+        $cat_old = "generica";
         foreach ($ar_file as $key => $value) {
-            $ar_out[] = ["name" => $key, "val" => $value];
+            if ($value === "#cat") {
+                $cat = $key;
+            } else {
+                $ar_out[] = ["name" => $key, "val" => $value, "cat" => $cat];
+            }
         }
 
         $app->render(200, $ar_out);
