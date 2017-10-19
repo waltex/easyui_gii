@@ -86,6 +86,8 @@ function init_app() {
                     var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
 
                     var html_prefix = $('#nn_prefix').numberspinner('getValue');
+
+                    var dg_inline = ($("#sb_dg_inline").switchbutton('options').checked) ? 1 : 0;
                     var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
                     var pagination_list = $('#cc_pagination_list').combobox('getValues');
                     pagination_list = JSON.stringify(pagination_list).replaceAll('\"', '')
@@ -99,6 +101,7 @@ function init_app() {
                         model_from_json: model_from_json,
                         table_model: model,
                         html_prefix: html_prefix,
+                        dg_inline: dg_inline,
                         pagination: pagination,
                         pagination_list: pagination_list,
                         pagination_size: pagination_size,
@@ -446,6 +449,12 @@ function init_app() {
         }
         return titles;
     }
+    $("#sb_dg_inline_label").html(T("(si) modifica tabella sulle celle, (no) modifica su form"));
+    $("#sb_dg_inline").switchbutton({
+        checked: true,
+        onText: T('si'), offText: T('no'),
+    });
+
     $("#sb_pagination_label").html(T("Paginazione Tabella"));
     $("#sb_pagination").switchbutton({
         checked: false,
@@ -597,6 +606,8 @@ function init_app() {
         var table_name = $('#tb_table_name').combobox('getValue');
         var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
         var html_prefix = $('#nn_prefix').numberspinner('getValue');
+
+        var dg_inline = ($("#sb_dg_inline").switchbutton('options').checked) ? 1 : 0;
         var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
         var pagination_list = $('#cc_pagination_list').combobox('getValues');
         pagination_list = JSON.stringify(pagination_list).replaceAll('\"', '')
@@ -607,6 +618,7 @@ function init_app() {
             table_name: table_name,
             model_from_json: model_from_json,
             html_prefix: html_prefix,
+            dg_inline: dg_inline,
             pagination: pagination,
             pagination_list: pagination_list,
             pagination_size: pagination_size,
@@ -625,13 +637,23 @@ function init_app() {
         } else {
             $("#sb_model").switchbutton('uncheck');
         }
-        $('#dg_model').datagrid('loadData', cfg.model);
+
+        if (cfg.model === undefined) {
+            cfg.model = [];
+        }
+            $('#dg_model').datagrid('loadData', cfg.model);
 
         $('#tb_app_name').textbox('setValue', cfg.app_name);
         $('#tb_app_folder').textbox('setValue', cfg.app_folder);
         $('#tb_table_name').combobox('setValue', cfg.table_name);
 
         $('#nn_prefix').numberspinner('setValue', cfg.html_prefix);
+
+        if (cfg.dg_inline == 1) {
+            $("#sb_dg_inline").switchbutton('check');
+        } else {
+            $("#sb_dg_inline").switchbutton('uncheck');
+        }
 
         if (cfg.pagination == 1) {
             $("#sb_pagination").switchbutton('check');
