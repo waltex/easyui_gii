@@ -31,6 +31,7 @@ class easyuigii {
     public $pagination = 0;
     public $pagination_list = "";  //string list es. [25,50]
     public $pagination_size = "";
+    public $dg_inline = 1; // 1 edit in line , 0 edit on form
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
