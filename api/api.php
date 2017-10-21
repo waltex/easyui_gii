@@ -178,6 +178,8 @@ function crud_generate() {
         $gii->pagination = $app->request->params('pagination');
         $gii->pagination_list = $app->request->params('pagination_list');
         $gii->pagination_size = $app->request->params('pagination_size');
+        $gii->dg_inline = $app->request->params('dg_inline');
+
 
         $gii->build_app_crud();
 
