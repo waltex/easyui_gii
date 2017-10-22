@@ -612,6 +612,8 @@ class easyuigii {
                 'n' => $this->html_prefix
                 , 'input_cell' => $input_cell
                 , 'otions_obj' => $otions_obj
+                , 'host_api' => $this->host_api
+                , 'api_url' => $url_api_crud
             ));
         }
 

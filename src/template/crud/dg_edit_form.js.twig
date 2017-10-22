@@ -3,7 +3,7 @@ function dg{{n}}_edit_form(type) {
     var dlg_msg = $.messager.alert({
         id: 'dg_edit',
         title: 'modifica',
-        with : 450,
+        width : 700,
         height: 450,
         maximizable: true,
         resizable: true,
@@ -24,7 +24,7 @@ function dg{{n}}_edit_form(type) {
     });
     $("div:not([class]):contains('undefined')").remove();
 
-    var input_cel = '<form id="dg_fm">\n\
+    var input_cel = '<form id="dg_fm" method="post">\n\
                         {#<div style="margin-top:5px"><input id="dg1_CAMPO1" name="CAMPO1">\n\#}
                         {{input_cell|raw}}
                     </form>';
@@ -46,9 +46,9 @@ function dg{{n}}_edit_form(type) {
         if (row) {
             $('#dg_fm').form('load', row);
         }
-        $('#dg_fm').form({url: 'api/update'})
+        $('#dg_fm').form({url: '{{host_api}}{{api_url}}/UPDATE'})
     } else {
-        $('#dg_fm').form({url: 'api/insert'})
+        $('#dg_fm').form({url: '{{host_api}}{{api_url}}/INSERT'})
     }
     $('#dg_fm').form({
         onSubmit: function () {
