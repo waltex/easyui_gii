@@ -11,7 +11,7 @@ function dg{{n}}_edit_form(type) {
         text: '{{T('Salva')}}',
                 iconCls: 'icon-save',
                 onClick: function () {
-                    $.messager.progress();	// display the progress bar
+                    $.messager.progress({title: '{{T('salvataggio')}}', msg: '{{T('salvataggio in corso, attendere...')}}'});	// display the progress bar
                     $('#dg_fm').form('submit');
                 }
             }, {

@@ -842,7 +842,7 @@ class easyuigii {
             $yes = $this->T("si");
             $no = $this->T("no");
             $data = "[{text: '$yes', value:1}, {text:'$no', value:0}]";
-            $editor = "$id_object" . "combobox({" . PHP_EOL . " $width $label $required data:$data,});" . PHP_EOL;
+            $editor = "$id_object" . "combobox({" . PHP_EOL . " $width $label $required panelHeight:50,data:$data,});" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
