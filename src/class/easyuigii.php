@@ -605,8 +605,8 @@ class easyuigii {
         $on_after_edit = $this->get_crud_js_fn__on_after_edit();
 
         $fn_dg_edit_form = "";
-        if ($this->dg_inline == 1) {
-                    $fn_dg_edit_form = $twig->render('/crud/dg_edit_form.js.twig', array(
+        if ($this->dg_inline == 0) {
+            $fn_dg_edit_form = $twig->render('/crud/dg_edit_form.js.twig', array(
                 'n' => $this->html_prefix
             ));
         }
@@ -701,14 +701,14 @@ class easyuigii {
         return $api_url;
     }
 
-    /** cretate code for crud type column
+    /** order model by primary key
      *
-     * @return string es. "columns: [[ {field: 'ck', checkbox: true}, {field: 'ID', title: 'ID', width: '30px'
+     * @return type array model
      */
-    private function get_template_js_crud() {
+    private function model_order_primary_key() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $model = $this->table_model;
+                $model = $this->table_model;
         $key_row = [];
         $ar2 = []; //ord aray with ID/PRIMARY KEY with first element
         //while ($row = current($ar)) {
@@ -720,7 +720,40 @@ class easyuigii {
             }
         }
         $model_ord = array_merge([$key_row], $ar2); //model order by primary key
+        return $model_ord;
+    }
 
+    /**
+     * @return string code javascript for edit form row
+     */
+    private function get_fn_dg_edit_form() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $model_ord = $this->model_order_primary_key();
+
+        $n = $this->html_prefix;
+        foreach ($model_ord as $value) {
+            $col = $value["COL"];
+            $type = $value["CONSTRAINT_TYPE"];
+            if ($value["SKIP"] == "0") {
+                $hide = ($value["HIDE"] == "1") ? true : false;
+                $id_colname = "dg$n" . "_" . $value["COL"];
+                $colname = $value["COL"];
+                $code .= "<div style=\"margin-top:5px\"><input id=\"$id_colname\" name=\"$colname\">\n\\";
+            }
+        }
+        $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
+        return $code;
+    }
+
+    /** cretate code for crud type column
+     *
+     * @return string es. "columns: [[ {field: 'ck', checkbox: true}, {field: 'ID', title: 'ID', width: '30px'
+     */
+    private function get_template_js_crud() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $model_ord = $this->model_order_primary_key();
         $code = "";
         foreach ($model_ord as $value) {
             $col = $value["COL"];

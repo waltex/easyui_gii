@@ -8,14 +8,15 @@ function dg1_edit_form(type) {
         maximizable: true,
         resizable: true,
         buttons: [{
-                text: 'Salva',
+        text: '{{T('Salva')}}',
                 iconCls: 'icon-save',
                 onClick: function () {
                     $.messager.progress();	// display the progress bar
                     $('#dg1_fm').form('submit');
                 }
             }, {
-                text: 'Annulla',
+            text: '{{T('Annulla')}}',
+                iconCls: 'icon-cancel',
                 onClick: function () {
                     $(dlg_msg).panel('close');
                 }
