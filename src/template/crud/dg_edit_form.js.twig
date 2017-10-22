@@ -2,7 +2,7 @@ function dg{{n}}_edit_form(type) {
 
     var dlg_msg = $.messager.alert({
         id: 'dg_edit',
-        title: '{{T('modifica')}}',
+        title: (type=='insert') ? '{{T('inserisci')}}' : '{{T('modifica')}}',
         width : 700,
         height: 450,
         maximizable: true,
