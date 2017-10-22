@@ -586,6 +586,7 @@ class easyuigii {
         $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig'
             , 'n' => $this->html_prefix
             , 'app_name' => $this->app_name
+            , 'dg_inline' => $this->dg_inline
         ));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
