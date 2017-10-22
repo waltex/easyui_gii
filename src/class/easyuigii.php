@@ -839,8 +839,12 @@ class easyuigii {
         }
 
         if ($row["CK"] == "1") {
-            $editor = ($edit == "1") ? "editor: {type: 'checkbox', options: {on: '1', off: '0'}}," : "";
-            return "{field: '$col', title: '$colt', $editor formatter: mycheck, $required $sortable}," . PHP_EOL;
+            $yes = $this->T("si");
+            $no = $this->T("no");
+            $data = "[{text: '$yes', value:1}, {text:'$no', value:0}]";
+            $editor = "$id_object" . "combobox({" . PHP_EOL . " $width $label $required data:$data,});" . PHP_EOL;
+            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            return $editor;
         }
 
 

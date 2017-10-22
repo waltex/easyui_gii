@@ -455,6 +455,16 @@ function init_app() {
     $("#sb_dg_inline").switchbutton({
         checked: true,
         onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            if (checked) {
+                $('#dg_model').datagrid('hideColumn', 'WIDTH_FORM')
+                $('#dg_model').datagrid('hideColumn', 'WIDTH_LABEL')
+            } else {
+                $('#dg_model').datagrid('showColumn', 'WIDTH_FORM')
+                $('#dg_model').datagrid('showColumn', 'WIDTH_LABEL')
+            }
+        }
+
     });
 
     $("#sb_pagination_label").html(T("Paginazione Tabella"));
