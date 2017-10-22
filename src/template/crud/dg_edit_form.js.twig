@@ -1,7 +1,7 @@
-function dg1_edit_form(type) {
+function dg{{n}}_edit_form(type) {
 
     var dlg_msg = $.messager.alert({
-        id: 'dg1_edit',
+        id: 'dg_edit',
         title: 'modifica',
         with : 450,
         height: 450,
@@ -12,7 +12,7 @@ function dg1_edit_form(type) {
                 iconCls: 'icon-save',
                 onClick: function () {
                     $.messager.progress();	// display the progress bar
-                    $('#dg1_fm').form('submit');
+                    $('#dg_fm').form('submit');
                 }
             }, {
             text: '{{T('Annulla')}}',
@@ -24,25 +24,13 @@ function dg1_edit_form(type) {
     });
     $("div:not([class]):contains('undefined')").remove();
 
-    var input_cel = '<form id="fm">\n\
-                        <div style="margin-top:5px"><input id="dg1_CAMPO1" name="CAMPO1">\n\
-                        <div style="margin-top:5px"><input id="dg1_COMBO">\n\
+    var input_cel = '<form id="dg_fm">\n\
+                        {#<div style="margin-top:5px"><input id="dg1_CAMPO1" name="CAMPO1">\n\#}
+                        {{input_cell|raw}}
                     </form>';
     dlg_msg.find('div').end().append(input_cel);
-    $('#dg1_COMBO').combobox({
-        data: null,
-        mode: 'local',
-        name: 'COMBO',
-        valueField: 'FIELD',
-        textField: 'TITLE',
-        required: true,
-        panelWidth: 300,
-        editable: true,
-        prompt: 'seleziona',
-        label: 'Colonna:',
-        labelPosition: 'left',
-        width: 240,
-    });
+    {{otions_obj|raw}}
+    {#
     $('#dg1_CAMPO1').textbox({
         editable: true,
         required: true,
@@ -52,16 +40,17 @@ function dg1_edit_form(type) {
         labelPosition: 'left',
         width: 240,
     });
+    #}
     if (type == "update") {
-        var row = $('#dg1').datagrid('getSelected');
+        var row = $('#dg{{n}}').datagrid('getSelected');
         if (row) {
-            $('#fm').form('load', row);
+            $('#dg_fm').form('load', row);
         }
-        $('#fm').form({url: 'api/update'})
+        $('#dg_fm').form({url: 'api/update'})
     } else {
-        $('#fm').form({url: 'api/insert'})
+        $('#dg_fm').form({url: 'api/insert'})
     }
-    $('#fm').form({
+    $('#dg_fm').form({
         onSubmit: function () {
             var isValid = $(this).form('validate');
             if (!isValid) {

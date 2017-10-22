@@ -604,10 +604,14 @@ class easyuigii {
         $pagination = $this->get_pagination();
         $on_after_edit = $this->get_crud_js_fn__on_after_edit();
 
+        $input_cell = $this->get_input_cell_for_dg_edit_form();
+        $otions_obj = $this->get_option_for_dg_edit_form();
         $fn_dg_edit_form = "";
         if ($this->dg_inline == 0) {
             $fn_dg_edit_form = $twig->render('/crud/dg_edit_form.js.twig', array(
                 'n' => $this->html_prefix
+                , 'input_cell' => $input_cell
+                , 'otions_obj' => $otions_obj
             ));
         }
 
@@ -708,7 +712,7 @@ class easyuigii {
     private function model_order_primary_key() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-                $model = $this->table_model;
+        $model = $this->table_model;
         $key_row = [];
         $ar2 = []; //ord aray with ID/PRIMARY KEY with first element
         //while ($row = current($ar)) {
@@ -724,14 +728,15 @@ class easyuigii {
     }
 
     /**
-     * @return string code javascript for edit form row
+     * @return string code javascript for edit form row es <div style="margin-top:5px"><input id="dg1_COMBO">
      */
-    private function get_fn_dg_edit_form() {
+    private function get_input_cell_for_dg_edit_form() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $model_ord = $this->model_order_primary_key();
 
         $n = $this->html_prefix;
+        $code .= "\\n\\" . PHP_EOL;
         foreach ($model_ord as $value) {
             $col = $value["COL"];
             $type = $value["CONSTRAINT_TYPE"];
@@ -739,10 +744,10 @@ class easyuigii {
                 $hide = ($value["HIDE"] == "1") ? true : false;
                 $id_colname = "dg$n" . "_" . $value["COL"];
                 $colname = $value["COL"];
-                $code .= "<div style=\"margin-top:5px\"><input id=\"$id_colname\" name=\"$colname\">\n\\";
+                $code .= "<div style=\"margin-top:5px\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
             }
         }
-        $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
+        $code .= "\\n\\";
         return $code;
     }
 
@@ -765,6 +770,122 @@ class easyuigii {
         }
         $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
         return $code;
+    }
+
+    /**
+     *
+     * @return string return cord option of object
+     */
+    private function get_option_for_dg_edit_form() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $model_ord = $this->model_order_primary_key();
+        foreach ($model_ord as $value) {
+            $col = $value["COL"];
+            $type = $value["CONSTRAINT_TYPE"];
+            if ($value["SKIP"] == "0") {
+                $hide = ($value["HIDE"] == "1") ? true : false;
+                $code .= $this->get_option_for_field_edit_form($value, $hide);
+            }
+        }
+        return $code;
+    }
+
+    /**
+     *
+     * @param type $row
+     * @param type $hide
+     * @return type
+     */
+    private function get_option_for_field_edit_form($row, $hide) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $col = $row["COL"];
+        $title = $row["TITLE"];
+        $type = $row["TYPE"];
+        $width_field = $row["WIDTH_FORM"];
+        $width_label = $row["WIDTH_LABEL"];
+        $type_pk_fk = $row["CONSTRAINT_TYPE"];
+        $edit = ($this->dg_inline == 1) ? $row["EDIT"] : 0;
+        $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
+        $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
+        $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
+        $value_field = $row["VALUE_FIELD"]; // value for combobox
+        $text_field = $row["TEXT_FIELD"];   // text for combobox
+        $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
+        $n_dg = $this->html_prefix;
+        $hiden = ($hide) ? "hidden:true," : "";
+
+        //$('#dg1_COMBO').
+        $id_object = "$('#dg$n_dg" . "_$col').";
+
+        $pk = $this->primary_key;
+
+        $width = "";
+        $colt = $this->T($title); //translate
+        $label_with = ($width_label != "") ? "labelWidth:'$width_label'," : "";
+        $label = "label:'$colt',$label_with";
+        if ($width_field == "") {
+            //$px = (strlen($colt) * 10) . "px";
+            //$width = "width: '$px',";
+        } else {
+            $width = "width: '$width_field',";
+        }
+
+        if ($type_pk_fk == "PRIMARY_KEY") {
+            $editor = "$id_object" . "textbox({" . PHP_EOL . "editable:false, $width $label $required });" . PHP_EOL;
+            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            return $editor;
+        }
+
+        if ($row["CK"] == "1") {
+            $editor = ($edit == "1") ? "editor: {type: 'checkbox', options: {on: '1', off: '0'}}," : "";
+            return "{field: '$col', title: '$colt', $editor formatter: mycheck, $required $sortable}," . PHP_EOL;
+        }
+
+
+        if ($type == "textbox") {
+            $editor = "$id_object" . "textbox({" . PHP_EOL . " $width $label $required });" . PHP_EOL;
+            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            return $editor;
+        }
+        if ($type == "textarea") {
+            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true, $width $label $required })," . PHP_EOL;
+            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            return $editor;
+        }
+
+        //escludo the column primary key for edit
+        if ($type == "numberbox") {
+            $editor = "$id_object" . "numberbox({" . PHP_EOL . " $width $label $required });" . PHP_EOL;
+            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            return $editor;
+        }
+
+        if ($type == "datebox") {
+            $with = "width: '100px',";
+            ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
+            $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
+            $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
+            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+        }
+        if ($type == "combobox") {
+            $on_select = "
+                        onSelect: function (record) {
+                            var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
+                            var row = $('#dg$n_dg').datagrid('getRows')[index];
+                            row['$col" . "__TEXT'] = record.$text_field
+                        },
+                        ";
+            $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
+            $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, $on_select}},";
+            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            $editor = ($edit == "1") ? $editor : "";
+            return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+        }
+
+        $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
+        return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
     }
 
     /** return string code js for columns grid
@@ -905,9 +1026,9 @@ class easyuigii {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
-                $app = Slim\Slim::getInstance();
-                $table = $this->table_name;
-                $sql_old = "
+            $app = Slim\Slim::getInstance();
+            $table = $this->table_name;
+            $sql_old = "
                 SELECT
                  A.COLUMN_NAME COL
                  ,A.COLUMN_NAME TITLE
@@ -925,6 +1046,8 @@ class easyuigii {
                 , case A.NULLABLE when 'Y' then 1 when 'N' then 0 end REQUIRED
                 , 1 SORTABLE
                 ,'' WIDTH
+                ,'' WIDTH_FORM
+                ,'' LABEL_WIDTH
                 FROM ALL_TAB_COLUMNS A LEFT JOIN
                 (
                 SELECT
@@ -940,7 +1063,7 @@ class easyuigii {
                 ORDER BY A.COLUMN_ID
                 ";
 
-                $sql = "
+            $sql = "
                         WITH COL_CONSTRAINT AS (
                                         SELECT
                                         C.TABLE_NAME
@@ -997,26 +1120,24 @@ class easyuigii {
                         WHERE A.TABLE_NAME='$table' AND A.OWNER=USER
                         ORDER BY A.COLUMN_ID
                         ";
-                error_log(LogTime() . ' Sql, get model table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+            error_log(LogTime() . ' Sql, get model table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
 
-                //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
-                $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
-                $db = oci_parse($conn, $sql);
-                $rs = oci_execute($db);
+            //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+            $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
+            $db = oci_parse($conn, $sql);
+            $rs = oci_execute($db);
 
-                oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
-                $data_r = $this->set_title_model_from_ar_setting($data);
-                $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
-                $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
+            oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+            $data_r = $this->set_title_model_from_ar_setting($data);
+            $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
+            $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
 
-                //save json model
-                //$json = json_encode($data);
-                //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
-                //file_put_contents($file, $json);
-                return $data_r3;
-         
-            
+            //save json model
+            //$json = json_encode($data);
+            //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
+            //file_put_contents($file, $json);
+            return $data_r3;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));

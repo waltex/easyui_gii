@@ -192,7 +192,7 @@ function init_app() {
             text: T('Nessuna'),
             id: null
         }];
-    var data_type = [{text: 'tetxbox'}, {text: 'textarea'}, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox'}];
+    var data_type = [{text: 'textbox'}, {text: 'textarea'}, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox'}];
     function load_dg_model() {
         $('#dg_model').datagrid('removeFilterRule');
         $('#dg_model').datagrid('disableFilter');
@@ -248,6 +248,8 @@ function init_app() {
                 ]],
             columns: [[
                     {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
+                    {field: "WIDTH_FORM", title: T('Larghezza') + '<br>' + T('Campo Form'), editor: "text"},
+                    {field: "WIDTH_LABEL", title: T('Larghezza') + '<br>' + T('Campo Etichetta'), editor: "text"},
                     {field: "SKIP", title: BR(T('Campo Scartato')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "HIDE", title: BR(T('Campo Nascosto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "CK", title: BR(T('Campo Si,No')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
