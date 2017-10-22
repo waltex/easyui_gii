@@ -612,6 +612,7 @@ class easyuigii {
             , 'pk' => $this->primary_key
             , 'on_after_edit' => $on_after_edit
             , 'pagination' => $pagination
+            , 'e' => ($this->dg_inline == 1) ? 'e' : ''
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
