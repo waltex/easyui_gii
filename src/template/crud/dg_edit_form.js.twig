@@ -2,7 +2,7 @@ function dg{{n}}_edit_form(type) {
 
     var dlg_msg = $.messager.alert({
         id: 'dg_edit',
-        title: 'modifica',
+        title: '{{T('modifica')}}',
         width : 700,
         height: 450,
         maximizable: true,
@@ -60,6 +60,8 @@ function dg{{n}}_edit_form(type) {
         },
         success: function () {
             $.messager.progress('close');	// hide progress bar while submit successfully
+            $(dlg_msg).panel('close');
+            load_dg{{n}}();
         }
     });
 }

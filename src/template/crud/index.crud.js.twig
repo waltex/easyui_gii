@@ -2,6 +2,11 @@ $(document).ready(function () {
     $('#dg{{n}}_reload').bind('click', function () {
         load_dg{{n}}();
     });
+    {% if (dg_inline==0) %}
+    $('#dg{{n}}_insert').bind('click', function () {
+        dg{{n}}_edit_form('insert');
+    });
+    {% endif %}
     $('#dg1_export').bind('click', function () {
         JSONToCSVConvertor($('#dg{{n}}').datagrid('getRows'), "{{T('dati')}}", 'label')
     });
