@@ -604,6 +604,13 @@ class easyuigii {
         $pagination = $this->get_pagination();
         $on_after_edit = $this->get_crud_js_fn__on_after_edit();
 
+        $fn_dg_edit_form = "";
+        if ($this->dg_inline == 1) {
+                    $fn_dg_edit_form = $twig->render('/crud/dg_edit_form.js.twig', array(
+                'n' => $this->html_prefix
+            ));
+        }
+
         $js = $twig->render('/crud/index.crud.js.twig', array('n' => $this->html_prefix
             , 'host_api' => $this->host_api
             , 'api_url' => $url_api_crud
@@ -612,7 +619,9 @@ class easyuigii {
             , 'pk' => $this->primary_key
             , 'on_after_edit' => $on_after_edit
             , 'pagination' => $pagination
+            , 'dg_inline' => $this->dg_inline
             , 'e' => ($this->dg_inline == 1) ? 'e' : ''
+            , 'fn_dg_edit_form' => $fn_dg_edit_form,
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
@@ -739,7 +748,7 @@ class easyuigii {
         $type = $row["TYPE"];
         $width_field = $row["WIDTH"];
         $type_pk_fk = $row["CONSTRAINT_TYPE"];
-        $edit = $row["EDIT"];
+        $edit = ($this->dg_inline == 1) ? $row["EDIT"] : 0;
         $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
         $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
         $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
@@ -805,6 +814,7 @@ class easyuigii {
             $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
             $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, $on_select}},";
             $editor = str_replace(",", "," . PHP_EOL, $editor);
+            $editor = ($edit == "1") ? $editor : "";
             return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
         }
 

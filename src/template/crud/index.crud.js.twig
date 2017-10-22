@@ -14,9 +14,11 @@ $(document).ready(function () {
             toolbar: '#tb{{n}}',
             title: '{{title}}',
             url: '{{host_api}}{{api_url}}/SELECT',
+            {% if (dg_inline==1) %}
             saveUrl: '{{host_api}}{{api_url}}/INSERT',
             updateUrl: '{{host_api}}{{api_url}}/UPDATE',
             destroyUrl: '{{host_api}}{{api_url}}/DELETE',
+            {% endif %}
             method: 'post',
             rownumbers: true,
             striped: true,
@@ -29,6 +31,7 @@ $(document).ready(function () {
             multiSort: false,
             autoRowHeight: false, //For Speed refresh
             {{pagination|raw}}
+            {% if (dg_inline==1) %}
             destroyMsg: {
                 norecord: {// when no record is selected
                     title: "{{T('Attenzione')}}",
@@ -39,10 +42,16 @@ $(document).ready(function () {
                     msg: "{{T('Sei sicuro di voler cancellare?')}}"
                 }
             },
+            {% endif %}
             onError: function (index, row) {
                 $.messager.alert("{{T('Contattare assistenza')}}", row.msg, 'error');
                 },
             {{on_after_edit|raw}}
+            {% if (dg_inline==0) %}
+            onDblClickRow: function (index, row) {
+                dg{{n}}_edit_form('update');
+            },
+            {% endif %}
                 {#
                 columns: [[
                     {field: 'SEQ', title: 'Ord', width: '25px', editor: {type: 'numberbox', options: {required: true}}, sortable: true},

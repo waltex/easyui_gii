@@ -1,0 +1,75 @@
+function dg1_edit_form(type) {
+
+    var dlg_msg = $.messager.alert({
+        id: 'dg1_edit',
+        title: 'modifica',
+        with : 450,
+        height: 450,
+        maximizable: true,
+        resizable: true,
+        buttons: [{
+                text: 'Salva',
+                iconCls: 'icon-save',
+                onClick: function () {
+                    $.messager.progress();	// display the progress bar
+                    $('#dg1_fm').form('submit');
+                }
+            }, {
+                text: 'Annulla',
+                onClick: function () {
+                    $(dlg_msg).panel('close');
+                }
+            }]
+    });
+    $("div:not([class]):contains('undefined')").remove();
+
+    var input_cel = '<form id="fm">\n\
+                        <div style="margin-top:5px"><input id="dg1_CAMPO1" name="CAMPO1">\n\
+                        <div style="margin-top:5px"><input id="dg1_COMBO">\n\
+                    </form>';
+    dlg_msg.find('div').end().append(input_cel);
+    $('#dg1_COMBO').combobox({
+        data: null,
+        mode: 'local',
+        name: 'COMBO',
+        valueField: 'FIELD',
+        textField: 'TITLE',
+        required: true,
+        panelWidth: 300,
+        editable: true,
+        prompt: 'seleziona',
+        label: 'Colonna:',
+        labelPosition: 'left',
+        width: 240,
+    });
+    $('#dg1_CAMPO1').textbox({
+        editable: true,
+        required: true,
+        name: 'CAMPO1',
+        prompt: 'ss',
+        label: 'Valore:',
+        labelPosition: 'left',
+        width: 240,
+    });
+    if (type == "update") {
+        var row = $('#dg1').datagrid('getSelected');
+        if (row) {
+            $('#fm').form('load', row);
+        }
+        $('#fm').form({url: 'api/update'})
+    } else {
+        $('#fm').form({url: 'api/insert'})
+    }
+    $('#fm').form({
+        onSubmit: function () {
+            var isValid = $(this).form('validate');
+            if (!isValid) {
+                $.messager.progress('close');	// hide progress bar while the form is invalid
+            }
+            return isValid;	// return false will stop the form submission
+        },
+        success: function () {
+            $.messager.progress('close');	// hide progress bar while submit successfully
+        }
+    });
+}
