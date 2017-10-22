@@ -154,6 +154,8 @@ function setting_save() {
         $return = str_replace(':"true"', ':true', $return);
         $return = str_replace(':"false"', ':false', $return);
         file_put_contents($file, $return);
+
+        $app->render(200, ['success' => true]);
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . $e->getMessage() . PHP_EOL, 3, 'logs/error.log');
