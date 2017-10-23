@@ -457,11 +457,13 @@ function init_app() {
         onText: T('si'), offText: T('no'),
         onChange: function (checked) {
             if (checked) {
+                $('#div_dg_inline').hide();
                 $('#dg_model').datagrid('hideColumn', 'WIDTH_FORM')
                 $('#dg_model').datagrid('hideColumn', 'WIDTH_LABEL')
             } else {
                 $('#dg_model').datagrid('showColumn', 'WIDTH_FORM')
                 $('#dg_model').datagrid('showColumn', 'WIDTH_LABEL')
+                $('#div_dg_inline').show();
             }
         }
 
@@ -681,6 +683,18 @@ function init_app() {
             title: T("Parametri Principali") + " - " + "[" + T("configurazione:") + cfg_name + "]",
         });
     }
+    $('#tb_width_form').textbox({
+        label: T('Larghezza Form'),
+        labelWidth: 120,
+        width: 180,
+        value: '480px',
+    });
+    $('#tb_height_form').textbox({
+        label: T('Altezza Form'),
+        labelWidth: 120,
+        width: 180,
+        value: '80%',
+    });
 }
 
 
