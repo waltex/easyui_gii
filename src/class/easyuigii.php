@@ -738,7 +738,7 @@ class easyuigii {
         $model_ord = $this->model_order_primary_key();
 
         $n = $this->html_prefix;
-        $code .= "\\n\\" . PHP_EOL;
+        $code = "\\n\\" . PHP_EOL;
         foreach ($model_ord as $value) {
             $col = $value["COL"];
             $type = $value["CONSTRAINT_TYPE"];
@@ -780,7 +780,7 @@ class easyuigii {
      */
     private function get_option_for_dg_edit_form() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-
+        $code = "";
         $model_ord = $this->model_order_primary_key();
         foreach ($model_ord as $value) {
             $col = $value["COL"];
@@ -1034,40 +1034,6 @@ class easyuigii {
 
             $app = Slim\Slim::getInstance();
             $table = $this->table_name;
-            $sql_old = "
-                SELECT
-                 A.COLUMN_NAME COL
-                 ,A.COLUMN_NAME TITLE
-                 ,case A.DATA_TYPE when 'NUMBER' then  'numberbox'
-                                   when 'VARCHAR' then  'textbox'
-                                   when 'VARCHAR2' then 'textbox'
-                                   when 'DATE' then 'datebox'
-                                   else A.DATA_TYPE
-                end TYPE
-                , NVL(B.CONSTRAINT_TYPE,' ') CONSTRAINT_TYPE
-                , 0 SKIP
-                , case when B.CONSTRAINT_TYPE='PRIMARY_KEY' then 1 else 0 end  HIDE
-                , 0 CK
-                , 1 EDIT
-                , case A.NULLABLE when 'Y' then 1 when 'N' then 0 end REQUIRED
-                , 1 SORTABLE
-                ,'' WIDTH
-                ,'' WIDTH_FORM
-                ,'' LABEL_WIDTH
-                FROM ALL_TAB_COLUMNS A LEFT JOIN
-                (
-                SELECT
-                cols.column_name,
-                case cons.constraint_type when 'P' then 'PRIMARY_KEY' when 'R' then 'FOREIGN_KEY' else  cons.constraint_type end CONSTRAINT_TYPE
-                FROM all_constraints cons,
-                all_cons_columns cols
-                WHERE cols.table_name='$table'
-                AND cons.constraint_name = cols.constraint_name
-                AND cons.owner = cols.owner
-                ) B on (A.COLUMN_NAME=b.COLUMN_NAME)
-                WHERE table_name='$table'
-                ORDER BY A.COLUMN_ID
-                ";
 
             $sql = "
                         WITH COL_CONSTRAINT AS (
@@ -1111,6 +1077,8 @@ class easyuigii {
                                     , case A.NULLABLE when 'Y' then 1 when 'N' then 0 end REQUIRED
                                     , 1 SORTABLE
                                     ,'' WIDTH
+                                    ,'' WIDTH_FORM
+                                    ,'' WIDTH_LABEL
                                     ,B.NAME_TABLE_EXT
                                     ,B.PK_TABLE_EXT value_field
 
