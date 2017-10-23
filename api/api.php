@@ -8,6 +8,12 @@ require '../vendor/autoload.php';
 
 $app = new Slim\Slim();
 
+/*
+  $app = new Slim(array(
+  'log.enabled' => true
+  ));
+ */
+
 //Add the middleware globally
 $app->add(new \SlimJson\Middleware(array(
     'json.status' => false,
