@@ -6,17 +6,21 @@ if (function_exists('xdebug_disable')) {
 
 require '../vendor/autoload.php';
 
-$app = new Slim\Slim();
+$app = new Slim\Slim(array(
+    //log.enabled' => true,
+        //'log.writer' => new easyuigii()
+        ));
 
 //Add the middleware globally
-$app->add(new \SlimJson\Middleware(array(
-    'json.status' => false,
-    'json.override_error' => true,
-    'json.override_notfound' => true,
-    'json.debug' => false,
-    'json.cors' => true
-)));
 
+  $app->add(new \SlimJson\Middleware(array(
+    'json.status' => false,
+          'json.override_error' => true,
+          'json.override_notfound' => true,
+          'json.debug' => false,
+          'json.cors' => true
+)));
+ 
 $app->get('/test_api', 'test_api'); // test api
 $app->get('/test_translate', 'test_translate'); //test func mailer x invio mail
 
@@ -174,13 +178,16 @@ function crud_generate() {
         $gii->app_folder = $app->request->params('app_folder');
         $gii->table_name = $app->request->params('table_name');
         $gii->model_from_json = $app->request->params('model_from_json');
-        $gii->table_model = $app->request->params('table_model');
+        $gii->table_model = $app->request->params('model');
 
         $gii->html_prefix = $app->request->params('html_prefix');
         $gii->pagination = $app->request->params('pagination');
         $gii->pagination_list = $app->request->params('pagination_list');
         $gii->pagination_size = $app->request->params('pagination_size');
         $gii->dg_inline = $app->request->params('dg_inline');
+        $gii->width_form = $app->request->params('width_form');
+        $gii->height_form = $app->request->params('height_form');
+
 
 
         $gii->build_app_crud();
@@ -246,7 +253,7 @@ function snippets_read() {
         $ar = [];
         $riga = 1;
         foreach ($data as $value) {
-            $riga+=1;
+            $riga += 1;
             if (($riga >= $da) && ($riga <= $a)) {
                 $ar[] = $value;
             }
@@ -381,8 +388,6 @@ function del_upload_image() {
     }
 }
 
-
-
 /** Read from db
  */
 function dg_model_read_from_db($table) {
@@ -402,8 +407,6 @@ function dg_model_read_from_db($table) {
         error_log(LogTime() . 'error - read dg model  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }
-
-
 
 function list_table_db() {
     try {
@@ -438,7 +441,6 @@ function list_column($table) {
         error_log(LogTime() . 'error - list column table  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }
-
 
 /** Save configuration crud
  */
@@ -477,8 +479,6 @@ function list_cfg() {
         error_log(LogTime() . 'error - list configuration ' . PHP_EOL, 3, 'logs/error.log');
     }
 }
-
-
 
 /** open configuration crud
  */

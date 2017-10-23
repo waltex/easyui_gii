@@ -65,70 +65,35 @@ function init_app() {
     // expand and collapse on click
 
     $('#bt_gencode').on('click', function () {
-        /*
-         var validate = true;
-         (!$('#tb_app_name').textbox('isValid')) ? validate = false : false;
-         (!$('#tb_app_folder').textbox('isValid')) ? validate = false : false;
-         (!$('#tb_table_name').textbox('isValid')) ? validate = false : false;
-         */
-        var validate = $('#ff_crud').form('validate');
-        if (validate) {
             $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
                 if (r) {
-                    $('#dg_model').datagrid('removeFilterRule');
-                    $('#dg_model').datagrid('disableFilter');
-                    var model = $('#dg_model').datagrid('getRows');
-                    $('#dg_model').datagrid('enableFilter');
+                    if ($('#ff_crud').form('validate')) {
+                        $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
+                        var param = read_cfg_from_input();
 
-                    var app_name = $('#tb_app_name').textbox('getValue');
-                    var app_folder = $('#tb_app_folder').textbox('getValue');
-                    var table_name = $('#tb_table_name').combobox('getValue');
-                    var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
-
-                    var html_prefix = $('#nn_prefix').numberspinner('getValue');
-
-                    var dg_inline = ($("#sb_dg_inline").switchbutton('options').checked) ? 1 : 0;
-                    var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
-                    var pagination_list = $('#cc_pagination_list').combobox('getValues');
-                    pagination_list = JSON.stringify(pagination_list).replaceAll('\"', '')
-                    var pagination_size = $('#cc_pagination_size').combobox('getValue');
-
-                    $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
-                    var param = {
-                        app_name: app_name,
-                        app_folder: app_folder,
-                        table_name: table_name,
-                        model_from_json: model_from_json,
-                        table_model: model,
-                        html_prefix: html_prefix,
-                        dg_inline: dg_inline,
-                        pagination: pagination,
-                        pagination_list: pagination_list,
-                        pagination_size: pagination_size,
-                    };
-                    $.post('api/dg/crud/generate', param)
-                            .done(function (data) {
-                                $.messager.progress('close');
-                                if (data.success) {
-                                    $.messager.confirm(T('conferma'), T('E\' stata creata applicazione, vuoi eseguirla?'), function (r) {
-                                        if (r) {
-                                            var url = window.location.protocol + '//' + window.location.host + '/' + app_folder + '/index.html';
-                                            parent.addTab(app_name, url, null);
-                                        }
-                                    });
-                                } else {
-                                    $.messager.alert(T('errore'), data.msg, 'error');
-                                }
-                            })
-                            .fail(function () {
-                                $.messager.progress('close');
-                                $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
-                            });
+                        $.post('api/dg/crud/generate', param)
+                                .done(function (data) {
+                                    $.messager.progress('close');
+                                    if (data.success) {
+                                        $.messager.confirm(T('conferma'), T('E\' stata creata applicazione, vuoi eseguirla?'), function (r) {
+                                            if (r) {
+                                            var url = window.location.protocol + '//' + window.location.host + '/' + param.app_folder + '/index.html';
+                                            parent.addTab(param.app_name, url, null);
+                                            }
+                                        });
+                                    } else {
+                                        $.messager.alert(T('errore'), data.msg, 'error');
+                                    }
+                                })
+                                .fail(function () {
+                                    $.messager.progress('close');
+                                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                                });
+                    } else {
+                    $.messager.alert(T('attenzione'), T('Valorizzare tutti i campi'), 'warning');
+                    }
                 }
-            });
-        } else {
-            $.messager.alert(T('attenzione'), T('compilare tutti i campi correttamente'), 'warning');
-        }
+        });
     });
 
 
@@ -224,13 +189,13 @@ function init_app() {
             },
             onEdit: function (index, row) {
                 if (row.NAME_TABLE_EXT != "") {
-                var ed = $(this).datagrid('getEditor', {index: index, field: "NAME_TABLE_EXT"});
-                $(ed.target).combobox('reload', 'api/list/table/db');
+                    var ed = $(this).datagrid('getEditor', {index: index, field: "NAME_TABLE_EXT"});
+                    $(ed.target).combobox('reload', 'api/list/table/db');
 
-                var ed = $(this).datagrid('getEditor', {index: index, field: "TEXT_FIELD"});
-                $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
+                    var ed = $(this).datagrid('getEditor', {index: index, field: "TEXT_FIELD"});
+                    $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
 
-                var ed = $(this).datagrid('getEditor', {index: index, field: "VALUE_FIELD"});
+                    var ed = $(this).datagrid('getEditor', {index: index, field: "VALUE_FIELD"});
                     $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
                 }
             },
@@ -458,12 +423,16 @@ function init_app() {
         onChange: function (checked) {
             if (checked) {
                 $('#div_dg_inline').hide();
-                $('#dg_model').datagrid('hideColumn', 'WIDTH_FORM')
-                $('#dg_model').datagrid('hideColumn', 'WIDTH_LABEL')
+                if ($('#dg_model').datagrid('getRows').length > 0) {
+                    $('#dg_model').datagrid('hideColumn', 'WIDTH_FORM')
+                    $('#dg_model').datagrid('hideColumn', 'WIDTH_LABEL')
+                }
             } else {
-                $('#dg_model').datagrid('showColumn', 'WIDTH_FORM')
-                $('#dg_model').datagrid('showColumn', 'WIDTH_LABEL')
                 $('#div_dg_inline').show();
+                if ($('#dg_model').datagrid('getRows').length > 0) {
+                    $('#dg_model').datagrid('showColumn', 'WIDTH_FORM')
+                    $('#dg_model').datagrid('showColumn', 'WIDTH_LABEL')
+                }
             }
         }
 
@@ -567,25 +536,25 @@ function init_app() {
 
 
                     $.post('api/crud/open/cfg/json', {cfg_name: cfg_name})
-                                .done(function (data) {
-                                    $.messager.progress('close');
+                            .done(function (data) {
+                                $.messager.progress('close');
                                 if (data.success) {
                                     g_cfg_name = cfg_name;
                                     set_name_cfg(g_cfg_name);
                                     read_cfg_from_json(data.cfg);
-                                        $.messager.show({
+                                    $.messager.show({
                                         title: T('configurazione'),
-                                            msg: data.msg,
-                                            showType: 'slide'
-                                        });
-                                    } else {
-                                        $.messager.alert(T('errore'), data.msg, 'error');
-                                    }
-                                })
-                                .fail(function () {
-                                    $.messager.progress('close');
-                                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
-                                });
+                                        msg: data.msg,
+                                        showType: 'slide'
+                                    });
+                                } else {
+                                    $.messager.alert(T('errore'), data.msg, 'error');
+                                }
+                            })
+                            .fail(function () {
+                                $.messager.progress('close');
+                                $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                            });
 
                 }
 
@@ -626,6 +595,9 @@ function init_app() {
         var pagination_list = $('#cc_pagination_list').combobox('getValues');
         pagination_list = JSON.stringify(pagination_list).replaceAll('\"', '')
         var pagination_size = $('#cc_pagination_size').combobox('getValue');
+        var width_form = $('#tb_width_form').textbox('getValue');
+        var height_form = $('#tb_height_form').textbox('getValue');
+
         var cfg = {
             app_name: app_name,
             app_folder: app_folder,
@@ -637,6 +609,8 @@ function init_app() {
             pagination_list: pagination_list,
             pagination_size: pagination_size,
             model: model,
+            width_form: width_form,
+            height_form: height_form,
         };
         return cfg;
     }
@@ -655,7 +629,7 @@ function init_app() {
         if (cfg.model === undefined) {
             cfg.model = [];
         }
-            $('#dg_model').datagrid('loadData', cfg.model);
+        $('#dg_model').datagrid('loadData', cfg.model);
 
         $('#tb_app_name').textbox('setValue', cfg.app_name);
         $('#tb_app_folder').textbox('setValue', cfg.app_folder);
@@ -677,6 +651,8 @@ function init_app() {
 
         $('#cc_pagination_list').combobox('setValue', JSON.parse(cfg.pagination_list));
         $('#cc_pagination_size').combobox('setValue', cfg.pagination_size);
+        $('#tb_width_form').textbox('setValue', cfg.width_form);
+        $('#tb_height_form').textbox('setValue', cfg.height_form);
     }
     function set_name_cfg(cfg_name) {
         $('#p_base').panel({
@@ -686,14 +662,28 @@ function init_app() {
     $('#tb_width_form').textbox({
         label: T('Larghezza Form'),
         labelWidth: 120,
-        width: 180,
-        value: '480px',
+        width: 200,
+        value: '60%',
+        required: true,
+        icons: [{
+                iconCls: 'icon-reload',
+                handler: function (e) {
+                    $(e.data.target).textbox('reset');
+                }
+            }]
     });
     $('#tb_height_form').textbox({
         label: T('Altezza Form'),
         labelWidth: 120,
-        width: 180,
+        width: 200,
         value: '80%',
+        required: true,
+        icons: [{
+                iconCls: 'icon-reload',
+                handler: function (e) {
+                    $(e.data.target).textbox('reset');
+                }
+            }]
     });
 }
 

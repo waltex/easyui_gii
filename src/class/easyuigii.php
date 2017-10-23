@@ -32,6 +32,8 @@ class easyuigii {
     public $pagination_list = "";  //string list es. [25,50]
     public $pagination_size = "";
     public $dg_inline = 1; // 1 edit in line , 0 edit on form
+    public $width_form = ""; // width for crud modal form
+    public $height_form = ""; // height for crud modal form
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -473,41 +475,51 @@ class easyuigii {
      * @return type string es. #1
      */
     private function get_n_db_setting($value) {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $pos = strpos($value, " ");
-        $param = substr($value, 0, $pos);
-        return $param;
+            $pos = strpos($value, " ");
+            $param = substr($value, 0, $pos);
+            return $param;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     /** set db setting to method class
      */
     public function set_db_setting() {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $setting = $this->app_setting;
-        $current_db = $setting["connessione database predefinita"];
+            $setting = $this->app_setting;
+            $current_db = $setting["connessione database predefinita"];
 
-        $ar_db = [];
-        //set list id es.#1,#2,#3
-        foreach ($setting as $key => $value) {
-            $find = $this->get_n_db_setting($key);
-            if ($find == $current_db) {
-                $key_no_id = $this->get_key_db_setting_no_id($key);
-                $ar_db[$key_no_id] = $value;
+            $ar_db = [];
+            //set list id es.#1,#2,#3
+            foreach ($setting as $key => $value) {
+                $find = $this->get_n_db_setting($key);
+                if ($find == $current_db) {
+                    $key_no_id = $this->get_key_db_setting_no_id($key);
+                    $ar_db[$key_no_id] = $value;
+                }
             }
-        }
-        if (array_key_exists("nome connessione database ORACLE (oci driver)", $ar_db)) {
-            $this->oci_name = $ar_db["nome connessione database ORACLE (oci driver)"]; //user
-            $this->oci_cn = $ar_db["tnsnames.ora"]; //
-            $this->oci_user = $ar_db["utente database"]; //user
-            $this->oci_password = $ar_db["password database"]; //password
-            $this->oci_charset = $ar_db["codifica charset"]; //charset
-            $this->oci_production = $ar_db["in produzione"]; //in production
-            //for code generated
-            $this->oci_user_var = $ar_db["variabile utente"]; //user var
-            $this->oci_password_var = $ar_db["variabile password"]; //password var
-            $this->oci_cn_var = $ar_db["variabile stringa di connessione"]; //name var of tsname.ora
+            if (array_key_exists("nome connessione database ORACLE (oci driver)", $ar_db)) {
+                $this->oci_name = $ar_db["nome connessione database ORACLE (oci driver)"]; //user
+                $this->oci_cn = $ar_db["tnsnames.ora"]; //
+                $this->oci_user = $ar_db["utente database"]; //user
+                $this->oci_password = $ar_db["password database"]; //password
+                $this->oci_charset = $ar_db["codifica charset"]; //charset
+                $this->oci_production = $ar_db["in produzione"]; //in production
+                //for code generated
+                $this->oci_user_var = $ar_db["variabile utente"]; //user var
+                $this->oci_password_var = $ar_db["variabile password"]; //password var
+                $this->oci_cn_var = $ar_db["variabile stringa di connessione"]; //name var of tsname.ora
+            }
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
         }
     }
 
@@ -614,6 +626,8 @@ class easyuigii {
                 , 'otions_obj' => $otions_obj
                 , 'host_api' => $this->host_api
                 , 'api_url' => $url_api_crud
+                , 'width_form' => $this->width_form
+                , 'height_form' => $this->height_form
             ));
         }
 
@@ -856,7 +870,7 @@ class easyuigii {
             return $editor;
         }
         if ($type == "textarea") {
-            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true, $width $label $required })," . PHP_EOL;
+            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true,height:150, $width $label $required })," . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
@@ -1028,7 +1042,6 @@ class easyuigii {
      */
     public function get_table_model_from_db() {
         try {
-
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
@@ -1122,11 +1135,18 @@ class easyuigii {
      * @return type strin column name primary key
      */
     private function get_primary_key_from_model() {
-        $model = $this->table_model;
-        foreach ($model as $value) {
-            if ($value["CONSTRAINT_TYPE"] == "PRIMARY_KEY") {
-                return $value["COL"];
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+            $model = $this->table_model;
+            foreach ($model as $value) {
+                if ($value["CONSTRAINT_TYPE"] == "PRIMARY_KEY") {
+                    return $value["COL"];
+                }
             }
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
         }
     }
 
@@ -1136,7 +1156,6 @@ class easyuigii {
      */
     private function get_primary_key() {
         try {
-
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
             $app = Slim\Slim::getInstance();
