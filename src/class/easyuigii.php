@@ -886,26 +886,16 @@ class easyuigii {
             $with = "width: '100px',";
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
             $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
-            $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
-            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+            $editor = "$id_object" . "datebox({" . PHP_EOL . " $width $label $required $date_format});" . PHP_EOL;
+            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            return $editor;
         }
         if ($type == "combobox") {
-            $on_select = "
-                        onSelect: function (record) {
-                            var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
-                            var row = $('#dg$n_dg').datagrid('getRows')[index];
-                            row['$col" . "__TEXT'] = record.$text_field
-                        },
-                        ";
-            $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
-            $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, $on_select}},";
+            $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250,});" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
-            $editor = ($edit == "1") ? $editor : "";
-            return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+            return $editor;
         }
 
-        $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
-        return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
     }
 
     /** return string code js for columns grid

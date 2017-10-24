@@ -1,12 +1,11 @@
 new feature:
 _ nel modello crud, validazione campi, es solo una primary key
-_ nel modello crud, aggiungere esclusione campi su selezione multipla
 _ nel modello crud, conferma su importazione modello dal db
 _ nel modello crud, rendere opzionale alias della tabella
 _ nella creazione crud, disattivare la selezione del check sul click riga
 _ fare modello con solo select (custom sql), gestire il drill down
 _ aggiungere pulsante backup (snippets, model, language, settings ....)
-_ nel modello crud, dare la possibilità di sgliegliere i campi da ssociare di una tabella esterna, prendendoli dal db
+_ nel modello crud, impostare automaticamente il with x i campi form, 180px dt, 140px ck, 100 % txtbox
 bug:
 
 
