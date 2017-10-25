@@ -895,7 +895,6 @@ class easyuigii {
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
-
     }
 
     /** return string code js for columns grid
@@ -1619,14 +1618,12 @@ class easyuigii {
         try {
             $this->create_folder($dir . "/api");
             $this->create_folder($dir . "/api/data");
+            $this->create_folder($dir . "/js");
 
             $zip_file = $this->root_gii . $this->template_base_path . '/lib.zip';
             $this->unzip($zip_file, $dir);
             $zip_file = $this->root_gii . $this->template_base_path . '/css.zip';
             $this->unzip($zip_file, $dir);
-            $zip_file = $this->root_gii . $this->template_base_path . '/js.zip';
-            $this->unzip($zip_file, $dir);
-
 
             $zip_file = $this->root_gii . $this->template_base_path . '/vendor.zip';
             $this->unzip($zip_file, $dir . "/");
@@ -1638,6 +1635,7 @@ class easyuigii {
                 [$template_path . "/.htaccess", $dir . "/"], //for disable cache javascript
                 [$template_path . "/api/.htaccess", $dir . "/api/"],
                 [$template_path . "/api/fn_api.php", $dir . "/api/"],
+                [$template_path . "/js/fn_base.js", $dir . "/js/"],
             ];
             $this->copy_files_to_dir($ar_files, $dir);
         } catch (Exception $e) {
@@ -1695,13 +1693,20 @@ class easyuigii {
      * @param string $dir directory to extract
      */
     private function unzip($zip_file, $dir) {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
-        $zip = new ZipArchive;
-        $file = $zip->open($zip_file);
-        $zip->extractTo($dir);
-        $zip->close();
+            $zip = new ZipArchive;
+            $file = $zip->open($zip_file);
+            $zip->extractTo($dir);
+            $zip->close();
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            error_log(LogTime() . " " . "\$zip_file -> $zip_file", 3, 'logs/error.log');
+            error_log(LogTime() . " " . "\$dir -> $dir", 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     // metodi
