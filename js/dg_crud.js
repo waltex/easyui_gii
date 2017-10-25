@@ -255,6 +255,7 @@ function init_app() {
                                 method: 'post',
                                 panelWidth: 250,
                             }}, },
+                    {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: "text"},
                 ]]
         });
         $('#dg_model').datagrid('enableFilter');

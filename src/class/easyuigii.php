@@ -785,10 +785,10 @@ class easyuigii {
             $col = $value["COL"];
             $type = $value["CONSTRAINT_TYPE"];
             if ($value["SKIP"] == "0") {
-                $hide = ($value["HIDE"] == "1") ? true : false;
+                $hide = ($value["HIDE"] == "1") ? "display:none;" : "";
                 $id_colname = "dg$n" . "_" . $value["COL"];
                 $colname = $value["COL"];
-                $code .= "<div style=\"margin-top:5px\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
+                $code .= "<div style=\"margin-top:5px;$hide\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
             }
         }
         $code .= "\\n\\";
@@ -859,7 +859,15 @@ class easyuigii {
         $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
         $n_dg = $this->html_prefix;
         $hiden = ($hide) ? "hidden:true," : "";
+        $n_row = $row["N_ROW_TEXTAREA"];
+        ($n_row == "") ? $n_row = 2 : false;
+        $height_area = round(15 * $n_row) + 10;
+        ($n_row == 1) ? $height_area == 24 : false;
+        ($n_row == 2) ? $height_area == 40 : false;
 
+
+        // n° row text area
+        //
         //$('#dg1_COMBO').
         $id_object = "$('#dg$n_dg" . "_$col').";
 
@@ -898,7 +906,7 @@ class easyuigii {
             return $editor;
         }
         if ($type == "textarea") {
-            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true,height:150, $width $label $required })," . PHP_EOL;
+            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true,height:$height_area, $width $label $required })," . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
@@ -1118,6 +1126,7 @@ class easyuigii {
                                        and G.COLUMN_NAME<>(select h.pk_table_ext from COL_CONSTRAINT h where h.name_table_ext=B.NAME_TABLE_EXT and rownum=1)
                                        and rownum=1
                                     ) text_field
+                                    ,'' N_ROW_TEXTAREA
 
                         FROM ALL_TAB_COLUMNS A
                         LEFT JOIN COL_CONSTRAINT B ON ( A.COLUMN_NAME=B.COLUMN_NAME)
