@@ -687,25 +687,6 @@ function init_app() {
             }]
     });
 
-    function set_width_field_form() {
-        var rows = $('#dg_model').datagrid('getRows');
-        for (var i = 0; i < rows.length; i++) {
-            var width = rows[i]['WIDTH_FORM'];
-            if (width == "") {
-                var value;
-                (rows[i]['TYPE'] == "datebox") ? value = '180px' : '';
-                (rows[i]['TYPE'] == "combobox") ? value = '250px' : '';
-                (rows[i]['CK'] == "1") ? value = '180px' : '';
-                (rows[i]['TYPE'] == "textbox") ? value = '100%' : '';
-                $('#dg_model').datagrid('updateRow', {
-                    index: i,
-                    row: {
-                        WIDTH_FORM: value
-                    }
-                });
-            }
-        }
-    }
 
 }
 
