@@ -5,13 +5,12 @@
     <a id="dg{{n}}_insert" href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('addRow')">{{T('Inserisci')}}</a>
     <a id="dg{{n}}_delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('destroyRow')">{{T('Elimina')}}</a>
     <a id="dg{{n}}_update" href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('saveRow')">{{T('Salva')}}</a>
+    <a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('cancelRow')">{{T('Annulla')}}</a>
 {% endif %}
 {% if (dg_inline==0) %}
     <a id="dg{{n}}_insert" href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">{{T('Inserisci')}}</a>
     <a id="dg{{n}}_delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true">{{T('Elimina')}}</a>
-    <a id="dg{{n}}_update" href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true">{{T('Salva')}}</a>
 {% endif %}
-    <a href="#" class="easyui-linkbutton" iconCls="icon-undo" plain="true" {% if (dg_inline==1) %}onclick="javascript:$('#dg{{n}}').edatagrid('cancelRow'){% endif %}">{{T('Annulla')}}</a>
     <a id="dg{{n}}_export" class="easyui-linkbutton"  data-options="iconCls:'icon-excel1',plain:true">{{T('Esporta')}}</a>
 
 </div>
