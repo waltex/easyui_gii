@@ -1,4 +1,4 @@
-var g_debug // for debug code to browser
+var g_debug; // for debug code to browser
 function init_app() {
     //translate menu
     $('#dg_set').html(T('Impostazioni'));//menu settings

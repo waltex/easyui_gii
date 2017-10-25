@@ -65,34 +65,34 @@ function init_app() {
     // expand and collapse on click
 
     $('#bt_gencode').on('click', function () {
-            $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
-                if (r) {
-                    if ($('#ff_crud').form('validate')) {
-                        $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
-                        var param = read_cfg_from_input();
+        $.messager.confirm(T('attenzione'), T('Verrà generato il codice, confermi?'), function (r) {
+            if (r) {
+                if ($('#ff_crud').form('validate')) {
+                    $.messager.progress({title: T('elaborazione'), msg: T('Generazione del codice in corso, attendere...')});
+                    var param = read_cfg_from_input();
 
-                        $.post('api/dg/crud/generate', param)
-                                .done(function (data) {
-                                    $.messager.progress('close');
-                                    if (data.success) {
-                                        $.messager.confirm(T('conferma'), T('E\' stata creata applicazione, vuoi eseguirla?'), function (r) {
-                                            if (r) {
+                    $.post('api/dg/crud/generate', param)
+                            .done(function (data) {
+                                $.messager.progress('close');
+                                if (data.success) {
+                                    $.messager.confirm(T('conferma'), T('E\' stata creata applicazione, vuoi eseguirla?'), function (r) {
+                                        if (r) {
                                             var url = window.location.protocol + '//' + window.location.host + '/' + param.app_folder + '/index.html';
                                             parent.addTab(param.app_name, url, null);
-                                            }
-                                        });
-                                    } else {
-                                        $.messager.alert(T('errore'), data.msg, 'error');
-                                    }
-                                })
-                                .fail(function () {
-                                    $.messager.progress('close');
-                                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
-                                });
-                    } else {
+                                        }
+                                    });
+                                } else {
+                                    $.messager.alert(T('errore'), data.msg, 'error');
+                                }
+                            })
+                            .fail(function () {
+                                $.messager.progress('close');
+                                $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                            });
+                } else {
                     $.messager.alert(T('attenzione'), T('Valorizzare tutti i campi'), 'warning');
-                    }
                 }
+            }
         });
     });
 
@@ -146,6 +146,7 @@ function init_app() {
             }}, '-', {
             id: 'bt_model_opt',
         }];
+
 
     var data_pk_fk = [{
             text: T('Chiave Primaria'),
@@ -685,6 +686,27 @@ function init_app() {
                 }
             }]
     });
+
+    function set_width_field_form() {
+        var rows = $('#dg_model').datagrid('getRows');
+        for (var i = 0; i < rows.length; i++) {
+            var width = rows[i]['WIDTH_FORM'];
+            if (width == "") {
+                var value;
+                (rows[i]['TYPE'] == "datebox") ? value = '180px' : '';
+                (rows[i]['TYPE'] == "combobox") ? value = '250px' : '';
+                (rows[i]['CK'] == "1") ? value = '180px' : '';
+                (rows[i]['TYPE'] == "textbox") ? value = '100%' : '';
+                $('#dg_model').datagrid('updateRow', {
+                    index: i,
+                    row: {
+                        WIDTH_FORM: value
+                    }
+                });
+            }
+        }
+    }
+
 }
 
 

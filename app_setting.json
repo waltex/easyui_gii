@@ -38,5 +38,10 @@
     "crud": "#cat",
     "imposta il titolo sul campo del modello CRUD": "DTIN:Data Inizio|DTFI:Data Fine|ATTIVO:Attivo|ID:#|DT_INS:Data Ins.|DT_MOD:Data Mod",
     "imposta il flag on\/off sul campo del modello CRUD": "ATTIVO|CK",
-    "imposta il flag scartato sul campo del modello CRUD": "DT_INS|DT_MOD"
+    "imposta il flag scartato sul campo del modello CRUD": "DT_INS|DT_MOD",
+    "larghezza campo datebox sul form": "180px",
+    "larghezza campo combox sul form": "250px",
+    "larghezza campo textbox sul form": "100%",
+    "larghezza campo numberbox sul form": "100%",
+    "larghezza campo  si/no sul form": "140px"
 }

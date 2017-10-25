@@ -95,6 +95,34 @@ class easyuigii {
         return $data;
     }
 
+    /** set width field form for form crud 
+     *
+     * @param type $json model
+     * @return type
+     */
+    private function set_width_for_field_form_crud($json) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $par_dt = $this->app_setting["larghezza campo datebox sul form"];
+        $par_combo = $this->app_setting["larghezza campo combox sul form"];
+        $par_text = $this->app_setting["larghezza campo textbox sul form"];
+        $par_number = $this->app_setting["larghezza campo numberbox sul form"];
+        $par_onoff = $this->app_setting["larghezza campo  si/no sul form"];
+
+        $model = [];
+        foreach ($json as $value) {
+            $value_field = "";
+            ($value["TYPE"] == "datebox") ? $value_field = $par_dt : false;
+            ($value["TYPE"] == "combobox") ? $value_field = $par_combo : false;
+            ($value["TYPE"] == "textbox") ? $value_field = $par_text : false;
+            ($value["TYPE"] == "numberbox") ? $value_field = $par_number : false;
+            ($value["CK"] == "1") ? $value_field = $par_onoff : false;
+            $value["WIDTH_FORM"] = $value_field;
+            $model[] = $value;
+        }
+        return $model;
+    }
+
     /** set flag hide of model  with array param asscociation es -> DT_INS;DT_MOD
      *
      * @param type $json
@@ -891,7 +919,7 @@ class easyuigii {
             return $editor;
         }
         if ($type == "combobox") {
-            $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250,});" . PHP_EOL;
+            $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, editable:false, });" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
@@ -1108,12 +1136,13 @@ class easyuigii {
             $data_r = $this->set_title_model_from_ar_setting($data);
             $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
             $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
+            $data_r4 = $this->set_width_for_field_form_crud($data_r3);
 
             //save json model
             //$json = json_encode($data);
             //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
             //file_put_contents($file, $json);
-            return $data_r3;
+            return $data_r4;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
