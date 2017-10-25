@@ -10,7 +10,8 @@ function init_app() {
     addTab('welcome', 'welcome.html', {iconCls: 'fa fa-user-circle-o fa-lg'});
 
     var menu = '<a id="bt_menu">' + T("Menu") + '</a>'; //Menu
-    $('#layout_main').layout('panel', 'center').panel({title: 'Easyui Gii - Code Generetor 1.0   ' + menu})
+    var ver = g_param["versione easyui gii"];
+    $('#layout_main').layout('panel', 'center').panel({title: 'Easyui Gii ' + ver + ' - code generator     ' + menu})
 
 
      $('#bt_menu').menubutton({
