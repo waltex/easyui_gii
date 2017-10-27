@@ -18,7 +18,8 @@ use BEAR\Ace\Editor;
 use BEAR\Ace\Exception;
 
 // config
-$rootPath = __DIR__;
+//$rootPath = __DIR__;
+$rootPath = $_SERVER['DOCUMENT_ROOT'];
 
 try {
     $editor = new Editor;
