@@ -256,7 +256,26 @@ function init_app() {
                                 panelWidth: 250,
                             }}, },
                     {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: "text"},
-                ]]
+                            //{field: "COMBO_LOCAL_DATA", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: "text"},
+                ]],
+            view: detailview,
+            detailFormatter: function (index, row) {
+                return '<div class="ddv" style="padding:5px 0"></div>';
+            },
+            onExpandRow: function (index, row) {
+                var ddv = $(this).datagrid('getRowDetail', index).find('div.ddv');
+                ddv.panel({
+                    height: 80,
+                    border: false,
+                    cache: false,
+                    //href: 'datagrid21_getdetail.php?itemid=' + row.itemid,
+                    content: '<label>aaaa</label>',
+                    onLoad: function () {
+                        $('#dg_model').datagrid('fixDetailRowHeight', index);
+                    }
+                });
+                $('#dg_model').datagrid('fixDetailRowHeight', index);
+            }
         });
         $('#dg_model').datagrid('enableFilter');
     }
