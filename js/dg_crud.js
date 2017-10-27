@@ -1,6 +1,7 @@
 var g_debug
 var g_keydown
 var g_cfg_name
+var g_edit_cell = false;
 function init_app() {
     $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
     $('#tb_app_name').textbox({
@@ -133,6 +134,13 @@ function init_app() {
             handler: function () {
                 $('#dg_model').edatagrid('destroyRow');
             }}, '-', {
+            text: T('Modifica su cella'),
+            iconCls: 'icon-edit',
+            toggle: true,
+            handler: function () {
+                g_edit_cell = !g_edit_cell;
+                (g_edit_cell) ? $('#dg_model').edatagrid('enableEditing') : $('#dg_model').edatagrid('disableEditing');
+            }}, '-', {
             text: T('Importa dal db'),
             iconCls: 'icon-add',
             handler: function () {
@@ -190,8 +198,13 @@ function init_app() {
                 $(this).datagrid('getPanel').find('.easyui-linkbutton').each(function () {
                     $(this).linkbutton({
                         onClick: function () {
-
-
+                            if (!g_edit_cell) {
+                                var row = $('#dg_model').datagrid('getSelected');
+                                if (row) {
+                                    $('#dg1_fm').form('load', row);
+                                    $('#dd_model').dialog('open');
+                                }
+                            }
                         }
                     });
                 });
@@ -273,7 +286,9 @@ function init_app() {
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
+        $('#dg_model').edatagrid('disableEditing');
     }
+
     function combo_get_text(id, data) {
         for (var i = 0; i < data.length; i++) {
             if (data[i].id == id)
@@ -702,7 +717,166 @@ function init_app() {
             }]
     });
 
-
+    $('#dd_model').dialog({
+        title: T('modifica campi modello'),
+        iconCls: 'icon-edit',
+        modal: true,
+        maximizable: true,
+        resizable: true,
+        closed: true,
+        buttons: [{
+                text: T('Conferma'),
+                iconCls: 'icon-ok',
+                onClick: function () {
+                }
+            }, {
+                text: 'Annulla',
+                iconCls: 'icon-cancel',
+                onClick: function () {
+                    $('#dd_model').panel('close');
+                }
+            }]
+    });
+    $('#dd_model').dialog('center');
+    $('#dg1_COL').textbox({
+        width: '100%',
+        label: T('Nome Campo'),
+        labelWidth: '180px',
+        required: true,
+    });
+    $('#dg1_TITLE').textbox({
+        width: '100%',
+        label: T('Titolo Campo'),
+        labelWidth: '180px',
+        required: true,
+    });
+    $('#dg1_TYPE').textbox({
+        width: '100%',
+        label: T('Tipo Campo'),
+        labelWidth: '180px',
+        required: true,
+    });
+    $('#dg1_CONSTRAINT_TYPE').combobox({
+        width: '340px',
+        label: T('Vincoli Campo'),
+        labelWidth: '180px',
+        valueField: '',
+        textField: '',
+        method: 'get',
+        url: 'api/data/combo_.json',
+        required: true,
+        panelWidth: 250,
+        editable: false,
+    });
+    $('#dg1_SKIP').combobox({
+        width: '230px',
+        label: T('Scarta'),
+        labelWidth: '180px',
+        required: true,
+        panelHeight: 50,
+        data: [{text: 'si', value: 1}, {text: 'no', value: 0}], });
+    $('#dg1_HIDE').combobox({
+        width: '230px',
+        label: T('Campo Nascosto'),
+        labelWidth: '180px',
+        required: true,
+        panelHeight: 50,
+        data: [{text: 'si', value: 1}, {text: 'no', value: 0}], });
+    $('#dg1_CK').combobox({
+        width: '230px',
+        label: T('Campo Si,No'),
+        labelWidth: '180px',
+        required: true,
+        panelHeight: 50,
+        data: [{text: 'si', value: 1}, {text: 'no', value: 0}], });
+    $('#dg1_EDIT').combobox({
+        width: '230px',
+        label: T('Campo Modificabile'),
+        labelWidth: '180px',
+        required: false,
+        panelHeight: 50,
+        data: [{text: 'si', value: 1}, {text: 'no', value: 0}], });
+    $('#dg1_REQUIRED').combobox({
+        width: '230px',
+        label: T('Campo Richiesto'),
+        labelWidth: '180px',
+        required: true,
+        panelHeight: 50,
+        data: [{text: 'si', value: 1}, {text: 'no', value: 0}], });
+    $('#dg1_SORTABLE').combobox({
+        width: '230px',
+        label: T('Campo Ordinabile'),
+        labelWidth: '180px',
+        required: true,
+        panelHeight: 50,
+        data: [{text: 'si', value: 1}, {text: 'no', value: 0}], });
+    $('#dg1_WIDTH').textbox({
+        width: '100%',
+        label: T('Larghezza Campo'),
+        labelWidth: '180px',
+        required: true,
+    });
+    $('#dg1_WIDTH_FORM').textbox({
+        width: '100%',
+        label: T('Larghezza Campo Form'),
+        labelWidth: '180px',
+        required: true,
+    });
+    $('#dg1_WIDTH_LABEL').textbox({
+        width: '100%',
+        label: T('Larghezza Campo Etichetta'),
+        labelWidth: '180px',
+        required: true,
+    });
+    $('#dg1_NAME_TABLE_EXT').combobox({
+        url: 'api/list/table/db',
+        width: '390px',
+        label: T('Nome Tabella Collegata'),
+        labelWidth: '180px',
+        valueField: 'TEXT',
+        textField: 'TEXT',
+        method: 'post',
+        required: true,
+        panelWidth: 250,
+        editable: false,
+        onSelect(record) {
+            $('#dg1_VALUE_FIELD').combobox({url: 'api/list/column/' + record.TEXT});
+            $('#dg1_TEXT_FIELD').combobox({url: 'api/list/column/' + record.TEXT});
+        },
+    });
+    $('#dg1_VALUE_FIELD').combobox({
+        //url: 'api/list/column',
+        width: '390px',
+        label: T('Campo ID'),
+        labelWidth: '180px',
+        valueField: 'TEXT',
+        textField: 'TEXT',
+        method: 'post',
+        required: true,
+        panelWidth: 250,
+        editable: false,
+    });
+    $('#dg1_TEXT_FIELD').combobox({
+        //url: 'api/list/column',
+        width: '390px',
+        label: T('Campo Text'),
+        labelWidth: '180px',
+        valueField: 'TEXT',
+        textField: 'TEXT',
+        method: 'post',
+        required: true,
+        panelWidth: 250,
+        editable: false,
+    });
+    $('#dg1_N_ROW_TEXTAREA').numberspinner({
+        width: '280px',
+        label: T('N° Righe textarea'),
+        labelWidth: '180px',
+        required: true,
+        min: 1,
+        precision: 0,
+        spinAlign: 'horizontal',
+    });
 }
 
 
