@@ -187,6 +187,14 @@ function init_app() {
             onLoadSuccess: function () {
                 $(this).datagrid('enableDnd');
                 load_menu_opt();
+                $(this).datagrid('getPanel').find('.easyui-linkbutton').each(function () {
+                    $(this).linkbutton({
+                        onClick: function () {
+
+
+                        }
+                    });
+                });
             },
             onEdit: function (index, row) {
                 if (row.NAME_TABLE_EXT != "") {
@@ -202,8 +210,13 @@ function init_app() {
             },
             frozenColumns: [[
                     {field: 'ck', checkbox: true},
-                    {field: "COL", title: BR(T('Nome Campo')), editor: "text"},
-                    {field: "TITLE", title: BR(T('Titolo Campo')), editor: "text"},
+                    {field: "ADD", width: 30, title: 'i'
+                        , formatter: function (value, row, index) {
+                            return '<a id="dg_model_bt_' + index + '" href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" row-id="' + index + '" style="height:18px"></a>';
+                        }
+                    },
+                    {field: "COL", width: 150, title: BR(T('Nome Campo')), editor: "text"},
+                    {field: "TITLE", width: 150, title: BR(T('Titolo Campo')), editor: "text"},
                     {field: "TYPE", title: BR(T('Tipo Campo')), editor: {type: 'combobox', options: {
                                 valueField: 'text',
                                 textField: 'text',
@@ -258,24 +271,6 @@ function init_app() {
                     {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: "text"},
                             //{field: "COMBO_LOCAL_DATA", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: "text"},
                 ]],
-            view: detailview,
-            detailFormatter: function (index, row) {
-                return '<div class="ddv" style="padding:5px 0"></div>';
-            },
-            onExpandRow: function (index, row) {
-                var ddv = $(this).datagrid('getRowDetail', index).find('div.ddv');
-                ddv.panel({
-                    height: 80,
-                    border: false,
-                    cache: false,
-                    //href: 'datagrid21_getdetail.php?itemid=' + row.itemid,
-                    content: '<label>aaaa</label>',
-                    onLoad: function () {
-                        $('#dg_model').datagrid('fixDetailRowHeight', index);
-                    }
-                });
-                $('#dg_model').datagrid('fixDetailRowHeight', index);
-            }
         });
         $('#dg_model').datagrid('enableFilter');
     }
