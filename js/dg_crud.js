@@ -883,7 +883,6 @@ function init_app() {
                     console.log('cancel');
                     //console.log('press cancel');
                 } else {
-                    console.log('s');
                     var new_val_id = $('#cc_id').textbox('getValue');
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
                     $(ed.target).textbox('setValue', new_val_id);
@@ -904,7 +903,6 @@ function init_app() {
                         }
                     }
                     var list_string = JSON.stringify(list2);
-                    g_debug = list_string;
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST'});
                     $(ed.target).textbox('setValue', list_string);
 
@@ -919,6 +917,11 @@ function init_app() {
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
             var current_val_text = $(ed.target).textbox('getValue');
             (current_val_text == "") ? current_val_text = "text" : false;
+
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST'});
+            var current_list = $(ed.target).textbox('getValue');
+            var current_list_dg = JSON.parse(current_list);
+            $('#dg_list').datagrid('loadData', current_list_dg);
 
             var input_cel = '<div style="margin-top:5px"></div><input id="cc_id"><div style="margin-top:5px"></div><input id="cc_text"><div style="margin-top:5px"></div><table id="dg_list"><table/>';
             dlg_msg.find('div').end().append(input_cel);
