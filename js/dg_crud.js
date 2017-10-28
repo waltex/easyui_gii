@@ -267,7 +267,8 @@ function init_app() {
                     {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('associato'), editor: {type: 'textbox',
                             options: {}}, hidden: true},
                     {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: {type: 'textbox', options: {}}, hidden: true},
-                    {field: "COMBO_LOCAL_DATA", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: "text", hidden: true},
+                    {field: "LIST", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: {type: 'textbox',
+                            options: {}}, hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -348,7 +349,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'COMBO_LOCAL_DATA'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -879,15 +880,33 @@ function init_app() {
         if (type == "LIST") {
             var dlg_msg = $.messager.prompt(T('lista valori'), T('Aggiungere i valori alla lista, e i campi da associare'), function (r) {
                 if (r === undefined) {
+                    console.log('cancel');
                     //console.log('press cancel');
                 } else {
-                    var new_val_id = $('#cc_id').combobox('getValue');
+                    console.log('s');
+                    var new_val_id = $('#cc_id').textbox('getValue');
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
                     $(ed.target).textbox('setValue', new_val_id);
 
-                    var new_val_text = $('#cc_text').combobox('getValue');
+                    var new_val_text = $('#cc_text').textbox('getValue');
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
                     $(ed.target).textbox('setValue', new_val_text);
+
+                    var list = $('#dg_list').datagrid('getRows')
+                    var list2 = [];
+                    for (var i = 0; i < list.length; i++) {
+                        var row = {[new_val_id]: list[i].VALUE, [new_val_text]: list[i].TEXT}
+                        var row2 = {[new_val_text]: list[i].TEXT}
+                        if (new_val_id != "") {
+                            list2.push(row)
+                        } else {
+                            list2.push(row2)
+                        }
+                    }
+                    var list_string = JSON.stringify(list2);
+                    g_debug = list_string;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST'});
+                    $(ed.target).textbox('setValue', list_string);
 
                 }
             });
@@ -901,18 +920,18 @@ function init_app() {
             var current_val_text = $(ed.target).textbox('getValue');
             (current_val_text == "") ? current_val_text = "text" : false;
 
-            var input_cel = '<div style="margin-top:5px"><input id="cc_id"><div style="margin-top:5px"><input id="cc_text" tyle="margin-top:5px"><table id="dg_list"><table/>';
+            var input_cel = '<div style="margin-top:5px"></div><input id="cc_id"><div style="margin-top:5px"></div><input id="cc_text"><div style="margin-top:5px"></div><table id="dg_list"><table/>';
             dlg_msg.find('div').end().append(input_cel);
             $('#cc_id').textbox({
-                width: '100%',
-                label: T('Campo chiave (VALUE)'),
+                width: '98%',
+                label: T('Campo valore (VALUE)'),
                 labelPosition: 'top',
                 prompt: T('scrivi qui'),
                 value: current_val_id,
                 required: true,
             });
             $('#cc_text').textbox({
-                width: '100%',
+                width: '98%',
                 label: T('Campo descrizione (TEXT)'),
                 labelPosition: 'top',
                 prompt: T('scrivi qui'),
@@ -920,9 +939,64 @@ function init_app() {
                 required: true,
 
             });
-            dlg_msg.find('.messager-input').remove();
-            g_debug = dlg_msg;
-            //dlg_msg.dialog({width: '60%', height: '80%'});
+            dlg_msg.find('.messager-input').hide();
+
+            var dg_list_tb = ['-', {
+                    text: T('Aggiungi'),
+                    iconCls: 'icon-add',
+                    id: 'bt_add',
+                    handler: function (e) {
+                        $('#dg_list').edatagrid('addRow');
+                    }}, '-', {
+                    text: T('Conferma'),
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        $('#dg_list').edatagrid('saveRow');
+                    }}, '-', {
+                    text: T('Annulla'),
+                    iconCls: 'icon-undo',
+                    handler: function () {
+                        $('#dg_list').edatagrid('cancelRow');
+                    }}, '-', {
+                    text: T('Elimina'),
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        $('#dg_list').edatagrid('destroyRow');
+                    }},
+            ];
+
+            $('#dg_list').edatagrid({
+                toolbar: dg_list_tb,
+                width: '98%',
+                height: '50%',
+                //fit: true,
+                rownumbers: true,
+                striped: true,
+                singleSelect: true,
+                checkOnSelect: false,
+                selectOnCheck: false,
+                fitColumns: true,
+                dragSelection: true,
+                destroyMsg: {
+                    norecord: {// when no record is selected
+                        title: T('attenzione'),
+                        msg: T('Nessun record selezionato'),
+                    },
+                    confirm: {// when select a row
+                        title: T('conferma'),
+                        msg: T('Sei sicuro che vuoi cancellare?')
+                    }
+                },
+                onLoadSuccess: function () {
+                    $(this).datagrid('enableDnd');
+                },
+                columns: [[
+                        {field: 'ck', checkbox: true},
+                        {field: "VALUE", width: '49%', title: BR(T('valore VALUE')), editor: "textbox"},
+                        {field: "TEXT", width: '49%', title: BR(T('descrizione TEXT')), editor: "textbox"},
+                    ]],
+
+            });
         }
     }
 
