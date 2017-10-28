@@ -292,7 +292,7 @@ function init_app() {
                     textField: 'text',
                     editable: false,
                     data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
-                                panelHeight: 60,
+                    panelHeight: 60,
                 },
                 op: ['equal']
             }]);
@@ -304,7 +304,7 @@ function init_app() {
                     textField: 'text',
                     editable: false,
                     data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
-                                panelHeight: 60,
+                    panelHeight: 60,
                 },
                 op: ['equal']
             }]);
@@ -316,7 +316,7 @@ function init_app() {
                     textField: 'text',
                     editable: false,
                     data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
-                                panelHeight: 60,
+                    panelHeight: 60,
                 },
                 op: ['equal']
             }]);
@@ -896,7 +896,7 @@ function init_app() {
                     for (var i = 0; i < list.length; i++) {
                         var row = {[new_val_id]: list[i].VALUE, [new_val_text]: list[i].TEXT}
                         var row2 = {[new_val_text]: list[i].TEXT}
-                        if (new_val_id != "") {
+                        if (new_val_id != new_val_text) {
                             list2.push(row)
                         } else {
                             list2.push(row2)
@@ -920,8 +920,18 @@ function init_app() {
 
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST'});
             var current_list = $(ed.target).textbox('getValue');
-            var current_list_dg = JSON.parse(current_list);
-            $('#dg_list').datagrid('loadData', current_list_dg);
+            if (current_val_id != current_val_text) {
+                current_list = current_list.replaceAll('"' + current_val_id + '"', '"VALUE"');
+                current_list = current_list.replaceAll('"' + current_val_text + '"', '"TEXT"');
+            } else {
+                current_list = current_list.replaceAll('"' + current_val_text + '"', '"TEXT"');
+            }
+            if (current_list != "") {
+                var current_list_dg = JSON.parse(current_list);
+            }
+
+
+
 
             var input_cel = '<div style="margin-top:5px"></div><input id="cc_id"><div style="margin-top:5px"></div><input id="cc_text"><div style="margin-top:5px"></div><table id="dg_list"><table/>';
             dlg_msg.find('div').end().append(input_cel);
@@ -1000,6 +1010,9 @@ function init_app() {
                     ]],
 
             });
+            if (current_list != "") {
+                $('#dg_list').datagrid('loadData', current_list_dg);
+            }
         }
     }
 
