@@ -201,16 +201,6 @@ function init_app() {
                 load_menu_opt();
             },
             onEdit: function (index, row) {
-                if (row.NAME_TABLE_EXT != "") {
-                    var ed = $(this).datagrid('getEditor', {index: index, field: "NAME_TABLE_EXT"});
-                    $(ed.target).combobox('reload', 'api/list/table/db');
-
-                    var ed = $(this).datagrid('getEditor', {index: index, field: "TEXT_FIELD"});
-                    $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
-
-                    var ed = $(this).datagrid('getEditor', {index: index, field: "VALUE_FIELD"});
-                    $(ed.target).combobox('reload', 'api/list/column/' + row.NAME_TABLE_EXT);
-                }
             },
             frozenColumns: [[
                     {field: 'ck', checkbox: true},
@@ -239,8 +229,6 @@ function init_app() {
                                     }
                                 }
                             }}},
-                ]],
-            columns: [[
                     {field: "CONSTRAINT_TYPE", title: T('Vincoli Campo') + '<br>' + T('Origine Dati'), width: '160px', editor: {type: 'combobox', options: {
                                 valueField: 'id',
                                 textField: 'text',
@@ -261,6 +249,8 @@ function init_app() {
                             return data;
                         }
                     },
+                ]],
+            columns: [[
                     {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
                     {field: "WIDTH_FORM", title: T('Larghezza') + '<br>' + T('Campo Form'), editor: "text"},
                     {field: "WIDTH_LABEL", title: T('Larghezza') + '<br>' + T('Campo Etichetta'), editor: "text"},
@@ -270,29 +260,14 @@ function init_app() {
                     {field: "EDIT", title: BR(T('Campo Modificabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "REQUIRED", title: BR(T('Campo Richiesto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "SORTABLE", title: BR(T('Campo Ordinabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: {type: 'combobox',
-                            options: {
-                                valueField: 'TEXT',
-                                textField: 'TEXT',
-                                method: 'post',
-                                panelWidth: 250,
-                            }}, hidden: true},
-                    {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('Tabella Collegata'), editor: {type: 'combobox',
-                            options: {
-                                valueField: 'TEXT',
-                                textField: 'TEXT',
-                                method: 'post',
-                                panelWidth: 250,
-                            }}, hidden: true},
-                    {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('Tabella Collegata'), editor: {type: 'combobox',
-                            options: {
-                                valueField: 'TEXT',
-                                textField: 'TEXT',
-                                method: 'post',
-                                panelWidth: 250,
-                            }}, hidden: true},
+                    {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: {type: 'textbox',
+                            options: {}}, hidden: true},
+                    {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('associato'), editor: {type: 'textbox',
+                            options: {}}, hidden: true},
+                    {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('associato'), editor: {type: 'textbox',
+                            options: {}}, hidden: true},
                     {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: {type: 'textbox', options: {}}, hidden: true},
-                            //{field: "COMBO_LOCAL_DATA", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: "text"},
+                    {field: "COMBO_LOCAL_DATA", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: "text", hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -373,7 +348,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'VALUE_FIELD', 'NAME_TABLE_EXT'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'COMBO_LOCAL_DATA'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -645,7 +620,7 @@ function init_app() {
             }).attr('id', 'cfg_name');
             //$('#file_cfg_app').focus().select();
         }
-    })
+    });
     $('#bt_open_cfg').linkbutton({
         text: T('apri configurazione'),
         onClick: function () {
@@ -653,9 +628,8 @@ function init_app() {
                 if (r === undefined) {
                     //console.log('press cancel');
                 } else {
+                    $.messager.progress({title: T('configurazione'), msg: T('lettura configurazione, attendere...')});
                     var cfg_name = $('#cfg_name').combobox('getValue');
-
-
                     $.post('api/crud/open/cfg/json', {cfg_name: cfg_name})
                             .done(function (data) {
                                 $.messager.progress('close');
@@ -839,24 +813,24 @@ function init_app() {
                 } else {
                     var new_val = $('#cc_table').combobox('getValue');
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'NAME_TABLE_EXT'});
-                    $(ed.target).combobox('setValue', new_val);
+                    $(ed.target).textbox('setValue', new_val);
 
                     var new_val_id = $('#cc_id').combobox('getValue');
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
-                    $(ed.target).combobox('setValue', new_val_id);
+                    $(ed.target).textbox('setValue', new_val_id);
 
                     var new_val_text = $('#cc_text').combobox('getValue');
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
-                    $(ed.target).combobox('setValue', new_val_text);
+                    $(ed.target).textbox('setValue', new_val_text);
 
                 }
             });
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'NAME_TABLE_EXT'});
-            var current_val = $(ed.target).combobox('getValue');
+            var current_val = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
-            var current_val_id = $(ed.target).combobox('getValue');
+            var current_val_id = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
-            var current_val_text = $(ed.target).combobox('getValue');
+            var current_val_text = $(ed.target).textbox('getValue');
 
             var input_cel = '<div style="margin-top:5px"><input id="cc_id"><div style="margin-top:5px"><input id="cc_text">';
             dlg_msg.find('div').end().append(input_cel);
@@ -901,6 +875,54 @@ function init_app() {
                     $('#cc_text').combobox({url: 'api/list/column/' + record.TEXT});
                 },
             }).attr('id', 'cc_table');
+        }
+        if (type == "LIST") {
+            var dlg_msg = $.messager.prompt(T('lista valori'), T('Aggiungere i valori alla lista, e i campi da associare'), function (r) {
+                if (r === undefined) {
+                    //console.log('press cancel');
+                } else {
+                    var new_val_id = $('#cc_id').combobox('getValue');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
+                    $(ed.target).textbox('setValue', new_val_id);
+
+                    var new_val_text = $('#cc_text').combobox('getValue');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
+                    $(ed.target).textbox('setValue', new_val_text);
+
+                }
+            });
+            dlg_msg.window({width: '60%', height: '80%'});
+            dlg_msg.window('center');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
+            var current_val_id = $(ed.target).textbox('getValue');
+            (current_val_id == "") ? current_val_id = "value" : false;
+
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
+            var current_val_text = $(ed.target).textbox('getValue');
+            (current_val_text == "") ? current_val_text = "text" : false;
+
+            var input_cel = '<div style="margin-top:5px"><input id="cc_id"><div style="margin-top:5px"><input id="cc_text" tyle="margin-top:5px"><table id="dg_list"><table/>';
+            dlg_msg.find('div').end().append(input_cel);
+            $('#cc_id').textbox({
+                width: '100%',
+                label: T('Campo chiave (VALUE)'),
+                labelPosition: 'top',
+                prompt: T('scrivi qui'),
+                value: current_val_id,
+                required: true,
+            });
+            $('#cc_text').textbox({
+                width: '100%',
+                label: T('Campo descrizione (TEXT)'),
+                labelPosition: 'top',
+                prompt: T('scrivi qui'),
+                value: current_val_text,
+                required: true,
+
+            });
+            dlg_msg.find('.messager-input').remove();
+            g_debug = dlg_msg;
+            //dlg_msg.dialog({width: '60%', height: '80%'});
         }
     }
 
