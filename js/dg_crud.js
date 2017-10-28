@@ -296,6 +296,80 @@ function init_app() {
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
+        $('#dg_model').datagrid('enableFilter', [{
+                field: 'SKIP',
+                type: 'combobox',
+                options: {
+                    valueField: 'id',
+                    textField: 'text',
+                    editable: false,
+                    data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
+                    panelHeight: 60,
+                },
+                op: ['equal']
+            }]);
+        $('#dg_model').datagrid('enableFilter', [{
+                field: 'HIDE',
+                type: 'combobox',
+                options: {
+                    valueField: 'id',
+                    textField: 'text',
+                    editable: false,
+                    data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
+                                panelHeight: 60,
+                },
+                op: ['equal']
+            }]);
+        $('#dg_model').datagrid('enableFilter', [{
+                field: 'CK',
+                type: 'combobox',
+                options: {
+                    valueField: 'id',
+                    textField: 'text',
+                    editable: false,
+                    data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
+                                panelHeight: 60,
+                },
+                op: ['equal']
+            }]);
+        $('#dg_model').datagrid('enableFilter', [{
+                field: 'EDIT',
+                type: 'combobox',
+                options: {
+                    valueField: 'id',
+                    textField: 'text',
+                    editable: false,
+                    data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
+                                panelHeight: 60,
+                },
+                op: ['equal']
+            }]);
+        $('#dg_model').datagrid('enableFilter', [{
+                field: 'REQUIRED',
+                type: 'combobox',
+                options: {
+                    valueField: 'id',
+                    textField: 'text',
+                    editable: false,
+                    data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
+                    panelHeight: 60,
+                },
+                op: ['equal']
+            }]);
+        $('#dg_model').datagrid('enableFilter', [{
+                field: 'SORTABLE',
+                type: 'combobox',
+                options: {
+                    valueField: 'id',
+                    textField: 'text',
+                    editable: false,
+                    data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
+                    panelHeight: 60,
+                },
+                op: ['equal']
+            }]);
+
+
     }
     function show_par() {
         g_param_show = !g_param_show;
