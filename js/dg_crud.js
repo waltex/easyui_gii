@@ -1,6 +1,7 @@
 var g_debug
 var g_keydown
 var g_cfg_name
+var g_param_show = false;
 function init_app() {
     $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
     $('#tb_app_name').textbox({
@@ -132,6 +133,12 @@ function init_app() {
             iconCls: 'icon-remove',
             handler: function () {
                 $('#dg_model').edatagrid('destroyRow');
+            }}, '-', {
+            text: T('Mostra Parametri'),
+            iconCls: 'fa fa-eye-slash fa-lg fa-blue',
+            toggle: true,
+            handler: function () {
+                show_par();
             }}, '-', {
             text: T('Importa dal db'),
             iconCls: 'icon-add',
@@ -289,6 +296,13 @@ function init_app() {
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
+    }
+    function show_par() {
+        g_param_show = !g_param_show;
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'VALUE_FIELD', 'NAME_TABLE_EXT'];
+        for (var i = 0; i < field.length; i++) {
+            (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
+        }
     }
 
     function combo_get_text(id, data) {
