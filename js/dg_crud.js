@@ -794,7 +794,7 @@ function init_app() {
             });
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'NAME_TABLE_EXT'});
             var current_val = $(ed.target).textbox('getValue');
-            dlg_msg.find('.messager-input').combobox({
+            dlg_msg.find('.messager-input').numberspinner({
                 precision: 0,
                 min: 2,
                 value: current_val,
