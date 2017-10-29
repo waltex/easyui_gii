@@ -1017,6 +1017,3 @@ function init_app() {
     }
 
 }
-
-
-
