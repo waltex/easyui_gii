@@ -864,7 +864,7 @@ class easyuigii {
         $height_area = round(15 * $n_row) + 10;
         ($n_row == 1) ? $height_area == 24 : false;
         ($n_row == 2) ? $height_area == 40 : false;
-
+        $list = $row["LIST"];
         // n° row text area
         //
         //$('#dg1_COMBO').
@@ -932,10 +932,9 @@ class easyuigii {
                 return $editor;
             }
             if ($type_pk_fk == "LIST") {
-                $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field', data:$list, $required panelWidth: 250, limitToList: true, }},";
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', data:$list, $required panelWidth: 250, limitToList: true, });" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
-                $editor = ($edit == "1") ? $editor : "";
-                return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
+                return $editor;
             }
         }
     }
