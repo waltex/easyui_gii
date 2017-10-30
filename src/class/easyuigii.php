@@ -100,7 +100,7 @@ class easyuigii {
      * @param type $json model
      * @return type
      */
-    private function set_width_for_field_form_crud($json) {
+    public function set_width_for_field_form_crud($json_model) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $par_dt = $this->app_setting["larghezza campo datebox sul form"];
@@ -110,7 +110,7 @@ class easyuigii {
         $par_onoff = $this->app_setting["larghezza campo  si/no sul form"];
 
         $model = [];
-        foreach ($json as $value) {
+        foreach ($json_model as $value) {
             $value_field = "";
             ($value["TYPE"] == "datebox") ? $value_field = $par_dt : false;
             ($value["TYPE"] == "combobox") ? $value_field = $par_combo : false;

@@ -4,6 +4,7 @@ var g_cfg_name
 var g_param_show = false;
 function init_app() {
     $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
+    $('#opt_set_width_form').html(T('Imposta larghezza campo sul form predefinita'));
     $('#tb_app_name').textbox({
         required: true,
         label: T("Nome app:"), //path app
@@ -1015,5 +1016,28 @@ function init_app() {
             }
         }
     }
+
+    $('#opt_set_width_form').on('click', function () {
+        $.messager.progress({title: T('elaborazione'), msg: T('Impostazione larghezza campo, attendere...')});
+        $('#dg_model').datagrid('removeFilterRule');
+        $('#dg_model').datagrid('disableFilter');
+        var model = $('#dg_model').datagrid('getRows');
+        $('#dg_model').datagrid('enableFilter');
+        $.post('api/set/width/field/form', {model: model})
+                .done(function (data) {
+                    $.messager.progress('close');
+                    if (data.success) {
+                        var model = data.model;
+                        $('#dg_model').datagrid('loadData', model);
+                    } else {
+                        $.messager.alert(T('errore'), data.msg, 'error');
+                    }
+                })
+                .fail(function () {
+                    $.messager.progress('close');
+                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                });
+    });
+
 
 }
