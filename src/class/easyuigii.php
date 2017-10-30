@@ -645,13 +645,13 @@ class easyuigii {
         $on_after_edit = $this->get_crud_js_fn__on_after_edit();
 
         $input_cell = $this->get_input_cell_for_dg_edit_form();
-        $otions_obj = $this->get_option_for_dg_edit_form();
+        $options_obj = $this->get_option_for_dg_edit_form();
         $fn_dg_edit_form = "";
         if ($this->dg_inline == 0) {
             $fn_dg_edit_form = $twig->render('/crud/dg_edit_form.js.twig', array(
                 'n' => $this->html_prefix
                 , 'input_cell' => $input_cell
-                , 'otions_obj' => $otions_obj
+                , 'options_obj' => $options_obj
                 , 'host_api' => $this->host_api
                 , 'api_url' => $url_api_crud
                 , 'width_form' => $this->width_form
@@ -668,7 +668,6 @@ class easyuigii {
             , 'on_after_edit' => $on_after_edit
             , 'pagination' => $pagination
             , 'dg_inline' => $this->dg_inline
-            , 'e' => ($this->dg_inline == 1) ? 'e' : ''
             , 'fn_dg_edit_form' => $fn_dg_edit_form,
         ));
         $file = $dir . "/js/index.js";

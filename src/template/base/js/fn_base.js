@@ -89,11 +89,3 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     link.click();
     document.body.removeChild(link);
 }
-function delCk(dg) {
-    var row = $(dg).datagrid('getChecked')
-    for (i = 0; i < row.length; i++) {
-        var index = $(dg).datagrid('getRowIndex', row[i]);
-        $(dg).datagrid('deleteRow', index);
-        i = i - 1;
-    }
-}
