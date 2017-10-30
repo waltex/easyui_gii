@@ -908,7 +908,7 @@ function init_app() {
 
                 }
             });
-            dlg_msg.window({width: '60%', height: '80%'});
+            dlg_msg.window({width: '60%', height: '550px', resizable: true});
             dlg_msg.window('center');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
             var current_val_id = $(ed.target).textbox('getValue');
