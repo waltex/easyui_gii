@@ -7,20 +7,20 @@ if (function_exists('xdebug_disable')) {
 require '../vendor/autoload.php';
 
 $app = new Slim\Slim(array(
-    //log.enabled' => true,
+        //log.enabled' => true,
         //'log.writer' => new easyuigii()
         ));
 
 //Add the middleware globally
 
-  $app->add(new \SlimJson\Middleware(array(
+$app->add(new \SlimJson\Middleware(array(
     'json.status' => false,
-          'json.override_error' => true,
-          'json.override_notfound' => true,
-          'json.debug' => false,
-          'json.cors' => true
+    'json.override_error' => true,
+    'json.override_notfound' => true,
+    'json.debug' => false,
+    'json.cors' => true
 )));
- 
+
 $app->get('/test_api', 'test_api'); // test api
 $app->get('/test_translate', 'test_translate'); //test func mailer x invio mail
 
@@ -41,6 +41,7 @@ $app->post('/list/column/:table', 'list_column'); //for combobox, list table db
 $app->post('/crud/save/cfg2json', 'save_cfg2json'); //save configuration to json
 $app->post('/list/all/cfg', 'list_cfg'); //list name all configuration saved
 $app->post('/crud/open/cfg/json', 'open_cfg_from_json'); //save configuration to json
+$app->post('/set/width/field/form', 'set_width_form'); //set default width form
 
 
 
@@ -497,5 +498,20 @@ function open_cfg_from_json() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - open configuration from json  ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+function set_width_form() {
+    try {
+        $app = Slim\Slim::getInstance();
+        $model = $app->request->params('model'); // cofiguration
+
+        $gii = new easyuigii();
+        $model = $gii->set_width_for_field_form_crud($model);
+
+        $app->render(200, ['success' => true, 'model' => $model]);
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - set width form  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }
