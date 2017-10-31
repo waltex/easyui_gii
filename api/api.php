@@ -39,9 +39,10 @@ $app->post('/dg/model/read/db/:table', 'dg_model_read_from_db'); //read model fr
 $app->post('/list/table/db', 'list_table_db'); //for combobox, list table db
 $app->post('/list/column/:table', 'list_column'); //for combobox, list table db
 $app->post('/crud/save/cfg2json', 'save_cfg2json'); //save configuration to json
-$app->post('/list/all/cfg', 'list_cfg'); //list name all configuration saved
+$app->post('/list/all/cfg/:folder', 'list_cfg'); //list name all configuration saved for project(as folder)
 $app->post('/crud/open/cfg/json', 'open_cfg_from_json'); //save configuration to json
 $app->post('/set/width/field/form', 'set_width_form'); //set default width form
+$app->post('/list/project', 'list_project'); //set default width form
 
 
 
@@ -450,9 +451,10 @@ function save_cfg2json() {
         $app = Slim\Slim::getInstance();
         $cfg = $app->request->params('cfg'); // cofiguration
         $cfg_name = $app->request->params('cfg_name'); // cofiguration
+        $project_name = $app->request->params('project_name'); //
 
         $gii = new easyuigii();
-        $gii->save_cfg_crud_to_json($cfg, $cfg_name);
+        $gii->save_cfg_crud_to_json($cfg, $cfg_name, $project_name);
 
         $app->render(200, ['success' => true, 'msg' => $gii->T('Salvata configurazione')]);
 
@@ -466,12 +468,12 @@ function save_cfg2json() {
 
 /** list name configuration saved
  */
-function list_cfg() {
+function list_cfg($folder) {
     try {
         $app = Slim\Slim::getInstance();
 
         $gii = new easyuigii();
-        $data = $gii->list_configuration_saved();
+        $data = $gii->list_configuration_saved($folder);
         $app->response()->body(json_encode($data));
 
         ($gii->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
@@ -487,9 +489,10 @@ function open_cfg_from_json() {
     try {
         $app = Slim\Slim::getInstance();
         $cfg_name = $app->request->params('cfg_name'); // cofiguration
+        $project_name = $app->request->params('project_name'); // cofiguration
 
         $gii = new easyuigii();
-        $data = $gii->open_cfg_crud_from_json($cfg_name);
+        $data = $gii->open_cfg_crud_from_json($cfg_name, $project_name);
 
         $app->render(200, ['success' => true, 'msg' => 'Configurazione caricata', 'cfg' => $data]);
 
@@ -501,6 +504,8 @@ function open_cfg_from_json() {
     }
 }
 
+/** set default with form length (from setting)
+ */
 function set_width_form() {
     try {
         $app = Slim\Slim::getInstance();
@@ -513,5 +518,22 @@ function set_width_form() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - set width form  ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+/** list project (folder)
+ */
+function list_project() {
+    try {
+        $app = Slim\Slim::getInstance();
+        $model = $app->request->params('model'); // cofiguration
+
+        $gii = new easyuigii();
+        $data = $gii->list_project();
+
+        $app->response()->body(json_encode($data));
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - list project  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }

@@ -1,6 +1,7 @@
 var g_debug
 var g_keydown
 var g_cfg_name
+var g_project_name
 var g_param_show = false;
 function init_app() {
     $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
@@ -581,14 +582,16 @@ function init_app() {
                     //console.log('press cancel');
                 } else {
                     var cfg_name = $('#cfg_name').combobox('getValue');
-                    if (cfg_name != "") {
+                    var project_name = $('#project_name').combobox('getValue');
+                    if ((cfg_name != "") && (project_name != "")) {
                         var cfg = read_cfg_from_input();
-                        $.post('api/crud/save/cfg2json', {cfg: cfg, cfg_name: cfg_name})
+                        $.post('api/crud/save/cfg2json', {cfg: cfg, cfg_name: cfg_name, project_name: project_name})
                                 .done(function (data) {
                                     $.messager.progress('close');
                                     if (data.success) {
                                         g_cfg_name = cfg_name;
-                                        set_name_cfg(g_cfg_name);
+                                        g_project_name = project_name;
+                                        set_name_cfg(g_cfg_name, g_project_name);
                                         $.messager.show({
                                             title: T('salvataggio'),
                                             msg: data.msg,
@@ -603,24 +606,39 @@ function init_app() {
                                     $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
                                 });
                     } else {
-                        $.messager.alert(T('attenzione'), T('non è stato messo un nome alla configurazione'), 'warning');
+                        $.messager.alert(T('attenzione'), T('valorizzare tutti i campi'), 'warning');
                     }
                 }
 
             });
             dlg_msg.find('.messager-input').combobox({
-                url: 'api/list/all/cfg',
+                url: 'api/list/project',
+                valueField: 'folder',
+                textField: 'folder',
+                label: T('Nome Progetto'),
+                prompt: T('digita qui'),
+                value: g_project_name,
+                labelPosition: 'top',
+                width: '95%',
+                required: true,
+                onSelect: function (rec) {
+                    $('#cfg_name').combobox({url: 'api/list/all/cfg/' + rec.folder});
+                }
+            }).attr('id', 'project_name');
+            var input_cel = '<div style="margin-top:5px"><input id="cfg_name">';
+            dlg_msg.find('div').end().append(input_cel);
+            $('#cfg_name').combobox({
+                //url: 'api/list/all/cfg',
                 valueField: 'file',
                 textField: 'file',
-                hasDownArrow: false,
+                //hasDownArrow: false,
                 label: T('Nome Configurazione'),
                 prompt: T('digita qui'),
                 value: g_cfg_name,
                 labelPosition: 'top',
                 width: '95%',
                 required: true,
-            }).attr('id', 'cfg_name');
-            //$('#file_cfg_app').focus().select();
+            });
         }
     });
     $('#bt_open_cfg').linkbutton({
@@ -632,12 +650,14 @@ function init_app() {
                 } else {
                     $.messager.progress({title: T('configurazione'), msg: T('lettura configurazione, attendere...')});
                     var cfg_name = $('#cfg_name').combobox('getValue');
-                    $.post('api/crud/open/cfg/json', {cfg_name: cfg_name})
+                    var project_name = $('#project_name').combobox('getValue');
+                    $.post('api/crud/open/cfg/json', {cfg_name: cfg_name, project_name: project_name})
                             .done(function (data) {
                                 $.messager.progress('close');
                                 if (data.success) {
                                     g_cfg_name = cfg_name;
-                                    set_name_cfg(g_cfg_name);
+                                    g_project_name = project_name;
+                                    set_name_cfg(g_cfg_name, g_project_name);
                                     read_cfg_from_json(data.cfg);
                                     $.messager.show({
                                         title: T('configurazione'),
@@ -652,12 +672,27 @@ function init_app() {
                                 $.messager.progress('close');
                                 $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
                             });
-
                 }
 
             });
             dlg_msg.find('.messager-input').combobox({
-                url: 'api/list/all/cfg',
+                url: 'api/list/project',
+                valueField: 'folder',
+                textField: 'folder',
+                label: T('Nome Progetto'),
+                prompt: T('seleziona'),
+                value: g_project_name,
+                labelPosition: 'top',
+                width: '95%',
+                required: true,
+                onSelect: function (rec) {
+                    $('#cfg_name').combobox({url: 'api/list/all/cfg/' + rec.folder})
+                }
+            }).attr('id', 'project_name');
+            var input_cel = '<div style="margin-top:5px"><input id="cfg_name">';
+            dlg_msg.find('div').end().append(input_cel);
+            $('#cfg_name').combobox({
+                //url: 'api/list/all/cfg',
                 valueField: 'file',
                 textField: 'file',
                 label: T('Nome Configurazione'),
@@ -666,8 +701,7 @@ function init_app() {
                 labelPosition: 'top',
                 width: '95%',
                 required: true,
-            }).attr('id', 'cfg_name');
-            //$('#file_cfg_app').focus().select();
+            });
         }
     })
 
@@ -751,9 +785,9 @@ function init_app() {
         $('#tb_width_form').textbox('setValue', cfg.width_form);
         $('#tb_height_form').textbox('setValue', cfg.height_form);
     }
-    function set_name_cfg(cfg_name) {
+    function set_name_cfg(cfg_name, project_name) {
         $('#p_base').panel({
-            title: T("Parametri Principali") + " - " + "[" + T("configurazione:") + cfg_name + "]",
+            title: T("Parametri Principali") + " - " + "[" + T('progetto:') + project_name + ' - ' + T("configurazione:") + cfg_name + "]",
         });
     }
     $('#tb_width_form').textbox({

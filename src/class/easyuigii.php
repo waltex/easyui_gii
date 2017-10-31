@@ -38,10 +38,23 @@ class easyuigii {
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
         //chmod($this->root_gii, 0777);
+        $this->create_folder_gii();
         $this->set_app_setting(); //set to class method the array of setting
         $this->limit_size_log();
 
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+    }
+
+    private function create_folder_gii() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $list_dir = ["cfg", "snippets", "cfg2", "src/template/crud/model"];
+        foreach ($list_dir as $dir) {
+            $root = $this->root_gii . "/";
+            if (!is_dir($root . $dir)) {
+                mkdir($root . $dir, 0777, true); //create folder
+            }
+        }
     }
 
     private function on_begin_crud() {
@@ -218,12 +231,13 @@ class easyuigii {
 
     /**
      * @param type $cfg_name file configuration crud
+     * @param type $project_name name project
      * @return type
      */
-    public function open_cfg_crud_from_json($cfg_name) {
+    public function open_cfg_crud_from_json($cfg_name, $project_name) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $file = $this->root_gii . "/cfg/" . $cfg_name . ".json";
+        $file = $this->root_gii . "/cfg/$project_name/" . $cfg_name . ".json";
 
         $json = file_get_contents($file);
         $data = json_decode($json, true);
@@ -235,10 +249,15 @@ class easyuigii {
      * @param type $cfg configuration array
      * @param type $cfg_name name configurayion
      */
-    public function save_cfg_crud_to_json($cfg, $cfg_name) {
+    public function save_cfg_crud_to_json($cfg, $cfg_name, $project_name) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $file = $this->root_gii . "/cfg/" . $cfg_name . ".json";
+        $dir = $this->root_gii . "/cfg/$project_name/";
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true); //create folder
+        }
+
+        $file = $this->root_gii . "/cfg/$project_name/" . $cfg_name . ".json";
         $json = json_encode($cfg);
         file_put_contents($file, $json);
     }
@@ -367,17 +386,40 @@ class easyuigii {
         }
     }
 
-    /** list configuration saved
+    /** list project
      * @return type
      */
-    public function list_configuration_saved() {
+    public function list_project() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-
 
         $dir = $this->root_gii . "/cfg/";
         if (!is_dir($dir)) {
-            mkdir($dir . 'cfg', 0777, true); //create folder
+            //mkdir($dir . 'cfg', 0777, true); //create folder
         }
+        $list = scandir($dir);
+        $data = [];
+        foreach ($list as $file) {
+            if (!in_array($file, ["..", ".", ".DS_Store"])) {
+                if (is_dir($dir . $file)) {
+                    $path_info = pathinfo($file);
+                    $name = $path_info['filename'];
+                    $data[] = ["folder" => $name,];
+                }
+            }
+        }
+        return $data;
+    }
+
+    /** list configuration saved
+     *
+     * @param type $folder project name
+     * @return type
+     */
+    public function list_configuration_saved($folder) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+
+        $dir = $this->root_gii . "/cfg/$folder/";
         $list = scandir($dir);
         $data = [];
         foreach ($list as $file) {
