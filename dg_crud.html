@@ -10,13 +10,15 @@
         <script src="js/dg_crud.js" type="text/javascript"></script>
     </head>
     <body>
+        <div style="position: fixed;top: 0;left: 0;height: 23px;width:100%;z-index: 1030;background: white;padding:0% 1% 1% 1%;">
+            <a id="bt_gencode" class="easyui-linkbutton" data-options="iconCls:'fa fa-file-code-o fa-red'" style="margin-bottom: 5px">RunCode</a>
+            <a id="bt_save_cfg" class="easyui-linkbutton" data-options="iconCls:'fa fa-floppy-o fa-lg fa-blue'" style="margin-bottom: 5px">salva configurazione</a><!-- save parameter -->
+            <a id="bt_open_cfg" class="easyui-linkbutton" data-options="iconCls:'fa fa-folder-open-o fa-lg fa-green'" style="margin-bottom: 5px">apri configurazione</a><!-- read parameter -->
 
-        <a id="bt_gencode" class="easyui-linkbutton" data-options="iconCls:'fa fa-file-code-o fa-red'" style="margin-bottom: 5px">RunCode</a>
-        <a id="bt_save_cfg" class="easyui-linkbutton" data-options="iconCls:'fa fa-floppy-o fa-lg fa-blue'" style="margin-bottom: 5px">salva configurazione</a><!-- save parameter -->
-        <a id="bt_open_cfg" class="easyui-linkbutton" data-options="iconCls:'fa fa-folder-open-o fa-lg fa-green'" style="margin-bottom: 5px">apri configurazione</a><!-- read parameter -->
+        </div>
 
 
-        <form id="ff_crud" >
+        <form id="ff_crud" style="margin-top:30px;color: white" >
             <div id="p_base" class="easyui-panel"
                  style="width:450px;height:180px;background:#fafafa;padding:0% 1% 1% 1%;"
                  data-options="iconCls:'fa fa fa-cog fa-lg fa-grey',title:' ',collapsible:true">
@@ -26,7 +28,7 @@
             </div>
             <div style="height: 5px"></div>
             <div id="p_crud" class="easyui-panel"
-                 style="width:98%;height:'auto';background:#fafafa;padding:1% 1% 1% 1%"
+                 style="width:98%;height:auto;background:#fafafa;padding:1% 1% 1% 1%"
                  data-options="iconCls:'fa fa fa-cog fa-lg fa-grey',collapsible:true,collapsed:true">
                 <input id="sb_model" class="easyui-switchbutton" checked>
                 <label id="sb_model_label" for="sb_model"></label>
@@ -62,16 +64,15 @@
 
                 </div>
             </div>
+            <div id="mm_opt" style="width:300px;display:none">
+                <div id="opt_import_field_model" data-options="iconCls:'icon-undo'">Importa un campo del modello dal db</div><!-- import field of model -->
+                <div class="menu-sep"></div>
+                <div id="opt_copy_multi" data-options="iconCls:'fa fa-columns fa-green'">Copia multipla valori di una cella</div><!-- copy multiple value of cell -->
+                <div id="opt_set_width_form" data-options="iconCls:'fa fa-text-width fa-blue'">Imposta larghezza campo sul form predefinita</div><!-- set default width field for form  -->
+
+            </div>
         </form>
 
-
-        <div id="mm_opt" style="width:300px;display:none">
-            <div id="opt_import_field_model" data-options="iconCls:'icon-undo'">Importa un campo del modello dal db</div><!-- import field of model -->
-            <div class="menu-sep"></div>
-            <div id="opt_copy_multi" data-options="iconCls:'fa fa-columns fa-green'">Copia multipla valori di una cella</div><!-- copy multiple value of cell -->
-            <div id="opt_set_width_form" data-options="iconCls:'fa fa-text-width fa-blue'">Imposta larghezza campo sul form predefinita</div><!-- set default width field for form  -->
-
-        </div>
     </body>
 </html>
 
