@@ -48,7 +48,7 @@ class easyuigii {
     private function create_folder_gii() {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $list_dir = ["cfg", "snippets", "cfg2", "src/template/crud/model"];
+        $list_dir = ["cfg", "snippets", "src/template/crud/model"];
         foreach ($list_dir as $dir) {
             $root = $this->root_gii . "/";
             if (!is_dir($root . $dir)) {

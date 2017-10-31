@@ -730,6 +730,7 @@ function init_app() {
         var height_form = $('#tb_height_form').textbox('getValue');
 
         var cfg = {
+            type_cfg: 'crud',
             app_name: app_name,
             app_folder: app_folder,
             table_name: table_name,
