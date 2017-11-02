@@ -353,7 +353,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -952,9 +952,13 @@ function init_app() {
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
                     $(ed.target).textbox('setValue', new_val_id);
 
-                    var new_val_text = $('#cc_text').combobox('getValue');
-                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
-                    $(ed.target).textbox('setValue', new_val_text);
+                    var new_val_fields_ar = $('#cc_fields').combobox('getValues');
+                    var new_val_fields = "";
+                    if (new_val_fields_ar.length > 0) {
+                        new_val_fields = JSON.stringify(new_val_fields_ar);
+                    }
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELDS'});
+                    $(ed.target).textbox('setValue', new_val_fields);
 
                 }
             });
