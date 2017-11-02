@@ -919,75 +919,27 @@ function init_app() {
                 if (r === undefined) {
                     //console.log('press cancel');
                 } else {
-                    var new_val_id = $('#cc_id').textbox('getValue');
-                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
-                    $(ed.target).textbox('setValue', new_val_id);
-
-                    var new_val_text = $('#cc_text').textbox('getValue');
-                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
-                    $(ed.target).textbox('setValue', new_val_text);
-
                     var list = $('#dg_list').datagrid('getRows')
                     var list2 = [];
                     for (var i = 0; i < list.length; i++) {
-                        var row = {[new_val_id]: list[i].VALUE, [new_val_text]: list[i].TEXT}
-                        var row2 = {[new_val_text]: list[i].TEXT}
-                        if (new_val_id != new_val_text) {
-                            list2.push(row)
-                        } else {
-                            list2.push(row2)
-                        }
+                        var row = {iconCls: list[i].iconCls, cat: list[i].cat, value: list[i].value, text: list[i].text}
+                        list2.push(row);
                     }
                     var list_string = JSON.stringify(list2);
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST'});
                     $(ed.target).textbox('setValue', list_string);
-
                 }
             });
-            dlg_msg.window({width: '60%', height: '550px', resizable: true});
+            dlg_msg.window({width: '60%', height: '400px', resizable: true});
             dlg_msg.window('center');
-            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
-            var current_val_id = $(ed.target).textbox('getValue');
-            (current_val_id == "") ? current_val_id = "value" : false;
 
-            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
-            var current_val_text = $(ed.target).textbox('getValue');
-            (current_val_text == "") ? current_val_text = "text" : false;
 
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST'});
             var current_list = $(ed.target).textbox('getValue');
-            if (current_val_id != current_val_text) {
-                current_list = current_list.replaceAll('"' + current_val_id + '"', '"VALUE"');
-                current_list = current_list.replaceAll('"' + current_val_text + '"', '"TEXT"');
-            } else {
-                current_list = current_list.replaceAll('"' + current_val_text + '"', '"TEXT"');
-            }
-            if (current_list != "") {
-                var current_list_dg = JSON.parse(current_list);
-            }
+            var current_list_dg = JSON.parse(current_list);
 
-
-
-
-            var input_cel = '<div style="margin-top:5px"></div><input id="cc_id"><div style="margin-top:5px"></div><input id="cc_text"><div style="margin-top:5px"></div><table id="dg_list"><table/>';
+            var input_cel = '<div style="margin-top:5px"></div><table id="dg_list"><table/>';
             dlg_msg.find('div').end().append(input_cel);
-            $('#cc_id').textbox({
-                width: '98%',
-                label: T('Campo valore (VALUE)'),
-                labelPosition: 'top',
-                prompt: T('scrivi qui'),
-                value: current_val_id,
-                required: true,
-            });
-            $('#cc_text').textbox({
-                width: '98%',
-                label: T('Campo descrizione (TEXT)'),
-                labelPosition: 'top',
-                prompt: T('scrivi qui'),
-                value: current_val_text,
-                required: true,
-
-            });
             dlg_msg.find('.messager-input').hide();
 
             var dg_list_tb = ['-', {
@@ -1017,7 +969,7 @@ function init_app() {
             $('#dg_list').edatagrid({
                 toolbar: dg_list_tb,
                 width: '98%',
-                height: '480px',
+                height: '250px',
                 //fit: true,
                 rownumbers: true,
                 striped: true,
@@ -1041,8 +993,10 @@ function init_app() {
                 },
                 columns: [[
                         {field: 'ck', checkbox: true},
-                        {field: "VALUE", width: '49%', title: BR(T('valore VALUE')), editor: "textbox"},
-                        {field: "TEXT", width: '49%', title: BR(T('descrizione TEXT')), editor: "textbox"},
+                        {field: "iconCls", width: '15%', title: T('classe icona') + '<br>' + T('opzionale'), editor: "textbox"},
+                        {field: "cat", width: '25%', title: BR(T('categoria opzionale')), editor: "textbox"},
+                        {field: "value", width: '20%', title: T('valore ') + '(ID)<br>' + T('opzionale'), editor: "textbox"},
+                        {field: "text", width: '39%', title: T('descrizione'), editor: "textbox"},
                     ]],
 
             });
