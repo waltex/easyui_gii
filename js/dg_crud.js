@@ -163,16 +163,14 @@ function init_app() {
         }, {
             text: T('Tabella Collegata'),
             id: 'FOREIGN_KEY',
-            iconCls: 'icon-edit',
         }, {
             text: T('Lista Valori'),
             id: 'LIST',
-            iconCls: 'icon-edit',
         }, {
             text: T('Nessuna'),
             id: null
         }];
-    var data_type = [{text: 'textbox'}, {text: 'textarea', iconCls: 'icon-edit', }, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox'}];
+    var data_type = [{text: 'textbox'}, {text: 'textarea', iconCls: 'icon-edit', }, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox', iconCls: 'icon-edit', }];
     function load_dg_model() {
         $('#dg_model').datagrid('removeFilterRule');
         $('#dg_model').datagrid('disableFilter');
@@ -231,20 +229,14 @@ function init_app() {
                                     }
                                 }
                             }}},
-                    {field: "CONSTRAINT_TYPE", title: T('Vincoli Campo') + '<br>' + T('Origine Dati'), width: '160px', editor: {type: 'combobox', options: {
+                    {field: "CONSTRAINT_TYPE", title: T('Vincoli Campo') + '<br>' + T('Origine Dati'), width: '160px', editor: {type: 'combobox'
+                            , options: {
                                 valueField: 'id',
                                 textField: 'text',
                                 editable: false,
                                 panelWidth: 150,
                                 data: data_pk_fk,
-                                buttonText: '<i class="fa fa-list-alt" aria-hidden="true"></i>',
-                                showItemIcon: true,
-                                onClickButton: function () {
-                                    var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
-                                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CONSTRAINT_TYPE'});
-                                    var type = $(ed.target).combobox('getValue');
-                                    open_opt_fk(type, index);
-                                },
+                                //showItemIcon: true,
                             }}
                         , formatter: function (value, row, index) {
                             var data = combo_get_text(value, data_pk_fk);
@@ -818,6 +810,15 @@ function init_app() {
             }]
     });
     function open_opt_type(type, index) {
+        if (type == "combobox") {
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CONSTRAINT_TYPE'});
+            var fk = $(ed.target).combobox('getValue');
+            if (fk != "") {
+                open_opt_fk(fk, index);
+            } else {
+                select_fk_type(index);
+            }
+        }
         if (type == "textarea") {
             var dlg_msg = $.messager.prompt(T('textarea'), T('Impostare il numero di righe della textarea'), function (r) {
                 if (r === undefined) {
@@ -916,7 +917,6 @@ function init_app() {
         if (type == "LIST") {
             var dlg_msg = $.messager.prompt(T('lista valori'), T('Aggiungere i valori alla lista, e i campi da associare'), function (r) {
                 if (r === undefined) {
-                    console.log('cancel');
                     //console.log('press cancel');
                 } else {
                     var new_val_id = $('#cc_id').textbox('getValue');
@@ -1017,7 +1017,7 @@ function init_app() {
             $('#dg_list').edatagrid({
                 toolbar: dg_list_tb,
                 width: '98%',
-                height: '50%',
+                height: '480px',
                 //fit: true,
                 rownumbers: true,
                 striped: true,
@@ -1037,7 +1037,7 @@ function init_app() {
                     }
                 },
                 onLoadSuccess: function () {
-                    $(this).datagrid('enableDnd');
+                    //$(this).datagrid('enableDnd');
                 },
                 columns: [[
                         {field: 'ck', checkbox: true},
@@ -1075,4 +1075,35 @@ function init_app() {
     });
 
 
+
+
+    function select_fk_type(index) {
+        var dlg_msg = $.messager.prompt(T('modello'), T('Seleziona orgine dati'), function (r) {
+            if (r === undefined) {
+                //console.log('press cancel');
+            } else {
+                var fk = $('#fk_type').combobox('getValue');
+                open_opt_fk(fk, index);
+            }
+        });
+        dlg_msg.find('.messager-input').combobox({
+            data: [{text: T('Tabella Collegata'), value: 'FOREIGN_KEY'}, {text: T('Lista Valori'), value: 'LIST'}],
+            valueField: 'value',
+            textField: 'text',
+            required: true,
+            panelWidth: 300,
+            editable: false,
+            prompt: T('seleziona'),
+            onLoadSuccess: function () {
+                //$(this).combobox({prompt: T('seleziona')});
+            },
+            onSelect: function (rec) {
+                var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CONSTRAINT_TYPE'});
+                var fk = $(ed.target).combobox('setValue', rec.value);
+            },
+            label: T('Origine dati:'),
+            labelPosition: 'left',
+            width: 240,
+        }).attr('id', 'fk_type');
+    }
 }
