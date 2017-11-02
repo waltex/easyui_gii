@@ -263,6 +263,10 @@ function init_app() {
                     {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "LIST", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: {type: 'textbox',
                             options: {}}, hidden: true},
+                    {field: "LIST_CAT", title: 'lista valori' + '<br> ' + T('campo categoria'), editor: {type: 'textbox',
+                            options: {}}, hidden: true},
+                    {field: "LIST_ICON", title: 'lista valori' + '<br> ' + T('campo conCls'), editor: {type: 'textbox',
+                            options: {}}, hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -343,7 +347,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -915,28 +919,43 @@ function init_app() {
             }).attr('id', 'cc_table');
         }
         if (type == "LIST") {
-            var dlg_msg = $.messager.prompt(T('lista valori'), T('Aggiungere i valori alla lista, e i campi da associare'), function (r) {
+            var dlg_msg = $.messager.prompt(T('lista valori'), T('Aggiungere i valori alla lista'), function (r) {
                 if (r === undefined) {
                     //console.log('press cancel');
                 } else {
                     var list = $('#dg_list').datagrid('getRows')
+                    var cat = 0;
+                    var icon = 0;
+
                     var list2 = [];
                     for (var i = 0; i < list.length; i++) {
                         var row = {iconCls: list[i].iconCls, cat: list[i].cat, value: list[i].value, text: list[i].text}
                         list2.push(row);
+                        (list[i].cat != "") ? cat = 1 : false;
+                        (list[i].icon != "") ? icon = 1 : false;
                     }
                     var list_string = JSON.stringify(list2);
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST'});
                     $(ed.target).textbox('setValue', list_string);
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
+                    $(ed.target).textbox('setValue', 'value');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
+                    $(ed.target).textbox('setValue', 'text');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST_ICON'});
+                    $(ed.target).textbox('setValue', icon);
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST_CAT'});
+                    $(ed.target).textbox('setValue', cat);
                 }
             });
-            dlg_msg.window({width: '60%', height: '400px', resizable: true});
+            dlg_msg.window({width: '60%', height: '450px', resizable: true});
             dlg_msg.window('center');
 
 
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST'});
             var current_list = $(ed.target).textbox('getValue');
-            var current_list_dg = JSON.parse(current_list);
+            if (current_list != "") {
+                var current_list_dg = JSON.parse(current_list);
+            }
 
             var input_cel = '<div style="margin-top:5px"></div><table id="dg_list"><table/>';
             dlg_msg.find('div').end().append(input_cel);
@@ -969,7 +988,7 @@ function init_app() {
             $('#dg_list').edatagrid({
                 toolbar: dg_list_tb,
                 width: '98%',
-                height: '250px',
+                height: '280px',
                 //fit: true,
                 rownumbers: true,
                 striped: true,
@@ -993,9 +1012,9 @@ function init_app() {
                 },
                 columns: [[
                         {field: 'ck', checkbox: true},
-                        {field: "iconCls", width: '15%', title: T('classe icona') + '<br>' + T('opzionale'), editor: "textbox"},
+                        {field: "iconCls", width: '19%', title: T('icona') + ' (classe)<br>' + T('opzionale'), editor: "textbox"},
                         {field: "cat", width: '25%', title: BR(T('categoria opzionale')), editor: "textbox"},
-                        {field: "value", width: '20%', title: T('valore ') + '(ID)<br>' + T('opzionale'), editor: "textbox"},
+                        {field: "value", width: '15%', title: T('valore ') + '(ID)<br>' + T('opzionale'), editor: "textbox"},
                         {field: "text", width: '39%', title: T('descrizione'), editor: "textbox"},
                     ]],
 

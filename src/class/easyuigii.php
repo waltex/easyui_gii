@@ -906,6 +906,14 @@ class easyuigii {
         ($n_row == 1) ? $height_area == 24 : false;
         ($n_row == 2) ? $height_area == 40 : false;
         $list = $row["LIST"];
+        $cat = isset($row["LIST_CAT"]) ? $row["LIST_CAT"] : "";
+        $cat = ($cat == "1") ? "groupField: 'cat'," : "";
+        $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
+        $icon = ($icon == "1") ? "showItemIcon:true," : "";
+
+
+
+
         // n° row text area
         //
         //$('#dg1_COMBO').
@@ -968,12 +976,12 @@ class easyuigii {
         }
         if ($type == "combobox") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, });" . PHP_EOL;
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, });" . PHP_EOL;
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 return $editor;
             }
             if ($type_pk_fk == "LIST") {
-                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', data:$list, $required panelWidth: 250, limitToList: true, });" . PHP_EOL;
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', $icon $cat data:$list, $required panelWidth: 250, limitToList: true, });" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 return $editor;
             }
@@ -1004,6 +1012,10 @@ class easyuigii {
         $n_dg = $this->html_prefix;
         $hiden = ($hide) ? "hidden:true," : "";
         $list = $row["LIST"];
+        $cat = isset($row["LIST_CAT"]) ? $row["LIST_CAT"] : "";
+        $cat = ($cat == "1") ? "groupField: 'cat'," : "";
+        $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
+        $icon = ($icon == "1") ? "showItemIcon:true," : "";
 
         $pk = $this->primary_key;
 
@@ -1078,7 +1090,7 @@ class easyuigii {
                                     }
                                     return value;
                                 },";
-                $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field', data:$list, $required panelWidth: 250, limitToList: true, $on_select}},";
+                $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', data:$list, $cat $icon $required panelWidth: 250, limitToList: true, $on_select}},";
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 $editor = ($edit == "1") ? $editor : "";
                 return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
@@ -1196,6 +1208,8 @@ class easyuigii {
                                     ) text_field
                                     ,'' N_ROW_TEXTAREA
                                     , '' LIST
+                                    , '' LIST_CAT
+                                    , '' LIST_ICON
 
                         FROM ALL_TAB_COLUMNS A
                         LEFT JOIN COL_CONSTRAINT B ON ( A.COLUMN_NAME=B.COLUMN_NAME)
