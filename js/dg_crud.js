@@ -897,7 +897,7 @@ function init_app() {
             dlg_msg.find('div').end().append(input_cel);
             $('#cc_id').combobox({
                 width: '390px',
-                label: T('Campo chiave primaria'),
+                label: T('Campo valore (ID)'),
                 value: current_val_id,
                 labelWidth: '180px',
                 valueField: 'TEXT',
@@ -939,7 +939,7 @@ function init_app() {
         }
 
         if ((type_fk == "FOREIGN_KEY") && (type == "combogrid")) {
-            var dlg_msg = $.messager.prompt(T('tabella collegata'), T('Impostare la tabella esterna da collegare, e i campi da associare'), function (r) {
+            var dlg_msg = $.messager.prompt(T('tabella collegata - combogrid'), T('Impostare la tabella esterna da collegare, e i campi da associare e da visualizzare'), function (r) {
                 if (r === undefined) {
                     //console.log('press cancel');
                 } else {
@@ -951,19 +951,19 @@ function init_app() {
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
                     $(ed.target).textbox('setValue', new_val_id);
 
-                    var new_val_fields_ar = $('#cc_fields').combobox('getValues');
+                    var new_val_fields_ar = $('#dg_fields').datagrid('getRows');
                     var new_val_fields = "";
-                    if (new_val_fields_ar != "") {
+                    if (new_val_fields_ar.length > 0) {
                         new_val_fields = JSON.stringify(new_val_fields_ar);
                     }
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FIELDS'});
                     $(ed.target).textbox('setValue', new_val_fields);
 
-
-
-
                 }
             });
+            dlg_msg.window({width: '60%', height: '450px', resizable: true});
+            dlg_msg.window('center');
+
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'NAME_TABLE_EXT'});
             var current_val = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
@@ -972,16 +972,15 @@ function init_app() {
             var current_val_text = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FIELDS'});
             var current_val_fields_ar = $(ed.target).textbox('getValue');
-            var current_val_fields = "";
-            if (current_val_fields_ar != "") {
-                current_val_fields = JSON.parse(current_val_fields_ar);
-            }
 
-            var input_cel = '<div style="margin-top:5px"></div><input id="cc_id"><div style="margin-top:5px"></div><input id="cc_text"><div style="margin-top:5px"></div><input id="cc_fields">';
+
+            var input_cel = '<div style="margin-top:5px"></div><input id="cc_id"><div style="margin-top:5px"></div><input id="cc_text"><div style="margin-top:5px"></div><table id="dg_fields"></table>';
             dlg_msg.find('div').end().append(input_cel);
+
+
             $('#cc_id').combobox({
                 width: '390px',
-                label: T('Campo chiave primaria'),
+                label: T('Campo valore (ID)'),
                 value: current_val_id,
                 labelWidth: '180px',
                 valueField: 'TEXT',
@@ -1015,26 +1014,57 @@ function init_app() {
                 required: true,
                 panelWidth: 250,
                 editable: false,
+                onChange: function (newValue, oldValue) {
+                    $('#dg_fields').datagrid({url: 'api/list/column/' + newValue});
+                },
                 onSelect(record) {
                     $('#cc_id').combobox({url: 'api/list/column/' + record.TEXT});
                     $('#cc_text').combobox({url: 'api/list/column/' + record.TEXT});
-                    $('#cc_fields').combobox({url: 'api/list/column/' + record.TEXT});
                 },
             }).attr('id', 'cc_table');
-            $('#cc_fields').combobox({
-                width: '390px',
-                label: T('Lista campi'),
-                prompt: T('seleziona i campi'),
-                value: current_val_fields,
-                multiple: true,
-                labelWidth: '180px',
-                valueField: 'TEXT',
-                textField: 'TEXT',
-                method: 'post',
-                required: true,
-                panelWidth: 250,
-                editable: false,
+            var dg_fields_tb = ['-', {
+                    text: T('Aggiungi'),
+                    iconCls: 'icon-add',
+                    id: 'bt_add',
+                    handler: function (e) {
+                        $('#dg_fields').edatagrid('addRow');
+                    }}, '-', {
+                    text: T('Conferma'),
+                    iconCls: 'icon-ok',
+                    handler: function () {
+                        $('#dg_fields').edatagrid('saveRow');
+                    }}, '-', {
+                    text: T('Annulla'),
+                    iconCls: 'icon-undo',
+                    handler: function () {
+                        $('#dg_fields').edatagrid('cancelRow');
+                    }}, '-', {
+                    text: T('Elimina'),
+                    iconCls: 'icon-remove',
+                    handler: function () {
+                        $('#dg_fields').edatagrid('destroyRow');
+                    }}, ];
+
+            $('#dg_fields').edatagrid({
+                toolbar: dg_fields_tb,
+                height: '200px',
+                width: '99%',
+                rownumbers: true,
+                striped: true,
+                fitColumns: true,
+                dragSelection: true,
+                columns: [[
+                        {field: "TEXT", width: 150, title: BR(T('Nome Campo')), editor: "text"},
+                        {field: "TITLE", width: 150, title: BR(T('Titolo Campo')), editor: "text"},
+                        {field: "SHOW", title: BR(T('Mostra Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    ]]
             });
+            var current_val_fields = "";
+            if (current_val_fields_ar != "") {
+                current_val_fields = JSON.parse(current_val_fields_ar);
+                $('#dg_fields').datagrid('loadData', current_val_fields);
+
+            }
         }
 
         if (type_fk == "LIST") {
