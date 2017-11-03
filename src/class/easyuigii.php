@@ -911,12 +911,6 @@ class easyuigii {
         $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
         $icon = ($icon == "1") ? "showItemIcon:true," : "";
 
-
-
-
-        // n° row text area
-        //
-        //$('#dg1_COMBO').
         $id_object = "$('#dg$n_dg" . "_$col').";
 
         $pk = $this->primary_key;
@@ -983,6 +977,13 @@ class easyuigii {
             if ($type_pk_fk == "LIST") {
                 $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', $icon $cat data:$list, $required panelWidth: 250, limitToList: true, });" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
+                return $editor;
+            }
+        }
+        if ($type == "combogrid") {
+            if ($type_pk_fk == "FOREIGN_KEY") {
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, });" . PHP_EOL;
+                $editor = str_replace(",", "," . PHP_EOL, $editor);
                 return $editor;
             }
         }

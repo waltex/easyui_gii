@@ -272,7 +272,6 @@ function init_app() {
                             options: {}}, hidden: true},
                     {field: "LIST_ICON", title: 'lista valori' + '<br> ' + T('campo conCls'), editor: {type: 'textbox',
                             options: {}}, hidden: true},
-
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -954,11 +953,14 @@ function init_app() {
 
                     var new_val_fields_ar = $('#cc_fields').combobox('getValues');
                     var new_val_fields = "";
-                    if (new_val_fields_ar.length > 0) {
+                    if (new_val_fields_ar != "") {
                         new_val_fields = JSON.stringify(new_val_fields_ar);
                     }
-                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELDS'});
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FIELDS'});
                     $(ed.target).textbox('setValue', new_val_fields);
+
+
+
 
                 }
             });
@@ -969,7 +971,11 @@ function init_app() {
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
             var current_val_text = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FIELDS'});
-            var current_val_fields = $(ed.target).textbox('getValue');
+            var current_val_fields_ar = $(ed.target).textbox('getValue');
+            var current_val_fields = "";
+            if (current_val_fields_ar != "") {
+                current_val_fields = JSON.parse(current_val_fields_ar);
+            }
 
             var input_cel = '<div style="margin-top:5px"></div><input id="cc_id"><div style="margin-top:5px"></div><input id="cc_text"><div style="margin-top:5px"></div><input id="cc_fields">';
             dlg_msg.find('div').end().append(input_cel);
@@ -1017,7 +1023,7 @@ function init_app() {
             }).attr('id', 'cc_table');
             $('#cc_fields').combobox({
                 width: '390px',
-                label: T('Visualizza campi tabella'),
+                label: T('Lista campi'),
                 prompt: T('seleziona i campi'),
                 value: current_val_fields,
                 multiple: true,
