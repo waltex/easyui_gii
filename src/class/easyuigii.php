@@ -68,26 +68,6 @@ class easyuigii {
         $this->primary_key = $this->get_primary_key_from_model();
     }
 
-    /** list column of table
-     * @return type
-     */
-    public function list_column_of_table($table) {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-
-        $sql = "
-               SELECT COLUMN_NAME TEXT FROM ALL_TAB_COLUMNS WHERE OWNER=USER AND TABLE_NAME='$table'
-                ";
-        error_log(LogTime() . ' Sql, get list column of table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
-
-
-        $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
-        $db = oci_parse($conn, $sql);
-        $rs = oci_execute($db);
-
-        oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
-        return $data;
-    }
-
     /** list table of db
      * @return type
      */
@@ -1017,6 +997,8 @@ class easyuigii {
         $cat = ($cat == "1") ? "groupField: 'cat'," : "";
         $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
         $icon = ($icon == "1") ? "showItemIcon:true," : "";
+        $fields = $row["FIELDS"];
+        $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
 
         $pk = $this->primary_key;
 
@@ -1063,6 +1045,22 @@ class easyuigii {
             $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
             return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
         }
+        if ($type == "combogrid") {
+            if ($type_pk_fk == "FOREIGN_KEY") {
+                $on_select = "onSelect: function (record) {
+                                var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
+                                var row = $('#dg$n_dg').datagrid('getRows')[index];
+                                row['$col" . "__TEXT'] = record.$text_field
+                            },";
+                $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
+                $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, $on_select #columns}},";
+                $editor = str_replace(",", "," . PHP_EOL, $editor);
+                $editor = str_replace("#columns", $columns, $editor);
+                $editor = ($edit == "1") ? $editor : "";
+                return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+            }
+        }
+
         if ($type == "combobox") {
             if ($type_pk_fk == "FOREIGN_KEY") {
                 $on_select = "onSelect: function (record) {
@@ -1100,6 +1098,30 @@ class easyuigii {
 
         $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
         return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+    }
+
+    private function get_fields_for_combogrid($model) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        try {
+
+            $model_ord = json_decode($model, true);
+
+            //$model_ord = $this->model_order_primary_key();
+            $code = "";
+            foreach ($model_ord as $value) {
+                $col = $value["COL"];
+                $type = "textbox";
+                if ($value["SKIP"] == "0") {
+                    $hide = ($value["HIDE"] == "1") ? true : false;
+                    $code .= $this->get_js_inline_crud_col($value, $hide);
+                }
+            }
+            $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
+            return $code;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     /** create sql string

@@ -251,7 +251,7 @@ function init_app() {
                     {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
                     {field: "WIDTH_FORM", title: T('Larghezza') + '<br>' + T('Campo Form'), editor: "text"},
                     {field: "WIDTH_LABEL", title: T('Larghezza') + '<br>' + T('Campo Etichetta'), editor: "text"},
-                    {field: "SKIP", title: BR(T('Campo Scartato')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "SKIP", title: BR(T('Escludi Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "HIDE", title: BR(T('Campo Nascosto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "CK", title: BR(T('Campo Si,No')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "EDIT", title: BR(T('Campo Modificabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
@@ -900,8 +900,8 @@ function init_app() {
                 label: T('Campo valore (ID)'),
                 value: current_val_id,
                 labelWidth: '180px',
-                valueField: 'TEXT',
-                textField: 'TEXT',
+                valueField: 'COL',
+                textField: 'COL',
                 method: 'post',
                 required: true,
                 panelWidth: 250,
@@ -912,8 +912,8 @@ function init_app() {
                 label: T('Campo descrizione'),
                 value: current_val_text,
                 labelWidth: '180px',
-                valueField: 'TEXT',
-                textField: 'TEXT',
+                valueField: 'COL',
+                textField: 'COL',
                 method: 'post',
                 required: true,
                 panelWidth: 250,
@@ -932,8 +932,8 @@ function init_app() {
                 panelWidth: 250,
                 editable: false,
                 onSelect(record) {
-                    $('#cc_id').combobox({url: 'api/list/column/' + record.TEXT});
-                    $('#cc_text').combobox({url: 'api/list/column/' + record.TEXT});
+                    $('#cc_id').combobox({url: 'api/dg/model/read/db/' + record.TEXT});
+                    $('#cc_text').combobox({url: 'api/dg/model/read/db/' + record.TEXT});
                 },
             }).attr('id', 'cc_table');
         }
@@ -983,8 +983,8 @@ function init_app() {
                 label: T('Campo valore (ID)'),
                 value: current_val_id,
                 labelWidth: '180px',
-                valueField: 'TEXT',
-                textField: 'TEXT',
+                valueField: 'COL',
+                textField: 'COL',
                 method: 'post',
                 required: true,
                 panelWidth: 250,
@@ -995,8 +995,8 @@ function init_app() {
                 label: T('Campo descrizione'),
                 value: current_val_text,
                 labelWidth: '180px',
-                valueField: 'TEXT',
-                textField: 'TEXT',
+                valueField: 'COL',
+                textField: 'COL',
                 method: 'post',
                 required: true,
                 panelWidth: 250,
@@ -1008,18 +1008,18 @@ function init_app() {
                 label: T('Nome tabella collegata'),
                 value: current_val,
                 labelWidth: '180px',
-                valueField: 'TEXT',
-                textField: 'TEXT',
+                valueField: 'COL',
+                textField: 'COL',
                 method: 'post',
                 required: true,
                 panelWidth: 250,
                 editable: false,
                 onChange: function (newValue, oldValue) {
-                    $('#dg_fields').datagrid({url: 'api/list/column/' + newValue});
+                    $('#dg_fields').datagrid({url: 'api/dg/model/read/db/' + newValue});
                 },
                 onSelect(record) {
-                    $('#cc_id').combobox({url: 'api/list/column/' + record.TEXT});
-                    $('#cc_text').combobox({url: 'api/list/column/' + record.TEXT});
+                    $('#cc_id').combobox({url: 'api/dg/model/read/db/' + record.TEXT});
+                    $('#cc_text').combobox({url: 'api/dg/model/read/db/' + record.TEXT});
                 },
             }).attr('id', 'cc_table');
             var dg_fields_tb = ['-', {
@@ -1043,7 +1043,15 @@ function init_app() {
                     iconCls: 'icon-remove',
                     handler: function () {
                         $('#dg_fields').edatagrid('destroyRow');
-                    }}, ];
+                    }}, '-', {
+                    text: T('Importa dal db'),
+                    iconCls: 'icon-add',
+                    handler: function () {
+                        var table = $('#cc_table').combobox('getValue');
+                        $('#dg_fields').datagrid('options').url = 'api/dg/model/read/db/' + table;
+                        $('#dg_fields').datagrid('reload');
+
+                    }}];
 
             $('#dg_fields').edatagrid({
                 toolbar: dg_fields_tb,
@@ -1054,9 +1062,12 @@ function init_app() {
                 fitColumns: true,
                 dragSelection: true,
                 columns: [[
-                        {field: "TEXT", width: 150, title: BR(T('Nome Campo')), editor: "text"},
+                        {field: 'ck', checkbox: true},
+                        {field: "COL", width: 150, title: BR(T('Nome Campo')), editor: "text"},
                         {field: "TITLE", width: 150, title: BR(T('Titolo Campo')), editor: "text"},
-                        {field: "SHOW", title: BR(T('Mostra Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                        {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
+                        {field: "SKIP", title: BR(T('Escludi Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                        {field: "HIDE", title: BR(T('Nascondi Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     ]]
             });
             var current_val_fields = "";
