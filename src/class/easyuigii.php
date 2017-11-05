@@ -976,110 +976,111 @@ class easyuigii {
      * @param type $col string name column
      */
     private function get_js_inline_crud_col($row, $hide) {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $col = $row["COL"];
-        $title = $row["TITLE"];
-        $type = $row["TYPE"];
-        $width_field = $row["WIDTH"];
-        $type_pk_fk = $row["CONSTRAINT_TYPE"];
-        $edit = ($this->dg_inline == 1) ? $row["EDIT"] : "0";
-        $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
-        $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
-        $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
-        $value_field = $row["VALUE_FIELD"]; // value for combobox
-        $text_field = $row["TEXT_FIELD"];   // text for combobox
-        $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
-        $n_dg = $this->html_prefix;
-        $hiden = ($hide) ? "hidden:true," : "";
-        $list = $row["LIST"];
-        $cat = isset($row["LIST_CAT"]) ? $row["LIST_CAT"] : "";
-        $cat = ($cat == "1") ? "groupField: 'cat'," : "";
-        $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
-        $icon = ($icon == "1") ? "showItemIcon:true," : "";
-        $fields = $row["FIELDS"];
-        $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
+            $col = $row["COL"];
+            $title = $row["TITLE"];
+            $type = $row["TYPE"];
+            $width_field = $row["WIDTH"];
+            $type_pk_fk = $row["CONSTRAINT_TYPE"];
+            $edit = ($this->dg_inline == 1) ? $row["EDIT"] : "0";
+            $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
+            $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
+            $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
+            $value_field = $row["VALUE_FIELD"]; // value for combobox
+            $text_field = $row["TEXT_FIELD"];   // text for combobox
+            $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
+            $n_dg = $this->html_prefix;
+            $hiden = ($hide) ? "hidden:true," : "";
+            $list = $row["LIST"];
+            $cat = isset($row["LIST_CAT"]) ? $row["LIST_CAT"] : "";
+            $cat = ($cat == "1") ? "groupField: 'cat'," : "";
+            $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
+            $icon = ($icon == "1") ? "showItemIcon:true," : "";
+            $fields = $row["FIELDS"];
+            $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
 
-        $pk = $this->primary_key;
+            $pk = $this->primary_key;
 
-        $width = "";
-        $colt = $this->T($title); //translate
-        if ($width_field == "") {
-            //$px = (strlen($colt) * 10) . "px";
-            //$width = "width: '$px',";
-        } else {
-            $width = "width: '$width_field',";
-        }
+            $width = "";
+            $colt = $this->T($title); //translate
+            if ($width_field == "") {
+                //$px = (strlen($colt) * 10) . "px";
+                //$width = "width: '$px',";
+            } else {
+                $width = "width: '$width_field',";
+            }
 
-        if ($type_pk_fk == "PRIMARY_KEY") {
-            $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
-            return $ck . "{field: '$col', title: '$colt', $width $sortable $hiden}," . PHP_EOL;
-        }
+            if ($type_pk_fk == "PRIMARY_KEY") {
+                $ck = "{field: 'ck', checkbox: true}," . PHP_EOL;
+                return $ck . "{field: '$col', title: '$colt', $width $sortable $hiden}," . PHP_EOL;
+            }
 
-        if ($row["CK"] == "1") {
-            $editor = ($edit == "1") ? "editor: {type: 'checkbox', options: {on: '1', off: '0'}}," : "";
-            return "{field: '$col', title: '$colt', $editor formatter: mycheck, $required $sortable}," . PHP_EOL;
-        }
+            if ($row["CK"] == "1") {
+                $editor = ($edit == "1") ? "editor: {type: 'checkbox', options: {on: '1', off: '0'}}," : "";
+                return "{field: '$col', title: '$colt', $editor formatter: mycheck, $required $sortable}," . PHP_EOL;
+            }
 
 
-        if ($type == "textbox") {
-            $editor = ($edit == "1") ? "editor: {type: 'textbox', options: { $required }}," : "";
-            return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
-        }
-        if ($type == "textarea") {
-            $editor = ($edit == "1") ? "editor: {type: 'textarea', options: { $required }}," : "";
-            return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
-        }
+            if ($type == "textbox") {
+                $editor = ($edit == "1") ? "editor: {type: 'textbox', options: { $required }}," : "";
+                return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
+            }
+            if ($type == "textarea") {
+                $editor = ($edit == "1") ? "editor: {type: 'textarea', options: { $required }}," : "";
+                return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
+            }
 
-        //escludo the column primary key for edit
-        if ($type == "numberbox") {
-            $with = "width: '50px',";
-            $editor = ($edit == "1") ? "editor: {type: 'numberbox', options: { $required }}," : "";
-            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
-        }
+            //escludo the column primary key for edit
+            if ($type == "numberbox") {
+                $with = "width: '50px',";
+                $editor = ($edit == "1") ? "editor: {type: 'numberbox', options: { $required }}," : "";
+                return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+            }
 
-        if ($type == "datebox") {
-            $with = "width: '100px',";
-            ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
-            $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
-            $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
-            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
-        }
-        if ($type == "combogrid") {
-            if ($type_pk_fk == "FOREIGN_KEY") {
-                $on_select = "onSelect: function (index,row) {
+            if ($type == "datebox") {
+                $with = "width: '100px',";
+                ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
+                $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
+                $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
+                return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+            }
+            if ($type == "combogrid") {
+                if ($type_pk_fk == "FOREIGN_KEY") {
+                    $on_select = "onSelect: function (index,row) {
                                 var row_dg = $('#dg$n_dg').datagrid('getRows')[g_edit_index];
                                 row_dg['$col" . "__TEXT'] = row.$text_field
                             },";
-                $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
-                $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$pk', method: 'get', url: '$url_combobox', $required panelWidth: 250, limitToList: true, $on_select #columns}},";
-                $editor = str_replace(", ", "," . PHP_EOL, $editor);
-                $editor = str_replace("#columns", $columns, $editor);
-                $editor = ($edit == "1") ? $editor : "";
-                return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+                    $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
+                    $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$pk', method: 'get', url: '$url_combobox', $required panelWidth: 250, limitToList: true, $on_select #columns}},";
+                    $editor = str_replace(", ", "," . PHP_EOL, $editor);
+                    $editor = str_replace("#columns", $columns, $editor);
+                    $editor = ($edit == "1") ? $editor : "";
+                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+                }
             }
-        }
 
-        if ($type == "combobox") {
-            if ($type_pk_fk == "FOREIGN_KEY") {
-                $on_select = "onSelect: function (record) {
+            if ($type == "combobox") {
+                if ($type_pk_fk == "FOREIGN_KEY") {
+                    $on_select = "onSelect: function (record) {
                                 var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
                                 var row = $('#dg$n_dg').datagrid('getRows')[index];
                                 row['$col" . "__TEXT'] = record.$text_field
                             },";
-                $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
-                $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, $on_select}},";
-                $editor = str_replace(",", "," . PHP_EOL, $editor);
-                $editor = ($edit == "1") ? $editor : "";
-                return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
-            }
-            if ($type_pk_fk == "LIST") {
-                $on_select = "onSelect: function (record) {
+                    $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
+                    $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, $on_select}},";
+                    $editor = str_replace(",", "," . PHP_EOL, $editor);
+                    $editor = ($edit == "1") ? $editor : "";
+                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+                }
+                if ($type_pk_fk == "LIST") {
+                    $on_select = "onSelect: function (record) {
                                     var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
                                     var row = $('#dg$n_dg').datagrid('getRows')[index];
                                     row['$col" . "__TEXT'] = record.$text_field
                               },";
-                $formatter = PHP_EOL . "formatter: function (value, row, index){
+                    $formatter = PHP_EOL . "formatter: function (value, row, index){
                                     var data = $list;
                                     for (var i = 0; i < data.length; i++) {
                                         if (value == data[i].$value_field) {
@@ -1088,15 +1089,19 @@ class easyuigii {
                                     }
                                     return value;
                                 },";
-                $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', data:$list, $cat $icon $required panelWidth: 250, limitToList: true, $on_select}},";
-                $editor = str_replace(", ", "," . PHP_EOL, $editor);
-                $editor = ($edit == "1") ? $editor : "";
-                return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+                    $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', data:$list, $cat $icon $required panelWidth: 250, limitToList: true, $on_select}},";
+                    $editor = str_replace(", ", "," . PHP_EOL, $editor);
+                    $editor = ($edit == "1") ? $editor : "";
+                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+                }
             }
-        }
 
-        $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
-        return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+            $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
+            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     private function get_fields_for_combogrid($model) {

@@ -1061,6 +1061,9 @@ function init_app() {
                 striped: true,
                 fitColumns: true,
                 dragSelection: true,
+                onLoadSuccess: function () {
+                    //$(this).datagrid('enableDnd');
+                },
                 columns: [[
                         {field: 'ck', checkbox: true},
                         {field: "COL", width: 150, title: BR(T('Nome Campo')), editor: "text"},
