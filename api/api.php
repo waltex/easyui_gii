@@ -390,6 +390,8 @@ function del_upload_image() {
 }
 
 /** Read from db
+ *
+ * @param type $table
  */
 function dg_model_read_from_db($table) {
     try {
@@ -398,7 +400,7 @@ function dg_model_read_from_db($table) {
         $gii = new easyuigii();
         $gii->set_db_setting();
         $gii->table_name = $table;
-        $data = $gii->get_table_model_from_db();
+        $data = $gii->get_table_model_from_db($table);
 
         $app->response()->body(json_encode($data));
 

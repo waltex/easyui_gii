@@ -63,7 +63,7 @@ class easyuigii {
         $this->set_db_setting();
 
         if ($this->model_from_json == 0) {
-            $this->table_model = $this->get_table_model_from_db();
+            $this->table_model = $this->get_table_model_from_db($this->table_name);
         }
         $this->primary_key = $this->get_primary_key_from_model();
     }
@@ -1129,22 +1129,25 @@ class easyuigii {
         }
     }
 
-    /** create sql string
+    /**  create sql string
      *
-     * @return type string
+     * @param type $table
+     * @param type $model
+     * @return type
+     * @throws Exception
      */
-    private function get_sql_for_select() {
+    private function get_sql_for_select($table, $model) {
         try {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
             $app = Slim\Slim::getInstance();
 
-            $table = $this->table_name;
+            //$table = $this->table_name;
 
             $str_col_w_a = "";
             $str_col = "";
             $ncol = 0;
-            $model = $this->table_model;
+            //$model = $this->table_model;
             foreach ($model as $value) {
                 $col_name = $value["COL"];
                 $col_name_w_a = "A." . $col_name;
@@ -1173,13 +1176,13 @@ class easyuigii {
      * @return type
      * @throws Exception
      */
-    public function get_table_model_from_db() {
+    public function get_table_model_from_db($table) {
         try {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
             $app = Slim\Slim::getInstance();
-            $table = $this->table_name;
+            //$table = $this->table_name;
 
             $sql = "
                         WITH COL_CONSTRAINT AS (
@@ -1366,7 +1369,7 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
-        $sql_select = $this->get_sql_for_select(); //for template
+        $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template
         $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
@@ -1441,40 +1444,53 @@ class easyuigii {
      *
      */
     private function get_api_fn_combo() {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-        $api_url = [];
-        $model = $this->table_model;
-        $return = [];
-        foreach ($model as $value) {
-            if ($value["SKIP"] == "0") {
-                if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
-                    $table = $value["NAME_TABLE_EXT"];
-                    $value_field = $value["VALUE_FIELD"];
-                    $text_field = $value["TEXT_FIELD"];
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+            $api_url = [];
+            $model = $this->table_model;
+            $return = [];
+            foreach ($model as $value) {
+                if ($value["SKIP"] == "0") {
+                    if ($value["CONSTRAINT_TYPE"] == 'FOREIGN_KEY') {
+                        $table = $value["NAME_TABLE_EXT"];
+                        $value_field = $value["VALUE_FIELD"];
+                        $text_field = $value["TEXT_FIELD"];
 
-                    $api_fn_name = "combo_$table";
+                        $api_fn_name = "combo_$table";
+                        if ($value["TYPE"] == "combobox") {
+                            $model_combo = $this->get_table_model_from_db($table);
+                            $sql_select = $this->get_sql_for_select($table, $model_combo);
+                            //$sql_select = "SELECT A.$value_field, A.$text_field FROM $table A";
+                        }
+                        if ($value["TYPE"] == "combogrid") {
+                            $model_combo = json_decode($value["FIELDS"], true);
+                            $sql_select = $this->get_sql_for_select($table, $model_combo);
+                        }
 
-                    $sql_select = "SELECT $value_field, $text_field from $table ";
-                    //build template html
-                    $root_template = $this->root_gii . $this->template_root_path;
-                    $loader = new Twig_Loader_Filesystem($root_template);
-                    $twig = new Twig_Environment($loader);
+                        //build template html
+                        $root_template = $this->root_gii . $this->template_root_path;
+                        $loader = new Twig_Loader_Filesystem($root_template);
+                        $twig = new Twig_Environment($loader);
 
-                    $php = $twig->render('/crud/api/combobox.api.oci.php.twig', array(
-                        'api_fn_name' => $api_fn_name
-                        , 'sql_select' => $sql_select
-                        , 'table' => $table
-                        , 'drv_cn_var' => $this->oci_cn_var
-                        , 'drv_user_var' => $this->oci_user_var
-                        , 'drv_password_var' => $this->oci_password_var
-                        , 'drv_charset' => $this->oci_charset
-                    ));
+                        $php = $twig->render('/crud/api/combobox.api.oci.php.twig', array(
+                            'api_fn_name' => $api_fn_name
+                            , 'sql_select' => $sql_select
+                            , 'table' => $table
+                            , 'drv_cn_var' => $this->oci_cn_var
+                            , 'drv_user_var' => $this->oci_user_var
+                            , 'drv_password_var' => $this->oci_password_var
+                            , 'drv_charset' => $this->oci_charset
+                        ));
 
-                    $return[] = $php;
+                        $return[] = $php;
+                    }
                 }
             }
+            return $return;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
         }
-        return $return;
     }
 
     /** list col from type col table es. field1, field2, field3
