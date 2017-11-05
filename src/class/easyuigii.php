@@ -983,7 +983,7 @@ class easyuigii {
         $type = $row["TYPE"];
         $width_field = $row["WIDTH"];
         $type_pk_fk = $row["CONSTRAINT_TYPE"];
-        $edit = ($this->dg_inline == 1) ? $row["EDIT"] : 0;
+        $edit = ($this->dg_inline == 1) ? $row["EDIT"] : "0";
         $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
         $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
         $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
@@ -1047,14 +1047,13 @@ class easyuigii {
         }
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $on_select = "onSelect: function (record) {
-                                var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
-                                var row = $('#dg$n_dg').datagrid('getRows')[index];
-                                row['$col" . "__TEXT'] = record.$text_field
+                $on_select = "onSelect: function (index,row) {
+                                var row_dg = $('#dg$n_dg').datagrid('getRows')[g_edit_index];
+                                row_dg['$col" . "__TEXT'] = row.$text_field
                             },";
                 $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
-                $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, $on_select #columns}},";
-                $editor = str_replace(",", "," . PHP_EOL, $editor);
+                $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$pk', method: 'get', url: '$url_combobox', $required panelWidth: 250, limitToList: true, $on_select #columns}},";
+                $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 $editor = ($edit == "1") ? $editor : "";
                 return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
@@ -1113,6 +1112,7 @@ class easyuigii {
                 $type = "textbox";
                 if ($value["SKIP"] == "0") {
                     $hide = ($value["HIDE"] == "1") ? true : false;
+                    $value['EDIT'] = 0;
                     $code .= $this->get_js_inline_crud_col($value, $hide);
                 }
             }

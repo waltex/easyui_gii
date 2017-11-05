@@ -1,3 +1,6 @@
+{% if (dg_inline==1) %}
+var g_edit_index;
+{% endif %}
 $(document).ready(function () {
     $('#dg{{n}}_reload').bind('click', function () {
         load_dg{{n}}();
@@ -49,6 +52,11 @@ $(document).ready(function () {
             onError: function (index, row) {
                 $.messager.alert("{{T('Contattare assistenza')}}", row.msg, 'error');
                 },
+            {% if (dg_inline==1) %}
+            onEdit: function (index, row) {
+                g_edit_index = index;
+            },
+            {% endif %}
             {{on_after_edit|raw}}
             {% if (dg_inline==0) %}
             onDblClickRow: function (index, row) {
