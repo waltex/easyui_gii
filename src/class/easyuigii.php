@@ -890,6 +890,8 @@ class easyuigii {
         $cat = ($cat == "1") ? "groupField: 'cat'," : "";
         $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
         $icon = ($icon == "1") ? "showItemIcon:true," : "";
+        $fields = $row["FIELDS"];
+        $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
 
         $id_object = "$('#dg$n_dg" . "_$col').";
 
@@ -962,8 +964,9 @@ class easyuigii {
         }
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, });" . PHP_EOL;
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, #columns});" . PHP_EOL;
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
+                $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
             }
         }
