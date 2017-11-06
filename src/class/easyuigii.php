@@ -890,7 +890,7 @@ class easyuigii {
         $cat = ($cat == "1") ? "groupField: 'cat'," : "";
         $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
         $icon = ($icon == "1") ? "showItemIcon:true," : "";
-        $fields = $row["FIELDS"];
+        $fields = (isset($row["FIELDS"])) ? $row["FIELDS"] : "";
         $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
 
         $id_object = "$('#dg$n_dg" . "_$col').";
@@ -1001,7 +1001,7 @@ class easyuigii {
             $cat = ($cat == "1") ? "groupField: 'cat'," : "";
             $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
             $icon = ($icon == "1") ? "showItemIcon:true," : "";
-            $fields = $row["FIELDS"];
+            $fields = (isset($row["FIELDS"])) ? $row["FIELDS"] : "";
             $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
 
             $pk = $this->primary_key;
