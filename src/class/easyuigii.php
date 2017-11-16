@@ -829,8 +829,7 @@ class easyuigii {
             $col = $value["COL"];
             $type = $value["CONSTRAINT_TYPE"];
             if ($value["SKIP"] == "0") {
-                $hide = ($value["HIDE"] == "1") ? true : false;
-                $code .= $this->get_js_inline_crud_col($value, $hide);
+                $code .= $this->get_js_inline_crud_col($value);
             }
         }
         $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
@@ -978,7 +977,7 @@ class easyuigii {
      *
      * @param type $col string name column
      */
-    private function get_js_inline_crud_col($row, $hide) {
+    private function get_js_inline_crud_col($row) {
         try {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
@@ -995,7 +994,7 @@ class easyuigii {
             $text_field = $row["TEXT_FIELD"];   // text for combobox
             $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
             $n_dg = $this->html_prefix;
-            $hiden = ($hide) ? "hidden:true," : "";
+            $hiden = ($row["HIDE"] == "1") ? "hidden:true," : "";
             $list = $row["LIST"];
             $cat = isset($row["LIST_CAT"]) ? $row["LIST_CAT"] : "";
             $cat = ($cat == "1") ? "groupField: 'cat'," : "";
@@ -1022,16 +1021,16 @@ class easyuigii {
 
             if ($row["CK"] == "1") {
                 $editor = ($edit == "1") ? "editor: {type: 'checkbox', options: {on: '1', off: '0'}}," : "";
-                return "{field: '$col', title: '$colt', $editor formatter: mycheck, $required $sortable}," . PHP_EOL;
+                return "{field: '$col', title: '$colt', $editor formatter: mycheck, $required $sortable $hiden}," . PHP_EOL;
             }
 
 
             if ($type == "textbox") {
                 $editor = ($edit == "1") ? "editor: {type: 'textbox', options: { $required }}," : "";
-                return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
+                return "{field: '$col', title: '$colt', $width  $editor $sortable $hiden}," . PHP_EOL;
             }
             if ($type == "textarea") {
-                $editor = ($edit == "1") ? "editor: {type: 'textarea', options: { $required }}," : "";
+                $editor = ($edit == "1") ? "editor: {type: 'textarea', options: { $required } $hiden}," : "";
                 return "{field: '$col', title: '$colt', $width  $editor $sortable}," . PHP_EOL;
             }
 
@@ -1039,7 +1038,7 @@ class easyuigii {
             if ($type == "numberbox") {
                 $with = "width: '50px',";
                 $editor = ($edit == "1") ? "editor: {type: 'numberbox', options: { $required }}," : "";
-                return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+                return "{field: '$col', title: '$colt', $width $editor $sortable $hiden}," . PHP_EOL;
             }
 
             if ($type == "datebox") {
@@ -1047,7 +1046,7 @@ class easyuigii {
                 ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
                 $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
                 $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
-                return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+                return "{field: '$col', title: '$colt', $width $editor $sortable $hiden}," . PHP_EOL;
             }
             if ($type == "combogrid") {
                 if ($type_pk_fk == "FOREIGN_KEY") {
@@ -1060,7 +1059,7 @@ class easyuigii {
                     $editor = str_replace(", ", "," . PHP_EOL, $editor);
                     $editor = str_replace("#columns", $columns, $editor);
                     $editor = ($edit == "1") ? $editor : "";
-                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable $hiden}," . PHP_EOL;
                 }
             }
 
@@ -1075,7 +1074,7 @@ class easyuigii {
                     $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, $on_select}},";
                     $editor = str_replace(",", "," . PHP_EOL, $editor);
                     $editor = ($edit == "1") ? $editor : "";
-                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable $hiden}," . PHP_EOL;
                 }
                 if ($type_pk_fk == "LIST") {
                     $on_select = "onSelect: function (record) {
@@ -1095,12 +1094,12 @@ class easyuigii {
                     $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', data:$list, $cat $icon $required panelWidth: 250, limitToList: true, $on_select}},";
                     $editor = str_replace(", ", "," . PHP_EOL, $editor);
                     $editor = ($edit == "1") ? $editor : "";
-                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable}," . PHP_EOL;
+                    return "{field: '$col', title: '$colt', $width $formatter $editor $sortable $hiden}," . PHP_EOL;
                 }
             }
 
             $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
-            return "{field: '$col', title: '$colt', $width $editor $sortable}," . PHP_EOL;
+            return "{field: '$col', title: '$colt', $width $editor $sortable $hiden}," . PHP_EOL;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
