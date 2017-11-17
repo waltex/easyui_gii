@@ -37,6 +37,8 @@ class easyuigii {
     public $filter_base = 0; // 1 enable simple filter on column
     public $ck_custom_sql = 0; //enable insert custom sql for select
     public $custom_sql = ""; // text  form custom sql for select
+    public $ck_global_var = 0; //enable global var
+    public $global_var = ""; // global var
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
