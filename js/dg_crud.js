@@ -575,6 +575,12 @@ function init_app() {
         return target.split(search).join(replacement);
     };
 
+    $("#sb_filter_base").switchbutton({
+        checked: true,
+        onText: T('si'), offText: T('no'),
+    });
+    $("#sb_filter_base_label").html(T("Filtro semplice per colonna"));
+
     $('#bt_save_cfg').linkbutton({
         text: T('salva configurazione'),
         onClick: function () {
@@ -729,6 +735,7 @@ function init_app() {
         var pagination_size = $('#cc_pagination_size').combobox('getValue');
         var width_form = $('#tb_width_form').textbox('getValue');
         var height_form = $('#tb_height_form').textbox('getValue');
+        var filter_base = ($("#sb_filter_base").switchbutton('options').checked) ? 1 : 0;
 
         var cfg = {
             type_cfg: 'crud',
@@ -744,6 +751,7 @@ function init_app() {
             model: model,
             width_form: width_form,
             height_form: height_form,
+            filter_base: filter_base,
         };
         return cfg;
     }
@@ -786,6 +794,12 @@ function init_app() {
         $('#cc_pagination_size').combobox('setValue', cfg.pagination_size);
         $('#tb_width_form').textbox('setValue', cfg.width_form);
         $('#tb_height_form').textbox('setValue', cfg.height_form);
+        if (cfg.filter_base == 1) {
+            $("#sb_filter_base").switchbutton('check');
+        } else {
+            $("#sb_filter_base").switchbutton('uncheck');
+        }
+
     }
     function set_name_cfg(cfg_name, project_name) {
         $('#p_base').panel({

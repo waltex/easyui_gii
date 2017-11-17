@@ -188,7 +188,7 @@ function crud_generate() {
         $gii->dg_inline = $app->request->params('dg_inline');
         $gii->width_form = $app->request->params('width_form');
         $gii->height_form = $app->request->params('height_form');
-
+        $gii->filter_base = $app->request->params('filter_base');
 
 
         $gii->build_app_crud();

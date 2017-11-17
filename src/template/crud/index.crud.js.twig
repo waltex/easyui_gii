@@ -16,7 +16,9 @@ $(document).ready(function () {
     function load_dg{{n}}() {
         //$('#tt').tabs('select', 'Tab{{n}}');
         $('#dg{{n}}').datagrid('uncheckAll');
+        {% if (filter_base==1) %} 
         $('#dg{{n}}').datagrid('disableFilter');
+        {% endif %} 
         $('#dg{{n}}').edatagrid({
             border: false,
             toolbar: '#tb{{n}}',
@@ -73,8 +75,10 @@ $(document).ready(function () {
                 #}
                 {{col_crud|raw}}
                 });
+        {% if (filter_base==1) %}        
         $('#dg{{n}}').datagrid('enableFilter');
         $('#dg1').datagrid('removeFilterRule');
+        {% endif %}
     }
 
     load_dg{{n}}();

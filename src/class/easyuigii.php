@@ -34,6 +34,7 @@ class easyuigii {
     public $dg_inline = 1; // 1 edit in line , 0 edit on form
     public $width_form = ""; // width for crud modal form
     public $height_form = ""; // height for crud modal form
+    public $filter_base = 0; // 1 enable simple filter on column
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -690,7 +691,8 @@ class easyuigii {
             , 'on_after_edit' => $on_after_edit
             , 'pagination' => $pagination
             , 'dg_inline' => $this->dg_inline
-            , 'fn_dg_edit_form' => $fn_dg_edit_form,
+            , 'fn_dg_edit_form' => $fn_dg_edit_form
+            , 'filter_base' => $this->filter_base
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
