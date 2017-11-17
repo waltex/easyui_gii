@@ -708,6 +708,8 @@ class easyuigii {
             , 'oci_cn' => $this->oci_cn
             , 'oci_user' => $this->oci_user
             , 'oci_password' => $this->oci_password
+            , 'ck_global_var' => $this->ck_global_var
+            , 'global_var' => $this->global_var
         ));
         $file = $dir . "/api/api_setup.php";
         file_put_contents($file, $api_setup); //write generated html

@@ -5,6 +5,9 @@ $debug_log_mb = 1; //max megabyte logs, -1 no limite
 $api_log_mb = 1; //max megabyte logs, -1 no limite
 $error_log_mb = 1; //max megabyte logs, -1 no limite
 
+{% if (ck_global_var==1) %}
+    {{global_var|raw}}
+{% endif %}
 {#
 $db4_user = '******';
 $db4_psw  = '******';
