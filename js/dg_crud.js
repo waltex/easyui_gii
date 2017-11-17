@@ -581,6 +581,25 @@ function init_app() {
     });
     $("#sb_filter_base_label").html(T("Filtro semplice per colonna"));
 
+    $("#sb_custom_sql_label").html(T("personalizza SQL per la SELECT"));
+    $("#sb_custom_sql").switchbutton({
+        checked: false,
+        onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            if (checked) {
+                $('#div_custom_sql').show();
+            } else {
+                $('#div_custom_sql').hide();
+            }
+        }
+    });
+    $('#tb_custom_sql').textbox({
+        multiline: true,
+        //buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+        //buttonAlign: 'left',
+    });
+
+
     $('#bt_save_cfg').linkbutton({
         text: T('salva configurazione'),
         onClick: function () {
