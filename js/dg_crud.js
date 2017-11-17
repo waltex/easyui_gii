@@ -588,15 +588,39 @@ function init_app() {
         onChange: function (checked) {
             if (checked) {
                 $('#div_custom_sql').show();
+                $('#tb_custom_sql').textbox({
+                    multiline: true,
+                    buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+                    buttonAlign: 'left',
+                    onClickButton: function () {
+
+                    },
+                });
             } else {
                 $('#div_custom_sql').hide();
             }
         }
     });
-    $('#tb_custom_sql').textbox({
-        multiline: true,
-        //buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
-        //buttonAlign: 'left',
+
+    $("#sb_global_var_label").html(T("imposta variabili gobali per API PHP"));
+    $("#sb_global_var").switchbutton({
+        checked: false,
+        onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            if (checked) {
+                $('#div_global_var').show();
+                $('#tb_global_var').textbox({
+                    multiline: true,
+                    buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+                    buttonAlign: 'left',
+                    onClickButton: function () {
+
+                    },
+                });
+            } else {
+                $('#div_global_var').hide();
+            }
+        }
     });
 
 
@@ -755,6 +779,10 @@ function init_app() {
         var width_form = $('#tb_width_form').textbox('getValue');
         var height_form = $('#tb_height_form').textbox('getValue');
         var filter_base = ($("#sb_filter_base").switchbutton('options').checked) ? 1 : 0;
+        var ck_custom_sql = ($("#sb_custom_sql").switchbutton('options').checked) ? 1 : 0;
+        var custom_sql = $('#tb_custom_sql').textbox('getValue');
+        var ck_global_var = ($("#sb_global_var").switchbutton('options').checked) ? 1 : 0;
+        var global_var = $('#tb_global_var').textbox('getValue');
 
         var cfg = {
             type_cfg: 'crud',
@@ -771,6 +799,10 @@ function init_app() {
             width_form: width_form,
             height_form: height_form,
             filter_base: filter_base,
+            ck_custom_sql: ck_custom_sql,
+            custom_sql: custom_sql,
+            ck_global_var: ck_global_var,
+            global_var: global_var,
         };
         return cfg;
     }
@@ -813,11 +845,13 @@ function init_app() {
         $('#cc_pagination_size').combobox('setValue', cfg.pagination_size);
         $('#tb_width_form').textbox('setValue', cfg.width_form);
         $('#tb_height_form').textbox('setValue', cfg.height_form);
-        if (cfg.filter_base == 1) {
-            $("#sb_filter_base").switchbutton('check');
-        } else {
-            $("#sb_filter_base").switchbutton('uncheck');
-        }
+        (cfg.filter_base == 1) ? $("#sb_filter_base").switchbutton('check') : $("#sb_filter_base").switchbutton('uncheck');
+
+        (cfg.ck_custom_sql == 1) ? $("#sb_custom_sql").switchbutton('check') : $("#sb_custom_sql").switchbutton('uncheck');
+        $('#tb_custom_sql').textbox('setValue', cfg.custom_sql);
+
+        (cfg.ck_global_var == 1) ? $("#sb_global_var").switchbutton('check') : $("#sb_global_var").switchbutton('uncheck');
+        $('#tb_global_var').textbox('setValue', cfg.global_var);
 
     }
     function set_name_cfg(cfg_name, project_name) {

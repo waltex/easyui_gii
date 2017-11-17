@@ -35,6 +35,8 @@ class easyuigii {
     public $width_form = ""; // width for crud modal form
     public $height_form = ""; // height for crud modal form
     public $filter_base = 0; // 1 enable simple filter on column
+    public $ck_custom_sql = 0; //enable insert custom sql for select
+    public $custom_sql = ""; // text  form custom sql for select
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -1146,29 +1148,32 @@ class easyuigii {
 
             $app = Slim\Slim::getInstance();
 
-            //$table = $this->table_name;
+            if ($this->ck_custom_sql == 1) {
+                return $this->custom_sql;
+            } else {
 
-            $str_col_w_a = "";
-            $str_col = "";
-            $ncol = 0;
-            //$model = $this->table_model;
-            foreach ($model as $value) {
-                $col_name = $value["COL"];
-                $col_name_w_a = "A." . $col_name;
-                $col_type = $value["TYPE"];
-                //skip cols
-                if ($value["SKIP"] == "0") {
-                    $ncol += 1;
-                    if ($col_type == "datebox") {
-                        $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
+                $str_col_w_a = "";
+                $str_col = "";
+                $ncol = 0;
+                //$model = $this->table_model;
+                foreach ($model as $value) {
+                    $col_name = $value["COL"];
+                    $col_name_w_a = "A." . $col_name;
+                    $col_type = $value["TYPE"];
+                    //skip cols
+                    if ($value["SKIP"] == "0") {
+                        $ncol += 1;
+                        if ($col_type == "datebox") {
+                            $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
+                        }
+                        $strComma = ($ncol > 1) ? ", " : "";
+                        $str_col_w_a .= $strComma . $col_name_w_a; //list col with alias
+                        $str_col .= $strComma . $col_name; //list col without alias
                     }
-                    $strComma = ($ncol > 1) ? ", " : "";
-                    $str_col_w_a .= $strComma . $col_name_w_a; //list col with alias
-                    $str_col .= $strComma . $col_name; //list col without alias
                 }
+                $strSql = "SELECT $str_col_w_a FROM $table A";
+                return $strSql;
             }
-            $strSql = "SELECT $str_col_w_a FROM $table A";
-            return $strSql;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
