@@ -593,7 +593,7 @@ function init_app() {
                     buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
                     buttonAlign: 'left',
                     onClickButton: function () {
-                        var dlg_msg = $.messager.alert({
+                        var dlg_msg = $.messager.prompt({
                             id: 'dlg_sql',
                             title: T('stringa sql'),
                             msg: T('impostare la stringa sql'),
@@ -607,6 +607,7 @@ function init_app() {
                                 $('#tb_custom_sql').textbox('setValue', sql);
                             }
                         });
+                        dlg_msg.find('.messager-input').remove();
                         var input_cel = '<div style="margin-top:5px"><input id="tb_sql"></div>';
                         dlg_msg.find('div').end().append(input_cel);
 
@@ -616,7 +617,7 @@ function init_app() {
                             prompt: T('inserisci qui'),
                             labelPosition: 'top',
                             width: '98%',
-                            height: '290px',
+                            height: '250px',
                             multiline: true,
                             required: true,
                         });
