@@ -593,7 +593,33 @@ function init_app() {
                     buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
                     buttonAlign: 'left',
                     onClickButton: function () {
+                        var dlg_msg = $.messager.alert({
+                            id: 'dlg_sql',
+                            title: T('stringa sql'),
+                            msg: T('impostare la stringa sql'),
+                            incon: 'info',
+                            width: '60%',
+                            height: '80%',
+                            maximizable: true,
+                            resizable: true,
+                            fn: function () {
+                                var sql = $('#tb_sql').textbox('getValue');
+                                $('#tb_custom_sql').textbox('setValue', sql);
+                            }
+                        });
+                        var input_cel = '<div style="margin-top:5px"><input id="tb_sql"></div>';
+                        dlg_msg.find('div').end().append(input_cel);
 
+                        $('#tb_sql').textbox({
+                            label: T('sql'),
+                            value: $('#tb_custom_sql').textbox('getValue'),
+                            prompt: T('inserisci qui'),
+                            labelPosition: 'top',
+                            width: '98%',
+                            height: '290px',
+                            multiline: true,
+                            required: true,
+                        });
                     },
                 });
             } else {
