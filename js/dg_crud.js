@@ -599,7 +599,7 @@ function init_app() {
                             msg: T('impostare la stringa sql'),
                             incon: 'info',
                             width: '60%',
-                            height: '80%',
+                            height: '520px',
                             maximizable: true,
                             resizable: true,
                             fn: function () {
@@ -617,7 +617,7 @@ function init_app() {
                             prompt: T('inserisci qui'),
                             labelPosition: 'top',
                             width: '98%',
-                            height: '250px',
+                            height: '350px',
                             multiline: true,
                             required: true,
                         });
