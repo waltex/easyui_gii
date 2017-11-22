@@ -42,6 +42,7 @@ $app->post('/list/all/cfg/:folder', 'list_cfg'); //list name all configuration s
 $app->post('/crud/open/cfg/json', 'open_cfg_from_json'); //save configuration to json
 $app->post('/set/width/field/form', 'set_width_form'); //set default width form
 $app->post('/list/project', 'list_project'); //set default width form
+$app->post('/get/sql/crud', 'get_sql_crud'); //get sql for crud
 
 
 
@@ -522,5 +523,23 @@ function list_project() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - list project  ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+/** get sql for crud
+ */
+function get_sql_crud() {
+    try {
+        $app = Slim\Slim::getInstance();
+        $table = $app->request->params('table_name');
+        $model = $app->request->params('model');
+
+        $gii = new easyuigii();
+        $data = $gii->get_sql_for_select($table, $model);
+
+        $app->render(200, ['success' => true, 'sql' => $data]);
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - get sql for crud  ' . PHP_EOL, 3, 'logs/error.log');
     }
 }

@@ -39,6 +39,7 @@ class easyuigii {
     public $custom_sql = ""; // text  form custom sql for select
     public $ck_global_var = 0; //enable global var
     public $global_var = ""; // global var
+    private $alias_col_sql = ""; // es A  -> A.COLNAME
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -1146,7 +1147,7 @@ class easyuigii {
      * @return type
      * @throws Exception
      */
-    private function get_sql_for_select($table, $model) {
+    public function get_sql_for_select($table, $model) {
         try {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
@@ -1162,7 +1163,9 @@ class easyuigii {
                 //$model = $this->table_model;
                 foreach ($model as $value) {
                     $col_name = $value["COL"];
-                    $col_name_w_a = "A." . $col_name;
+                    $alias = $this->alias_col_sql; // "A";
+                    $alias_str = ($alias != "") ? "$alias." : "";
+                    $col_name_w_a = $alias_str . $col_name;
                     $col_type = $value["TYPE"];
                     //skip cols
                     if ($value["SKIP"] == "0") {
@@ -1175,7 +1178,7 @@ class easyuigii {
                         $str_col .= $strComma . $col_name; //list col without alias
                     }
                 }
-                $strSql = "SELECT $str_col_w_a FROM $table A";
+                $strSql = "SELECT $str_col_w_a FROM $table $alias";
                 return $strSql;
             }
         } catch (Exception $e) {

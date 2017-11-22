@@ -608,7 +608,7 @@ function init_app() {
                             }
                         });
                         dlg_msg.find('.messager-input').remove();
-                        var input_cel = '<div style="margin-top:5px"><input id="tb_sql"></div>';
+                        var input_cel = '<div style="margin-top:5px"><a id="bt_imp_sql"></a></div><div style="margin-top:5px"><input id="tb_sql"></div>';
                         dlg_msg.find('div').end().append(input_cel);
 
                         $('#tb_sql').textbox({
@@ -620,6 +620,28 @@ function init_app() {
                             height: '350px',
                             multiline: true,
                             required: true,
+                        });
+                        $('#bt_imp_sql').linkbutton({
+                            iconCls: 'fa fa-database fa-lg',
+                            text: T('genera stringa sql'),
+                            //plain: true,
+                            onClick: function () {
+                                $.messager.progress({title: T('recupero sql'), msg: T('lettura dati, in corso...')});
+                                var param = read_cfg_from_input();
+                                $.post('api/get/sql/crud', param)
+                                        .done(function (data) {
+                                            $.messager.progress('close');
+                                            if (data.success) {
+                                                $('#tb_sql').textbox('setValue', data.sql);
+                                            } else {
+                                                $.messager.alert(T('errore'), data.msg, 'error');
+                                            }
+                                        })
+                                        .fail(function () {
+                                            $.messager.progress('close');
+                                            $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                                        });
+                            }
                         });
                     },
                 });
