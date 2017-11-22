@@ -14,7 +14,7 @@ function init_app() {
     $('#layout_main').layout('panel', 'center').panel({title: 'Easyui Gii ' + ver + ' - code generator     ' + menu})
 
 
-     $('#bt_menu').menubutton({
+    $('#bt_menu').menubutton({
         iconCls: 'fa fa-bars fa-lg',
         menu: '#mm_app',
         height: '15px',
@@ -30,8 +30,10 @@ function init_app() {
         addTab('snippets', 'snippets.html', {iconCls: 'fa fa-file-code-o fa-lg fa-blue'});
     });
     var app = getURLParameter('app');
-    if (app.toUpperCase() == 'CRUD') {
-        addTab('crud', 'dg_crud.html' + location.search, {iconCls: 'fa fa-table fa-lg fa-brown'});
+    if (app != null) {
+        if (app.toUpperCase() == 'CRUD') {
+            addTab('crud', 'dg_crud.html' + location.search, {iconCls: 'fa fa-table fa-lg fa-brown'});
+        }
     }
 }
 function addTab(title, url, opt) {

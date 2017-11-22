@@ -1395,7 +1395,7 @@ function init_app() {
     //auto open project from link
     var project = getURLParameter('project');
     var cfg = getURLParameter('cfg');
-    if (project != '' && cfg != '') {
+    if (project != null && cfg != null) {
         open_cfg(project, cfg);
     }
 }
