@@ -663,7 +663,34 @@ function init_app() {
                     buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
                     buttonAlign: 'left',
                     onClickButton: function () {
+                        var dlg_msg = $.messager.prompt({
+                            id: 'dlg_sql',
+                            title: T('variabili globali'),
+                            msg: T('impostare le variabili globali'),
+                            incon: 'info',
+                            width: '60%',
+                            height: '520px',
+                            maximizable: true,
+                            resizable: true,
+                            fn: function () {
+                                var global_var = $('#tb_global_var_lg').textbox('getValue');
+                                $('#tb_global_var').textbox('setValue', global_var);
+                            }
+                        });
+                        dlg_msg.find('.messager-input').remove();
+                        var input_cel = '<div style="margin-top:5px"><input id="tb_global_var_lg"></div>';
+                        dlg_msg.find('div').end().append(input_cel);
 
+                        $('#tb_global_var_lg').textbox({
+                            //label: T(''),
+                            value: $('#tb_global_var').textbox('getValue'),
+                            prompt: T('inserisci qui'),
+                            labelPosition: 'top',
+                            width: '98%',
+                            height: '350px',
+                            multiline: true,
+                            required: true,
+                        });
                     },
                 });
             } else {
