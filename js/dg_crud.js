@@ -718,6 +718,32 @@ function init_app() {
             });
         }
     });
+
+    function open_cfg(project_name, cfg_name) {
+        $.messager.progress({title: T('configurazione'), msg: T('lettura configurazione, attendere...')});
+        $.post('api/crud/open/cfg/json', {cfg_name: cfg_name, project_name: project_name})
+                .done(function (data) {
+                    $.messager.progress('close');
+                    if (data.success) {
+                        g_cfg_name = cfg_name;
+                        g_project_name = project_name;
+                        set_name_cfg(g_cfg_name, g_project_name);
+                        read_cfg_from_json(data.cfg);
+                        $.messager.show({
+                            title: T('configurazione'),
+                            msg: data.msg,
+                            showType: 'slide'
+                        });
+                    } else {
+                        $.messager.alert(T('errore'), data.msg, 'error');
+                    }
+                })
+                .fail(function () {
+                    $.messager.progress('close');
+                    $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                });
+    }
+
     $('#bt_open_cfg').linkbutton({
         text: T('apri configurazione'),
         onClick: function () {
@@ -725,30 +751,10 @@ function init_app() {
                 if (r === undefined) {
                     //console.log('press cancel');
                 } else {
-                    $.messager.progress({title: T('configurazione'), msg: T('lettura configurazione, attendere...')});
                     var cfg_name = $('#cfg_name').combobox('getValue');
                     var project_name = $('#project_name').combobox('getValue');
-                    $.post('api/crud/open/cfg/json', {cfg_name: cfg_name, project_name: project_name})
-                            .done(function (data) {
-                                $.messager.progress('close');
-                                if (data.success) {
-                                    g_cfg_name = cfg_name;
-                                    g_project_name = project_name;
-                                    set_name_cfg(g_cfg_name, g_project_name);
-                                    read_cfg_from_json(data.cfg);
-                                    $.messager.show({
-                                        title: T('configurazione'),
-                                        msg: data.msg,
-                                        showType: 'slide'
-                                    });
-                                } else {
-                                    $.messager.alert(T('errore'), data.msg, 'error');
-                                }
-                            })
-                            .fail(function () {
-                                $.messager.progress('close');
-                                $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
-                            });
+                    open_cfg(project_name, cfg_name);
+
                 }
 
             });
@@ -1335,5 +1341,12 @@ function init_app() {
             labelPosition: 'left',
             width: 240,
         }).attr('id', 'fk_type');
+    }
+
+    //auto open project from link
+    var project = getURLParameter('project');
+    var cfg = getURLParameter('cfg');
+    if (project != '' && cfg != '') {
+        open_cfg(project, cfg);
     }
 }

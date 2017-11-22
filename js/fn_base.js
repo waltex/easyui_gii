@@ -94,3 +94,6 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 function BR(value) {
     return value.replace(" ", "<br>");
 }
+function getURLParameter(name) {
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+}

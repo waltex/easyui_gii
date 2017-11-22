@@ -29,6 +29,10 @@ function init_app() {
     $('#dg_snippets').on('click', function () {
         addTab('snippets', 'snippets.html', {iconCls: 'fa fa-file-code-o fa-lg fa-blue'});
     });
+    var app = getURLParameter('app');
+    if (app.toUpperCase() == 'CRUD') {
+        addTab('crud', 'dg_crud.html' + location.search, {iconCls: 'fa fa-table fa-lg fa-brown'});
+    }
 }
 function addTab(title, url, opt) {
     var title_open;
