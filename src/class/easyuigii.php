@@ -1379,13 +1379,13 @@ class easyuigii {
     private function get_api_fn_crud($api_fn_name) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-         if ($this->ck_custom_sql == 1) {
+        if ($this->ck_custom_sql == 1) {
             $sql_select = $this->custom_sql;
         } else {
             $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
         }
         $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
-        
+
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template
         $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
