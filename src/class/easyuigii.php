@@ -1153,34 +1153,29 @@ class easyuigii {
 
             $app = Slim\Slim::getInstance();
 
-            if ($this->ck_custom_sql == 1) {
-                return $this->custom_sql;
-            } else {
-
-                $str_col_w_a = "";
-                $str_col = "";
-                $ncol = 0;
-                //$model = $this->table_model;
-                foreach ($model as $value) {
-                    $col_name = $value["COL"];
-                    $alias = $this->alias_col_sql; // "A";
-                    $alias_str = ($alias != "") ? "$alias." : "";
-                    $col_name_w_a = $alias_str . $col_name;
-                    $col_type = $value["TYPE"];
-                    //skip cols
-                    if ($value["SKIP"] == "0") {
-                        $ncol += 1;
-                        if ($col_type == "datebox") {
-                            $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
-                        }
-                        $strComma = ($ncol > 1) ? ", " : "";
-                        $str_col_w_a .= $strComma . $col_name_w_a; //list col with alias
-                        $str_col .= $strComma . $col_name; //list col without alias
+            $str_col_w_a = "";
+            $str_col = "";
+            $ncol = 0;
+            //$model = $this->table_model;
+            foreach ($model as $value) {
+                $col_name = $value["COL"];
+                $alias = $this->alias_col_sql; // "A";
+                $alias_str = ($alias != "") ? "$alias." : "";
+                $col_name_w_a = $alias_str . $col_name;
+                $col_type = $value["TYPE"];
+                //skip cols
+                if ($value["SKIP"] == "0") {
+                    $ncol += 1;
+                    if ($col_type == "datebox") {
+                        $col_name_w_a = $this->format_date_to_char($col_name_w_a, $col_name);
                     }
+                    $strComma = ($ncol > 1) ? ", " : "";
+                    $str_col_w_a .= $strComma . $col_name_w_a; //list col with alias
+                    $str_col .= $strComma . $col_name; //list col without alias
                 }
-                $strSql = "SELECT $str_col_w_a FROM $table $alias";
-                return $strSql;
             }
+            $strSql = "SELECT $str_col_w_a FROM $table $alias";
+            return $strSql;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
@@ -1384,8 +1379,13 @@ class easyuigii {
     private function get_api_fn_crud($api_fn_name) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-
+         if ($this->ck_custom_sql == 1) {
+            $sql_select = $this->custom_sql;
+        } else {
+            $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
+        }
         $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
+        
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template
         $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
