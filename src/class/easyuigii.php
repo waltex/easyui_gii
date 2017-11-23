@@ -1482,7 +1482,11 @@ class easyuigii {
                         }
                         if ($value["TYPE"] == "combogrid") {
                             $model_combo = json_decode($value["FIELDS"], true);
-                            $sql_select = $this->get_sql_for_select($table, $model_combo);
+                            if ($value["CK_SQL_COMBO"] != "1") {
+                                $sql_select = $this->get_sql_for_select($table, $model_combo);
+                            } else {
+                                $sql_select = $value["SQL_COMBO"];
+                            }
                         }
 
                         //build template html
