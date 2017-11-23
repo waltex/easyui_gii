@@ -1474,8 +1474,11 @@ class easyuigii {
                         $api_fn_name = "combo_$table";
                         if ($value["TYPE"] == "combobox") {
                             $model_combo = $this->get_table_model_from_db($table);
-                            $sql_select = $this->get_sql_for_select($table, $model_combo);
-                            //$sql_select = "SELECT A.$value_field, A.$text_field FROM $table A";
+                            if ($value["CK_SQL_COMBO"] != "1") {
+                                $sql_select = $this->get_sql_for_select($table, $model_combo);
+                            } else {
+                                $sql_select = $value["SQL_COMBO"];
+                            }
                         }
                         if ($value["TYPE"] == "combogrid") {
                             $model_combo = json_decode($value["FIELDS"], true);
