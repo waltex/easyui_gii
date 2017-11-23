@@ -945,7 +945,7 @@ class easyuigii {
 
         //escludo the column primary key for edit
         if ($type == "numberbox") {
-            $editor = "$id_object" . "numberbox({" . PHP_EOL . " $width $label $required });" . PHP_EOL;
+            $editor = "$id_object" . "numberbox({" . PHP_EOL . " $width $label $required $editable});" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
