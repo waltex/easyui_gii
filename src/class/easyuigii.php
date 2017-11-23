@@ -1384,7 +1384,6 @@ class easyuigii {
         } else {
             $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
         }
-        $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
 
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
         $sql_insert = $this->get_sql_for_insert(); //for template

@@ -43,6 +43,7 @@ $app->post('/crud/open/cfg/json', 'open_cfg_from_json'); //save configuration to
 $app->post('/set/width/field/form', 'set_width_form'); //set default width form
 $app->post('/list/project', 'list_project'); //set default width form
 $app->post('/get/sql/crud', 'get_sql_crud'); //get sql for crud
+$app->post('/get/sql/combo', 'get_sql_combo'); //get sql for combo
 
 
 
@@ -541,5 +542,24 @@ function get_sql_crud() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - get sql for crud  ' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+/** get sql for combo
+ */
+function get_sql_combo() {
+    try {
+        $app = Slim\Slim::getInstance();
+        $table = $app->request->params('table_name');
+
+        $gii = new easyuigii();
+        $gii->set_db_setting();
+        $model_combo = $gii->get_table_model_from_db($table);
+        $data = $gii->get_sql_for_select($table, $model_combo);
+
+        $app->render(200, ['success' => true, 'sql' => $data]);
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - get sql for combo' . PHP_EOL, 3, 'logs/error.log');
     }
 }
