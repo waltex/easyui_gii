@@ -990,7 +990,7 @@ function init_app() {
                     //$('#dg_model').edatagrid('saveRow');
                 }
             });
-            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'NAME_TABLE_EXT'});
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'N_ROW_TEXTAREA'});
             var current_val = $(ed.target).textbox('getValue');
             dlg_msg.find('.messager-input').numberspinner({
                 precision: 0,
