@@ -1063,8 +1063,10 @@ function init_app() {
                 <div style="margin-top:5px"><input id="cc_id"></div>\n\
                 <div style="margin-top:5px"><input id="cc_text"></div>\n\
                 <div style="margin-top:5px"><input id="sb_custom_sql_combo"><label style="margin-left:5px">' + txt_label + '</label></div>\n\
-                <div style="margin-top:5px"><a id="bt_imp_sql_combo" style="display:none"></a></div>\n\
-                <div id="div_sql_combo" style="margin-top:5px;width:97%;display:none"><input id="tb_sql_combo"></div>\n\
+                <div id="div_sql_combo" display:none;width:100%>\n\
+                    <div style="margin-top:5px"><a id="bt_imp_sql_combo"></a></div>\n\
+                    <div style="margin-top:5px;width:97%"><input id="tb_sql_combo"></div>\n\
+                </div>\n\
                 \n\
                 ';
             dlg_msg.find('div').end().append(input_cel);
@@ -1116,13 +1118,25 @@ function init_app() {
                 checked: (current_val_ck_sql_combo == 1) ? true : false,
                 onChange: function (checked) {
                     if (checked) {
-                        $('#bt_imp_sql_combo').show();
                         $('#div_sql_combo').show();
                     } else {
-                        $('#bt_imp_sql_combo').hide();
                         $('#div_sql_combo').hide();
                     }
+                    $('#tb_sql_combo').textbox({width: '97%', });
                 }
+            });
+            (current_val_ck_sql_combo == 1) ? $('#div_sql_combo').show() : $('#div_sql_combo').hide();
+
+
+            $('#tb_sql_combo').textbox({
+                //label: T('sql'),
+                value: current_val_sql_combo,
+                prompt: T('inserisci qui'),
+                labelPosition: 'top',
+                width: '97%',
+                height: '210px',
+                multiline: true,
+                required: true,
             });
 
             $('#bt_imp_sql_combo').linkbutton({
@@ -1147,23 +1161,21 @@ function init_app() {
                             });
                 }
             });
-            $('#tb_sql_combo').textbox({
-                //label: T('sql'),
-                value: current_val_sql_combo,
-                prompt: T('inserisci qui'),
-                labelPosition: 'top',
-                width: '97%',
-                height: '210px',
-                multiline: true,
-                required: true,
-            });
+
         }
 
         if ((type_fk == "FOREIGN_KEY") && (type == "combogrid")) {
-            var dlg_msg = $.messager.prompt(T('tabella collegata - combogrid'), T('Impostare la tabella esterna da collegare, e i campi da associare e da visualizzare'), function (r) {
-                if (r === undefined) {
-                    //console.log('press cancel');
-                } else {
+
+            var dlg_msg = $.messager.prompt({
+                id: 'dlg_combo-sql',
+                title: T('tabella collegata - combogrid'),
+                msg: T('Impostare la tabella esterna da collegare, e i campi da associare e da visualizzare'),
+                incon: 'info',
+                width: '60%',
+                height: '520px',
+                maximizable: true,
+                resizable: true,
+                fn: function () {
                     var new_val = $('#cc_table').combobox('getValue');
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'NAME_TABLE_EXT'});
                     $(ed.target).textbox('setValue', new_val);
@@ -1182,8 +1194,7 @@ function init_app() {
 
                 }
             });
-            dlg_msg.window({width: '60%', height: '450px', resizable: true});
-            dlg_msg.window('center');
+
 
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'NAME_TABLE_EXT'});
             var current_val = $(ed.target).textbox('getValue');
@@ -1193,9 +1204,23 @@ function init_app() {
             var current_val_text = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FIELDS'});
             var current_val_fields_ar = $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_SQL_COMBO'});
+            var current_val_ck_sql_combo = $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'SQL_COMBO'});
+            var current_val_sql_combo = $(ed.target).textbox('getValue');
 
+            var txt_label = T('imposta un sql personalizzato');
+            var input_cel = '<div style="margin-top:5px"><input id="cc_id"></div>\n\
+                            <div style="margin-top:5px"><input id="cc_text"></div>\n\
+                            <div style="margin-top:5px"><table id="dg_fields"></table></div>\n\
+                            <div style="margin-top:5px"><input id="sb_custom_sql_combo"><label style="margin-left:5px">' + txt_label + '</label></div>\n\
+                            <div id="div_sql_combo" display:none;width:100%>\n\
+                                <div style="margin-top:5px"><a id="bt_imp_sql_combo"></a></div>\n\
+                                <div style="margin-top:5px;width:97%"><input id="tb_sql_combo"></div>\n\
+                            </div>\n\
+                            \n\
+                            ';
 
-            var input_cel = '<div style="margin-top:5px"></div><input id="cc_id"><div style="margin-top:5px"></div><input id="cc_text"><div style="margin-top:5px"></div><table id="dg_fields"></table>';
             dlg_msg.find('div').end().append(input_cel);
 
 
@@ -1300,6 +1325,58 @@ function init_app() {
                 $('#dg_fields').datagrid('loadData', current_val_fields);
 
             }
+
+
+            $("#sb_custom_sql_combo").switchbutton({
+                checked: false,
+                onText: T('si'), offText: T('no'),
+                checked: (current_val_ck_sql_combo == 1) ? true : false,
+                onChange: function (checked) {
+                    if (checked) {
+                        $('#div_sql_combo').show();
+                    } else {
+                        $('#div_sql_combo').hide();
+                    }
+                    $('#tb_sql_combo').textbox({width: '97%', });
+                }
+            });
+            (current_val_ck_sql_combo == 1) ? $('#div_sql_combo').show() : $('#div_sql_combo').hide();
+
+
+            $('#tb_sql_combo').textbox({
+                //label: T('sql'),
+                value: current_val_sql_combo,
+                prompt: T('inserisci qui'),
+                labelPosition: 'top',
+                width: '97%',
+                height: '210px',
+                multiline: true,
+                required: true,
+            });
+
+            $('#bt_imp_sql_combo').linkbutton({
+                iconCls: 'fa fa-database fa-lg',
+                text: T('genera stringa sql'),
+                //plain: true,
+                onClick: function () {
+                    $.messager.progress({title: T('recupero sql'), msg: T('lettura dati, in corso...')});
+                    var table_name = $('#cc_table').textbox('getValue');
+                    $.post('api/get/sql/combo', {table_name: table_name})
+                            .done(function (data) {
+                                $.messager.progress('close');
+                                if (data.success) {
+                                    $('#tb_sql_combo').textbox('setValue', data.sql);
+                                } else {
+                                    $.messager.alert(T('errore'), data.msg, 'error');
+                                }
+                            })
+                            .fail(function () {
+                                $.messager.progress('close');
+                                $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                            });
+                }
+            });
+
         }
 
         if (type_fk == "LIST") {
