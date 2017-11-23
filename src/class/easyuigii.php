@@ -879,7 +879,7 @@ class easyuigii {
         $width_field = $row["WIDTH_FORM"];
         $width_label = $row["WIDTH_LABEL"];
         $type_pk_fk = $row["CONSTRAINT_TYPE"];
-        $edit = ($this->dg_inline == 1) ? $row["EDIT"] : 0;
+        $editable = ($row["EDIT"] == 0) ? "editable:false," : "";
         $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
         $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
         $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
@@ -933,12 +933,12 @@ class easyuigii {
 
 
         if ($type == "textbox") {
-            $editor = "$id_object" . "textbox({" . PHP_EOL . " $width $label $required });" . PHP_EOL;
+            $editor = "$id_object" . "textbox({" . PHP_EOL . " $width $label $required $editable});" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
         if ($type == "textarea") {
-            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true,height:$height_area, $width $label $required })," . PHP_EOL;
+            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true,height:$height_area, $width $label $required $editable });" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }

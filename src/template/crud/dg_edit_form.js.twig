@@ -58,10 +58,15 @@ function dg{{n}}_edit_form(type) {
             }
             return isValid;	// return false will stop the form submission
         },
-        success: function () {
-            $.messager.progress('close');	// hide progress bar while submit successfully
-            $(dlg_msg).panel('close');
-            load_dg{{n}}();
+        success: function (data) {
+            $.messager.progress('close');
+            var data = JSON.parse(data);
+            if (data.isError) {
+                $.messager.alert("{{T('errore')}}", data.msg, 'error');
+            } else {
+                $(dlg_msg).panel('close');
+                load_dg{{n}}();
+            }
         }
     });
 }
