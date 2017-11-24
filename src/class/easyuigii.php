@@ -815,7 +815,11 @@ class easyuigii {
             $col = $value["COL"];
             $type = $value["CONSTRAINT_TYPE"];
             if ($value["SKIP"] == "0") {
-                $hide = ($value["HIDE"] == "1") ? "display:none;" : "";
+                $hide_form = false;
+                if (isset($value["HIDE_FORM"])) {
+                    $hide_form = ($value["HIDE_FORM"] == 1) ? true : false;
+                }
+                $hide = ($hide_form) ? "display:none;" : "";
                 $id_colname = "dg$n" . "_" . $value["COL"];
                 $colname = $value["COL"];
                 $code .= "<div style=\"margin-top:5px;$hide\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
@@ -857,8 +861,7 @@ class easyuigii {
             $col = $value["COL"];
             $type = $value["CONSTRAINT_TYPE"];
             if ($value["SKIP"] == "0") {
-                $hide = ($value["HIDE"] == "1") ? true : false;
-                $code .= $this->get_option_for_field_edit_form($value, $hide);
+                $code .= $this->get_option_for_field_edit_form($value);
             }
         }
         return $code;
@@ -870,7 +873,7 @@ class easyuigii {
      * @param type $hide
      * @return type
      */
-    private function get_option_for_field_edit_form($row, $hide) {
+    private function get_option_for_field_edit_form($row) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $col = $row["COL"];
@@ -887,7 +890,6 @@ class easyuigii {
         $text_field = $row["TEXT_FIELD"];   // text for combobox
         $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
         $n_dg = $this->html_prefix;
-        $hiden = ($hide) ? "hidden:true," : "";
         $n_row = $row["N_ROW_TEXTAREA"];
         ($n_row == "") ? $n_row = 2 : false;
         $height_area = round(15 * $n_row) + 10;

@@ -248,6 +248,7 @@ function init_app() {
                     {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
                     {field: "WIDTH_FORM", title: T('Larghezza') + '<br>' + T('Campo Form'), editor: "text"},
                     {field: "WIDTH_LABEL", title: T('Larghezza') + '<br>' + T('Campo Etichetta'), editor: "text"},
+                    {field: "HIDE_FORM", title: T('Campo Form') + '<br>' + T('Nascosto'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "SKIP", title: BR(T('Escludi Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "HIDE", title: BR(T('Campo Nascosto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "CK", title: BR(T('Campo Si,No')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
@@ -516,14 +517,16 @@ function init_app() {
             if (checked) {
                 $('#div_dg_inline').hide();
                 if ($('#dg_model').datagrid('getRows').length > 0) {
-                    $('#dg_model').datagrid('hideColumn', 'WIDTH_FORM')
-                    $('#dg_model').datagrid('hideColumn', 'WIDTH_LABEL')
+                    $('#dg_model').datagrid('hideColumn', 'WIDTH_FORM');
+                    $('#dg_model').datagrid('hideColumn', 'WIDTH_LABEL');
+                    $('#dg_model').datagrid('hideColumn', 'HIDE_FORM');
                 }
             } else {
                 $('#div_dg_inline').show();
                 if ($('#dg_model').datagrid('getRows').length > 0) {
-                    $('#dg_model').datagrid('showColumn', 'WIDTH_FORM')
-                    $('#dg_model').datagrid('showColumn', 'WIDTH_LABEL')
+                    $('#dg_model').datagrid('showColumn', 'WIDTH_FORM');
+                    $('#dg_model').datagrid('showColumn', 'WIDTH_LABEL');
+                    $('#dg_model').datagrid('showColumn', 'HIDE_FORM');
                 }
             }
         }
