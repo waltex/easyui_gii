@@ -1525,7 +1525,7 @@ class easyuigii {
         $model = $this->table_model;
         foreach ($model as $value) {
             $col_name = $value["COL"];
-            if ($value["SKIP"] == 0) {
+            if (($value["SKIP"] == "0") && ($value["EDIT"] == "1")) {
                 $ncol += 1;
                 $str_comma = ($ncol > 1) ? ", " : "";
                 $str_col .= $str_comma . $col_name; //list col without alias
@@ -1547,7 +1547,7 @@ class easyuigii {
         foreach ($model as $value) {
 
             $col_name = $value["COL"];
-            if ($value["SKIP"] == "0") {
+            if (($value["SKIP"] == "0") && ($value["EDIT"] == "1")) {
                 ($col_name == $this->primary_key) ? $type_param = "OCI_B_ROWID" : $type_param = "-1";
                 ($isUpdate) ? $type_param = "-1" : false;
                 $str_bind .= "oci_bind_by_name(\$db, \":$col_name\", \$$col_name, $type_param);" . PHP_EOL;
@@ -1578,7 +1578,7 @@ class easyuigii {
      *
      * @return string paramsql es ':PARAM1' => $PARAM1,
      */
-    private function get_param_sql_for_log_insert_update($add_idd) {
+    private function get_param_sql_for_log_insert_update($add_id) {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
 
@@ -1588,11 +1588,11 @@ class easyuigii {
         foreach ($model as $value) {
             $col_name = $value["COL"];
             if ($this->primary_key != $col_name) {
-                if ($value["SKIP"] == "0") {
+                if (($value["SKIP"] == "0") && ($value["EDIT"] == "1")) {
                     $str_par .= "':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
                 }
             } else { //add primary key
-                if ($add_idd) {
+                if ($add_id) {
                     if ($value["SKIP"] == "0") {
                         $str_par .= "':" . $col_name . "' => $" . $col_name . "," . PHP_EOL;
                     }
@@ -1615,7 +1615,7 @@ class easyuigii {
             $col_name = $value["COL"];
             $col_type = $value["TYPE"];
             if ($this->primary_key != $col_name) {
-                if ($value["SKIP"] == "0") {
+                if (($value["SKIP"] == "0") && ($value["EDIT"] == "1")) {
                     $ncol += 1;
                     $str_comma = ($ncol > 1) ? ", " : "";
 
@@ -1650,7 +1650,7 @@ class easyuigii {
             $col_name = $value["COL"];
             $col_type = $value["TYPE"];
             if ($this->primary_key != $col_name) {
-                if ($value["SKIP"] == "0") {
+                if (($value["SKIP"] == "0") && ($value["EDIT"] == "1")) {
                     $ncol += 1;
                     $str_comma = ($ncol > 1) ? ", " : "";
                     $col_name = ":" . $col_name;
@@ -1701,11 +1701,13 @@ class easyuigii {
             $model = $this->table_model;
             foreach ($model as $value) {
                 $col = $value["COL"];
-                if ($value["SKIP"] == "0") {
-                    if ($col != $this->primary_key) {
+                if ($col != $this->primary_key) {
+                    if ($value["SKIP"] == "0") {
                         $code .= "\$$col= \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
-                    } else {
-                        if ($add_id) { //primary key
+                    }
+                } else {
+                    if ($add_id) { //primary key
+                        if ($value["SKIP"] == "0") {
                             $code .= "\$$col = \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
                         }
                     }
