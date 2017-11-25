@@ -668,8 +668,8 @@ function init_app() {
                             maximizable: true,
                             resizable: true,
                             fn: function () {
-                                //var color = $('#tb_row_styler').textbox('getValue');
-                                //$('#tb_row_styler2').textbox('setValue', color);
+                                var code = $('#tb_row_styler2').textbox('getValue');
+                                $('#tb_row_styler').textbox('setValue', code);
                             }
                         });
                         dlg_msg.find('.messager-input').remove();
@@ -680,15 +680,23 @@ function init_app() {
                                                 <input id="tb_condition_color">\n\
                                                 <input id="tb_condition_color_val">\n\
                                             </div>\n\
-                                            <div style="margin-top:5px"><input id="tb_color"></div>\n\
+                                            <div style="margin-top:5px">\n\
+                                                <input id="tb_color_bg">\n\
+                                                <input id="tb_color">\n\
+                                            </div>\n\
                                         </div>\n\
                                         <div style="margin-top:5px"><a id="bt_row_styler_add"></a></div>\n\
                                         <div style="margin-top:5px"><input id="tb_row_styler2"></div>\n\
                                         ';
                         dlg_msg.find('div').end().append(input_cel);
 
+                        $('#tb_color_bg').color({
+                            label: T('colore sfondo'),
+                            width: '220px',
+                            required: true,
+                        });
                         $('#tb_color').color({
-                            label: T('colore riga'),
+                            label: T('colore testo'),
                             width: '220px',
                             required: true,
                         });
@@ -714,6 +722,9 @@ function init_app() {
                         });
 
                         $('#cc_col_color').combobox({
+                            url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
+                            textField: 'COL',
+                            valueField: 'COL',
                             label: T('colonna'),
                             width: '220px',
                             required: true,
@@ -735,6 +746,21 @@ function init_app() {
                             text: T('aggiungi'),
                             //plain: true,
                             onClick: function () {
+                                var col = $('#cc_col_color').combobox('getValue');
+                                var condition = $('#tb_condition_color').combobox('getValue');
+                                var condition_val = $('#tb_condition_color_val').textbox('getValue');
+                                var color_bg = $('#tb_color_bg').combobox('getValue');
+                                var color = $('#tb_color').combobox('getValue');
+
+                                var code_old = $('#tb_row_styler2').textbox('getValue');
+                                var code = '\n\
+if (row.' + col + condition + condition_val + '){\n\
+return \'background-color:\'' + color_bg + '\'; color:\'' + color + '\';\n\
+}\n\
+                                            '
+                                        ;
+                                code = code_old + code;
+                                $('#tb_row_styler2').textbox('setValue', code);
                             }
                         });
 
@@ -961,6 +987,9 @@ function init_app() {
         var custom_sql = $('#tb_custom_sql').textbox('getValue');
         var ck_global_var = ($("#sb_global_var").switchbutton('options').checked) ? 1 : 0;
         var global_var = $('#tb_global_var').textbox('getValue');
+        var ck_row_styler = ($("#sb_row_styler").switchbutton('options').checked) ? 1 : 0;
+        var row_styler = $('#tb_row_styler').textbox('getValue');
+
 
         var cfg = {
             type_cfg: 'crud',
@@ -981,6 +1010,8 @@ function init_app() {
             custom_sql: custom_sql,
             ck_global_var: ck_global_var,
             global_var: global_var,
+            ck_row_styler: ck_row_styler,
+            row_styler: row_styler,
         };
         return cfg;
     }
@@ -1030,6 +1061,10 @@ function init_app() {
 
         (cfg.ck_global_var == 1) ? $("#sb_global_var").switchbutton('check') : $("#sb_global_var").switchbutton('uncheck');
         $('#tb_global_var').textbox('setValue', cfg.global_var);
+
+        (cfg.ck_row_styler == 1) ? $("#sb_row_styler").switchbutton('check') : $("#sb_row_styler").switchbutton('uncheck');
+        $('#tb_row_styler').textbox('setValue', cfg.row_styler);
+
 
     }
     function set_name_cfg(cfg_name, project_name) {
