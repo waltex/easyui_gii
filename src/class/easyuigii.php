@@ -40,6 +40,8 @@ class easyuigii {
     public $ck_global_var = 0; //enable global var
     public $global_var = ""; // global var
     private $alias_col_sql = ""; // es A  -> A.COLNAME
+    public $ck_row_styler = 0; //chewck for enable  code for rowstyler
+    public $row_styler = ""; // code for rowstyler
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -698,6 +700,8 @@ class easyuigii {
             , 'dg_inline' => $this->dg_inline
             , 'fn_dg_edit_form' => $fn_dg_edit_form
             , 'filter_base' => $this->filter_base
+            , 'ck_row_styler' => $this->ck_row_styler
+            , 'row_styler' => $this->row_styler
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html

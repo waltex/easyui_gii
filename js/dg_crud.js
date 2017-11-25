@@ -706,7 +706,7 @@ function init_app() {
                             textField: 'text',
                             valueField: 'value',
                             data: [
-                                {text: T('uguale'), value: '='},
+                                {text: T('uguale'), value: '=='},
                                 {text: T('maggiore'), value: '>'},
                                 {text: T('maggiore uguale'), value: '>='},
                                 {text: T('minore'), value: '<'},
@@ -755,7 +755,7 @@ function init_app() {
                                 var code_old = $('#tb_row_styler2').textbox('getValue');
                                 var code = '\n\
 if (row.' + col + condition + condition_val + '){\n\
-return \'background-color:\'' + color_bg + '\'; color:\'' + color + '\';\n\
+return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 }\n\
                                             '
                                         ;

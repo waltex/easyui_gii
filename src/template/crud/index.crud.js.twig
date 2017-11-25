@@ -65,6 +65,11 @@ $(document).ready(function () {
                 dg{{n}}_edit_form('update');
             },
             {% endif %}
+            {% if (ck_row_styler==1) %}
+            rowStyler: function(index,row){
+                {{row_styler|raw}}
+            },
+            {% endif %}
                 {#
                 columns: [[
                     {field: 'SEQ', title: 'Ord', width: '25px', editor: {type: 'numberbox', options: {required: true}}, sortable: true},

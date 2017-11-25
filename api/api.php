@@ -195,6 +195,8 @@ function crud_generate() {
         $gii->custom_sql = $app->request->params('custom_sql');
         $gii->ck_global_var = $app->request->params('ck_global_var');
         $gii->global_var = $app->request->params('global_var');
+        $gii->ck_row_styler = $app->request->params('ck_row_styler');
+        $gii->row_styler = $app->request->params('row_styler');
 
         $gii->build_app_crud();
 
