@@ -675,12 +675,12 @@ function init_app() {
                         dlg_msg.find('.messager-input').remove();
                         var input_cel = '\n\
                                         <div style="margin-top:5px">\n\
-                                            <input id="tb_color">\n\
+                                            <input id="cc_col_color">\n\
                                             <div style="margin-top:5px">\n\
                                                 <input id="tb_condition_color">\n\
                                                 <input id="tb_condition_color_val">\n\
                                             </div>\n\
-                                            <div style="margin-top:5px"><input id="cc_col_color"></div>\n\
+                                            <div style="margin-top:5px"><input id="tb_color"></div>\n\
                                         </div>\n\
                                         <div style="margin-top:5px"><a id="bt_row_styler_add"></a></div>\n\
                                         <div style="margin-top:5px"><input id="tb_row_styler2"></div>\n\
@@ -689,17 +689,27 @@ function init_app() {
 
                         $('#tb_color').color({
                             label: T('colore riga'),
-                            width: '180px',
+                            width: '220px',
                             required: true,
                         });
                         $('#tb_condition_color').combobox({
                             label: T('condizione'),
-                            width: '180px',
+                            width: '220px',
+                            textField: 'text',
+                            valueField: 'value',
+                            data: [
+                                {text: T('uguale'), value: '='},
+                                {text: T('maggiore'), value: '>'},
+                                {text: T('maggiore uguale'), value: '>='},
+                                {text: T('minore'), value: '<'},
+                                {text: T('minore uguale'), value: '<='},
+                                {text: T('diverso'), value: '!='},
+                            ],
                             required: true,
                         });
                         $('#tb_condition_color_val').textbox({
                             label: T('valore'),
-                            width: '180px',
+                            width: '220px',
                             required: true,
                         });
 
@@ -715,7 +725,7 @@ function init_app() {
                             prompt: T('inserisci qui'),
                             labelPosition: 'top',
                             width: '98%',
-                            height: '300px',
+                            height: '250px',
                             multiline: true,
                             required: true,
                         });
