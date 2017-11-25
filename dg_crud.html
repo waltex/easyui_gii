@@ -5,6 +5,7 @@
         <title>Datagrid</title>
         <script src="js/asset.js" type="text/javascript"></script>
         <script src="lib/easyui_extension/datagrid-dnd/datagrid-dnd.js" type="text/javascript"></script>
+        <script src="lib/easyui_extension/color/jquery.color.js" type="text/javascript"></script>
         <script src="js/translate.js" type="text/javascript"></script>
         <script src="js/fn_base.js" type="text/javascript"></script>
         <script src="js/dg_crud.js" type="text/javascript"></script>
@@ -73,7 +74,7 @@
                         <input id="sb_global_var" class="easyui-switchbutton">
                         <label id="sb_global_var_label" for="sb_global_var"></label>
                         <div id="div_global_var" style="display:none;width:100%;margin-top: 10px">
-                            <input id="tb_global_var" class="easyui-textbox" data-options="multiline:true,buttonText:'fa fa-pencil-square-o fa-lg',buttonAlign:'left'" type="text" style="width:100%;height:40px">
+                            <input id="tb_global_var" class="easyui-textbox" data-options="multiline:true,buttonText:'fa fa-pencil-square-o fa-lg',buttonAlign:'left'" type="text" style="width:100%;height:55px">
                         </div>
                     </div>
                 </div>
@@ -82,7 +83,18 @@
                         <input id="sb_custom_sql" class="easyui-switchbutton">
                         <label id="sb_custom_sql_label" for="sb_custom_sql"></label>
                         <div id="div_custom_sql" style="display:none;width:100%;margin-top: 10px">
-                            <input id="tb_custom_sql" class="easyui-textbox" data-options="multiline:true,buttonText:'fa fa-pencil-square-o fa-lg',buttonAlign:'left'" type="text" style="width:100%;height:40px">
+                            <input id="tb_custom_sql" class="easyui-textbox" data-options="multiline:true,buttonText:'fa fa-pencil-square-o fa-lg',buttonAlign:'left'" type="text" style="width:100%;height:55px">
+
+                        </div>
+                    </div>
+                </div>
+                <input id="cc_color" class="easyui-color" style="width:100px">
+                <div style="margin-top: 10px">
+                    <div>
+                        <input id="sb_row_styler" class="easyui-switchbutton">
+                        <label id="sb_row_styler_label" for="sbrow_styler"></label>
+                        <div id="div_row_styler" style="display:none;width:100%;margin-top: 10px">
+                            <input id="tb_row_styler" class="easyui-textbox" data-options="multiline:true,buttonText:'fa fa-pencil-square-o fa-lg',buttonAlign:'left'" type="text" style="width:100%;height:55px">
 
                         </div>
                     </div>

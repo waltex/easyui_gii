@@ -9,7 +9,7 @@ document.write('\
 \<script src="lib/easyui_extension/datagrid-view/datagrid-groupview.js" type="text/javascript"></script>\
 \<script src="lib/easyui_extension/datagrid-view/datagrid-detailview.js" type="text/javascript"></script>\
 \<script src="lib/easyui_extension/datagrid-cellediting/datagrid-cellediting.js" type="text/javascript"></script>\
-\<script src="lib/easyui_extension/edatagrid/jquery.edatagrid.js" type="text/javascript"></script>\
+\<script src="lib/easyui_extension/edatagrid/jquery.edatagrid.js" type="text/javascript"></script>\\n\
 \
 \<link rel="stylesheet" href="css/stile.css" type="text/css">\
 \

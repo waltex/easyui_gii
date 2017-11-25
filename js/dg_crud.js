@@ -646,6 +646,97 @@ function init_app() {
         }
     });
 
+    $("#sb_row_styler_label").html(T("colora riga con condizioni"));
+    $("#sb_row_styler").switchbutton({
+        checked: false,
+        onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            if (checked) {
+                $('#div_row_styler').show();
+                $('#tb_row_styler').textbox({
+                    multiline: true,
+                    buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+                    buttonAlign: 'left',
+                    onClickButton: function () {
+                        var dlg_msg = $.messager.prompt({
+                            id: 'dlg_row_styler',
+                            title: T('stile riga'),
+                            msg: T('impostare la condizione'),
+                            incon: 'info',
+                            width: '60%',
+                            height: '520px',
+                            maximizable: true,
+                            resizable: true,
+                            fn: function () {
+                                //var color = $('#tb_row_styler').textbox('getValue');
+                                //$('#tb_row_styler2').textbox('setValue', color);
+                            }
+                        });
+                        dlg_msg.find('.messager-input').remove();
+                        var input_cel = '\n\
+                                        <div style="margin-top:5px">\n\
+                                            <input id="tb_color">\n\
+                                            <div style="margin-top:5px">\n\
+                                                <input id="tb_condition_color">\n\
+                                                <input id="tb_condition_color_val">\n\
+                                            </div>\n\
+                                            <div style="margin-top:5px"><input id="cc_col_color"></div>\n\
+                                        </div>\n\
+                                        <div style="margin-top:5px"><a id="bt_row_styler_add"></a></div>\n\
+                                        <div style="margin-top:5px"><input id="tb_row_styler2"></div>\n\
+                                        ';
+                        dlg_msg.find('div').end().append(input_cel);
+
+                        $('#tb_color').color({
+                            label: T('colore riga'),
+                            width: '180px',
+                            required: true,
+                        });
+                        $('#tb_condition_color').combobox({
+                            label: T('condizione'),
+                            width: '180px',
+                            required: true,
+                        });
+                        $('#tb_condition_color_val').textbox({
+                            label: T('valore'),
+                            width: '180px',
+                            required: true,
+                        });
+
+                        $('#cc_col_color').combobox({
+                            label: T('colonna'),
+                            width: '220px',
+                            required: true,
+                        });
+
+                        $('#tb_row_styler2').textbox({
+                            label: T('codice') + ' javascript: rowStyler: function(index,row){ ..... }',
+                            value: $('#tb_row_styler').textbox('getValue'),
+                            prompt: T('inserisci qui'),
+                            labelPosition: 'top',
+                            width: '98%',
+                            height: '300px',
+                            multiline: true,
+                            required: true,
+                        });
+
+                        $('#bt_row_styler_add').linkbutton({
+                            iconCls: 'fa fa-plus-circle fa-lg',
+                            text: T('aggiungi'),
+                            //plain: true,
+                            onClick: function () {
+                            }
+                        });
+
+
+                    },
+                });
+            } else {
+                $('#div_row_styler').hide();
+            }
+        }
+    });
+
     $("#sb_global_var_label").html(T("imposta variabili gobali per API PHP"));
     $("#sb_global_var").switchbutton({
         checked: false,
