@@ -1337,6 +1337,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
                     $(ed.target).textbox('setValue', new_val_id);
 
+                    var ck_limit2list = $("#sb_limit2list").switchbutton('options').checked
+                    ck_limit2list = (ck_limit2list) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
+                    $(ed.target).textbox('setValue', ck_limit2list);
+
                     var new_val_fields_ar = $('#dg_fields').datagrid('getRows');
                     var new_val_fields = "";
                     if (new_val_fields_ar.length > 0) {
@@ -1355,6 +1360,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var current_val_id = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
             var current_val_text = $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
+            var current_limit2list = ($(ed.target).textbox('getValue') == "") ? 1 : $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FIELDS'});
             var current_val_fields_ar = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_SQL_COMBO'});
@@ -1363,8 +1370,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var current_val_sql_combo = $(ed.target).textbox('getValue');
 
             var txt_label = T('imposta un sql personalizzato');
+            var txt_label2 = T('limita inserimento dei valori su "combo" a solo quelli presenti');
+
             var input_cel = '<div style="margin-top:5px"><input id="cc_id"></div>\n\
                             <div style="margin-top:5px"><input id="cc_text"></div>\n\
+                            <div style="margin-top:5px"><input id="sb_limit2list"><label style="margin-left:5px">' + txt_label2 + '</label></div>\n\
                             <div style="margin-top:5px"><table id="dg_fields"></table></div>\n\
                             <div style="margin-top:5px"><input id="sb_custom_sql_combo"><label style="margin-left:5px">' + txt_label + '</label></div>\n\
                             <div id="div_sql_combo" display:none;width:100%>\n\
@@ -1400,6 +1410,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 required: true,
                 panelWidth: 250,
                 editable: false,
+            });
+            $("#sb_limit2list").switchbutton({
+                checked: true,
+                onText: T('si'), offText: T('no'),
+                checked: (current_limit2list == 1) ? true : false,
             });
             dlg_msg.find('.messager-input').combobox({
                 url: 'api/list/table/db',
@@ -1555,13 +1570,17 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     $(ed.target).textbox('setValue', 'value');
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
                     $(ed.target).textbox('setValue', 'text');
+                    var ck_limit2list = $("#sb_limit2list").switchbutton('options').checked
+                    ck_limit2list = (ck_limit2list) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
+                    $(ed.target).textbox('setValue', ck_limit2list);
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST_ICON'});
                     $(ed.target).textbox('setValue', icon);
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIST_CAT'});
                     $(ed.target).textbox('setValue', cat);
                 }
             });
-            dlg_msg.window({width: '60%', height: '450px', resizable: true});
+            dlg_msg.window({width: '60%', height: '480px', resizable: true});
             dlg_msg.window('center');
 
 
@@ -1571,9 +1590,22 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 var current_list_dg = JSON.parse(current_list);
             }
 
-            var input_cel = '<div style="margin-top:5px"></div><table id="dg_list"><table/>';
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
+            var current_limit2list = ($(ed.target).textbox('getValue') == "") ? 1 : $(ed.target).textbox('getValue');
+
+            var txt_label2 = T('limita inserimento dei valori su "combo" a solo quelli presenti');
+            var input_cel = '<div style="margin-top:5px"><input id="sb_limit2list"><label style="margin-left:5px">' + txt_label2 + '</label></div>\n\
+                            <div style="margin-top:5px"></div>\n\
+                            <table id="dg_list"><table/>';
+
             dlg_msg.find('div').end().append(input_cel);
             dlg_msg.find('.messager-input').hide();
+
+            $("#sb_limit2list").switchbutton({
+                checked: true,
+                onText: T('si'), offText: T('no'),
+                checked: (current_limit2list == 1) ? true : false,
+            });
 
             var dg_list_tb = ['-', {
                     text: T('Aggiungi'),

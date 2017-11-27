@@ -894,6 +894,7 @@ class easyuigii {
         $text_field = $row["TEXT_FIELD"];   // text for combobox
         $ck_limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
         $limit2list = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "limitToList: true," : "";
+        $limit2list_combogrid = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "editable: false," : "";
         $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
         $n_dg = $this->html_prefix;
         $n_row = $row["N_ROW_TEXTAREA"];
@@ -980,7 +981,7 @@ class easyuigii {
         }
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list #columns});" . PHP_EOL;
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list_combogrid #columns});" . PHP_EOL;
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
@@ -1011,6 +1012,7 @@ class easyuigii {
             $text_field = $row["TEXT_FIELD"];   // text for combobox
             $ck_limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
             $limit2list = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "limitToList: true," : "";
+            $limit2list_combogrid = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "editable: false," : "";
             $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
             $n_dg = $this->html_prefix;
             $hiden = ($row["HIDE"] == "1") ? "hidden:true," : "";
@@ -1074,7 +1076,7 @@ class easyuigii {
                                 row_dg['$col" . "__TEXT'] = row.$text_field
                             },";
                     $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
-                    $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$pk', method: 'get', url: '$url_combobox', $required panelWidth: 250, $limit2list $on_select #columns}},";
+                    $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$pk', method: 'get', url: '$url_combobox', $required panelWidth: 250, $limit2list_combogrid $on_select #columns}},";
                     $editor = str_replace(", ", "," . PHP_EOL, $editor);
                     $editor = str_replace("#columns", $columns, $editor);
                     $editor = ($edit == "1") ? $editor : "";
