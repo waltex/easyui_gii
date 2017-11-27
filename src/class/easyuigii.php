@@ -892,8 +892,8 @@ class easyuigii {
         $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
         $value_field = $row["VALUE_FIELD"]; // value for combobox
         $text_field = $row["TEXT_FIELD"];   // text for combobox
-        $limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
-        $limit2list = (($limit2list == "1") || ($limit2list == "")) ? "limitToList: true," : "";
+        $ck_limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
+        $limit2list = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "limitToList: true," : "";
         $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
         $n_dg = $this->html_prefix;
         $n_row = $row["N_ROW_TEXTAREA"];
@@ -934,7 +934,7 @@ class easyuigii {
             $yes = $this->T("si");
             $no = $this->T("no");
             $data = "[{text: '$yes',value:1},{text:'$no',value:0}]";
-            $editor = "$id_object" . "combobox({" . PHP_EOL . "valueField: 'value', textField: 'text', value: 0, $width $label $required panelHeight:50, data:$data,});" . PHP_EOL;
+            $editor = "$id_object" . "combobox({" . PHP_EOL . "valueField: 'value', textField: 'text', value: 0, $width $label $required panelHeight:50, data:$data, editable:false});" . PHP_EOL;
             $editor = str_replace(", ", "," . PHP_EOL, $editor); //only space return dot
             return $editor;
         }
@@ -1009,8 +1009,8 @@ class easyuigii {
             $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
             $value_field = $row["VALUE_FIELD"]; // value for combobox
             $text_field = $row["TEXT_FIELD"];   // text for combobox
-            $limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
-            $limit2list = (($limit2list == "1") || ($limit2list == "")) ? "limitToList: true," : "";
+            $ck_limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
+            $limit2list = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "limitToList: true," : "";
             $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
             $n_dg = $this->html_prefix;
             $hiden = ($row["HIDE"] == "1") ? "hidden:true," : "";
