@@ -753,7 +753,7 @@ class easyuigii {
                     $value_field = $value["VALUE_FIELD"];
                     $text_field = $value["TEXT_FIELD"];
                     $col_combo = $value["COL"];
-                    $code_combo .= "\$combo$i = combo_$table();" . PHP_EOL;
+                    $code_combo .= "\$combo$i = combo_$table" . "__" . $col_combo . "();" . PHP_EOL;
                     $code_combo .= "\$data = add_col_combo(\$combo$i, \$data, \"$col_combo\", \"$value_field\", \"$text_field\");" . PHP_EOL;
                 }
             }
@@ -892,7 +892,7 @@ class easyuigii {
         $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
         $value_field = $row["VALUE_FIELD"]; // value for combobox
         $text_field = $row["TEXT_FIELD"];   // text for combobox
-        $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
+        $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
         $n_dg = $this->html_prefix;
         $n_row = $row["N_ROW_TEXTAREA"];
         ($n_row == "") ? $n_row = 2 : false;
@@ -1007,7 +1007,7 @@ class easyuigii {
             $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
             $value_field = $row["VALUE_FIELD"]; // value for combobox
             $text_field = $row["TEXT_FIELD"];   // text for combobox
-            $url_combobox = "api/data/combo_$table_ext.json"; //url api combobox
+            $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
             $n_dg = $this->html_prefix;
             $hiden = ($row["HIDE"] == "1") ? "hidden:true," : "";
             $list = $row["LIST"];
@@ -1476,8 +1476,8 @@ class easyuigii {
                         $table = $value["NAME_TABLE_EXT"];
                         $value_field = $value["VALUE_FIELD"];
                         $text_field = $value["TEXT_FIELD"];
-
-                        $api_fn_name = "combo_$table";
+                        $col = $value["COL"];
+                        $api_fn_name = "combo_$table" . "__" . $col;
                         if ($value["TYPE"] == "combobox") {
                             $model_combo = $this->get_table_model_from_db($table);
                             if (isset($value["CK_SQL_COMBO"]) && ($value["CK_SQL_COMBO"] == "1")) {
@@ -1504,6 +1504,7 @@ class easyuigii {
                             'api_fn_name' => $api_fn_name
                             , 'sql_select' => $sql_select
                             , 'table' => $table
+                            , 'col' => $col
                             , 'drv_cn_var' => $this->oci_cn_var
                             , 'drv_user_var' => $this->oci_user_var
                             , 'drv_password_var' => $this->oci_password_var

@@ -1190,6 +1190,10 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var current_val_id = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
             var current_val_text = $(ed.target).textbox('getValue');
+
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIMIT2LIST'});
+            var current_limit2list = $(ed.target).textbox('getValue');
+
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_SQL_COMBO'});
             var current_val_ck_sql_combo = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'SQL_COMBO'});
@@ -1201,6 +1205,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var input_cel = '\
                 <div style="margin-top:5px"><input id="cc_id"></div>\n\
                 <div style="margin-top:5px"><input id="cc_text"></div>\n\
+                <div style="margin-top:5px"><input id="tb_limit2list"></div>\n\
                 <div style="margin-top:5px"><input id="sb_custom_sql_combo"><label style="margin-left:5px">' + txt_label + '</label></div>\n\
                 <div id="div_sql_combo" display:none;width:100%>\n\
                     <div style="margin-top:5px"><a id="bt_imp_sql_combo"></a></div>\n\
@@ -1232,6 +1237,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 required: true,
                 panelWidth: 250,
                 editable: false,
+            });
+            $("#tb_limit2list").switchbutton({
+                checked: true,
+                onText: T('si'), offText: T('no'),
+                checked: (current_limit2list == 1) ? true : false,
             });
             dlg_msg.find('.messager-input').combobox({
                 url: 'api/list/table/db',

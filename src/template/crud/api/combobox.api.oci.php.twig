@@ -3,7 +3,7 @@
 /**
  * combo for crud
  */
- function {{api_fn_name}} () {
+ function {{api_fn_name}}() {
  try {
         $app = Slim\Slim::getInstance();
         include 'api_setup.php';
@@ -26,7 +26,7 @@
             oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
 
             $json = json_encode($data);
-            file_put_contents("data/combo_{{table|raw}}.json", $json);
+            file_put_contents("data/combo_{{table|raw}}__{{col|raw}}.json", $json);
 
             $app->response()->body(json_encode($data));
 
