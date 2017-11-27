@@ -970,6 +970,7 @@ class easyuigii {
         if ($type == "combobox") {
             if ($type_pk_fk == "FOREIGN_KEY") {
                 $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list });" . PHP_EOL;
+
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 return $editor;
             }
@@ -981,7 +982,8 @@ class easyuigii {
         }
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list_combogrid #columns});" . PHP_EOL;
+                $filter = PHP_EOL . "$id_object combogrid('grid').datagrid('enableFilter');";
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list_combogrid #columns});$filter" . PHP_EOL;
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
