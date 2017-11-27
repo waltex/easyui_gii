@@ -892,6 +892,8 @@ class easyuigii {
         $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
         $value_field = $row["VALUE_FIELD"]; // value for combobox
         $text_field = $row["TEXT_FIELD"];   // text for combobox
+        $limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
+        $limit2list = (($limit2list == "1") || ($limit2list == "")) ? "limitToList: true," : "";
         $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
         $n_dg = $this->html_prefix;
         $n_row = $row["N_ROW_TEXTAREA"];
@@ -966,19 +968,19 @@ class easyuigii {
         }
         if ($type == "combobox") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, });" . PHP_EOL;
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list });" . PHP_EOL;
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 return $editor;
             }
             if ($type_pk_fk == "LIST") {
-                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', $icon $cat data:$list, $required panelWidth: 250, limitToList: true, });" . PHP_EOL;
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', $icon $cat data:$list, $required panelWidth: 250, $limit2list });" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 return $editor;
             }
         }
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, #columns});" . PHP_EOL;
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list #columns});" . PHP_EOL;
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
@@ -1007,6 +1009,8 @@ class easyuigii {
             $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
             $value_field = $row["VALUE_FIELD"]; // value for combobox
             $text_field = $row["TEXT_FIELD"];   // text for combobox
+            $limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
+            $limit2list = (($limit2list == "1") || ($limit2list == "")) ? "limitToList: true," : "";
             $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
             $n_dg = $this->html_prefix;
             $hiden = ($row["HIDE"] == "1") ? "hidden:true," : "";
@@ -1070,7 +1074,7 @@ class easyuigii {
                                 row_dg['$col" . "__TEXT'] = row.$text_field
                             },";
                     $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
-                    $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$pk', method: 'get', url: '$url_combobox', $required panelWidth: 250, limitToList: true, $on_select #columns}},";
+                    $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$pk', method: 'get', url: '$url_combobox', $required panelWidth: 250, $limit2list $on_select #columns}},";
                     $editor = str_replace(", ", "," . PHP_EOL, $editor);
                     $editor = str_replace("#columns", $columns, $editor);
                     $editor = ($edit == "1") ? $editor : "";
@@ -1086,7 +1090,7 @@ class easyuigii {
                                 row['$col" . "__TEXT'] = record.$text_field
                             },";
                     $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
-                    $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, limitToList: true, $on_select}},";
+                    $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field',textField: '$text_field',method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list $on_select}},";
                     $editor = str_replace(",", "," . PHP_EOL, $editor);
                     $editor = ($edit == "1") ? $editor : "";
                     return "{field: '$col', title: '$colt', $width $formatter $editor $sortable $hiden}," . PHP_EOL;
@@ -1106,7 +1110,7 @@ class easyuigii {
                                     }
                                     return value;
                                 },";
-                    $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', data:$list, $cat $icon $required panelWidth: 250, limitToList: true, $on_select}},";
+                    $editor = "editor: {type: 'combobox', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', data:$list, $cat $icon $required panelWidth: 250, $limit2list $on_select}},";
                     $editor = str_replace(", ", "," . PHP_EOL, $editor);
                     $editor = ($edit == "1") ? $editor : "";
                     return "{field: '$col', title: '$colt', $width $formatter $editor $sortable $hiden}," . PHP_EOL;

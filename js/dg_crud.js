@@ -258,6 +258,7 @@ function init_app() {
                     {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "CK_LIMIT2LIST", title: T('Limita Lista') + '<br> ' + 'combobox', editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "FIELDS", title: 'combogrid' + '<br> ' + T('lista campi'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "LIST", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: {type: 'textbox', options: {}}, hidden: true},
@@ -1171,6 +1172,10 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
                     $(ed.target).textbox('setValue', new_val_text);
 
+                    var ck_limit2list = $("#sb_limit2list").switchbutton('options').checked
+                    ck_limit2list = (ck_limit2list) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
+                    $(ed.target).textbox('setValue', ck_limit2list);
 
                     var ck_sql_combo = $("#sb_custom_sql_combo").switchbutton('options').checked
                     ck_sql_combo = (ck_sql_combo) ? 1 : 0;
@@ -1190,10 +1195,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var current_val_id = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
             var current_val_text = $(ed.target).textbox('getValue');
-
-            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LIMIT2LIST'});
-            var current_limit2list = $(ed.target).textbox('getValue');
-
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
+            var current_limit2list = ($(ed.target).textbox('getValue') == "") ? 1 : $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_SQL_COMBO'});
             var current_val_ck_sql_combo = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'SQL_COMBO'});
@@ -1202,10 +1205,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 
 
             var txt_label = T('imposta un sql personalizzato');
+            var txt_label2 = T('limita inserimento dei valori su "combo" a solo quelli presenti');
             var input_cel = '\
                 <div style="margin-top:5px"><input id="cc_id"></div>\n\
                 <div style="margin-top:5px"><input id="cc_text"></div>\n\
-                <div style="margin-top:5px"><input id="tb_limit2list"></div>\n\
+                <div style="margin-top:5px"><input id="sb_limit2list"><label style="margin-left:5px">' + txt_label2 + '</label></div>\n\
                 <div style="margin-top:5px"><input id="sb_custom_sql_combo"><label style="margin-left:5px">' + txt_label + '</label></div>\n\
                 <div id="div_sql_combo" display:none;width:100%>\n\
                     <div style="margin-top:5px"><a id="bt_imp_sql_combo"></a></div>\n\
@@ -1238,7 +1242,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 panelWidth: 250,
                 editable: false,
             });
-            $("#tb_limit2list").switchbutton({
+            $("#sb_limit2list").switchbutton({
                 checked: true,
                 onText: T('si'), offText: T('no'),
                 checked: (current_limit2list == 1) ? true : false,
