@@ -63,6 +63,7 @@ $(document).ready(function () {
             {% if (dg_inline==0) %}
             onDblClickRow: function (index, row) {
                 dg{{n}}_edit_form('update');
+                $('#dg_edit').dialog('maximize');
             },
             {% endif %}
             {% if (ck_row_styler==1) %}

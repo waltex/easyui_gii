@@ -983,6 +983,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var pagination_size = $('#cc_pagination_size').combobox('getValue');
         var width_form = $('#tb_width_form').textbox('getValue');
         var height_form = $('#tb_height_form').textbox('getValue');
+        var form_full = ($("#sb_form_full").switchbutton('options').checked) ? 1 : 0;
+
         var filter_base = ($("#sb_filter_base").switchbutton('options').checked) ? 1 : 0;
         var ck_custom_sql = ($("#sb_custom_sql").switchbutton('options').checked) ? 1 : 0;
         var custom_sql = $('#tb_custom_sql').textbox('getValue');
@@ -1006,6 +1008,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             model: model,
             width_form: width_form,
             height_form: height_form,
+            form_full: form_full,
             filter_base: filter_base,
             ck_custom_sql: ck_custom_sql,
             custom_sql: custom_sql,
@@ -1055,6 +1058,13 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         $('#cc_pagination_size').combobox('setValue', cfg.pagination_size);
         $('#tb_width_form').textbox('setValue', cfg.width_form);
         $('#tb_height_form').textbox('setValue', cfg.height_form);
+        if (cfg.form_full == 1) {
+            $("#sb_form_full").switchbutton('check');
+        } else {
+            $("#sb_form_full").switchbutton('uncheck');
+        }
+
+
         (cfg.filter_base == 1) ? $("#sb_filter_base").switchbutton('check') : $("#sb_filter_base").switchbutton('uncheck');
 
         (cfg.ck_custom_sql == 1) ? $("#sb_custom_sql").switchbutton('check') : $("#sb_custom_sql").switchbutton('uncheck');
@@ -1099,6 +1109,12 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 }
             }]
     });
+    $("#sb_form_full_label").html(T("apri il form a schermo pieno"));
+    $("#sb_form_full").switchbutton({
+        checked: false,
+        onText: T('si'), offText: T('no'),
+    });
+
     function open_opt_type(type, index) {
         if (type == "combobox") {
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CONSTRAINT_TYPE'});
