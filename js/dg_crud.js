@@ -822,6 +822,21 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         }
     });
 
+    $('#cc_group_col').combobox({
+        //url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
+        width: 300,
+        label: T('raggruppa per colonna'),
+        labelPosition: 'right',
+        labelWidth: 150,
+        valueField: 'COL',
+        textField: 'COL',
+        buttonIcon: 'icon-reload',
+        buttonAlign: 'left',
+        onClickButton: function () {
+            $(this).combobox({url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue')});
+        },
+    });
+
 
     $('#bt_save_cfg').linkbutton({
         text: T('salva configurazione'),
@@ -992,6 +1007,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var global_var = $('#tb_global_var').textbox('getValue');
         var ck_row_styler = ($("#sb_row_styler").switchbutton('options').checked) ? 1 : 0;
         var row_styler = $('#tb_row_styler').textbox('getValue');
+        var group_col = $('#cc_group_col').combobox('getText');
 
 
         var cfg = {
@@ -1016,6 +1032,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             global_var: global_var,
             ck_row_styler: ck_row_styler,
             row_styler: row_styler,
+            group_col: group_col,
         };
         return cfg;
     }
@@ -1075,7 +1092,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 
         (cfg.ck_row_styler == 1) ? $("#sb_row_styler").switchbutton('check') : $("#sb_row_styler").switchbutton('uncheck');
         $('#tb_row_styler').textbox('setValue', cfg.row_styler);
-
+        $('#cc_group_col').combobox('setValue', cfg.group_col);
 
     }
     function set_name_cfg(cfg_name, project_name) {

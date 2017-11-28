@@ -89,3 +89,9 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
     link.click();
     document.body.removeChild(link);
 }
+function dg_collapse_expand(dg, collapse) {
+    var groups = $(dg).datagrid('groups');
+    for (var i = 0; i < groups.length; i++) {
+        (collapse == 1) ? $(dg).datagrid('collapseGroup', i) : $(dg).datagrid('expandGroup', i);
+    }
+}

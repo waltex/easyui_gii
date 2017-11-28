@@ -43,6 +43,7 @@ class easyuigii {
     private $alias_col_sql = ""; // es A  -> A.COLNAME
     public $ck_row_styler = 0; //chewck for enable  code for rowstyler
     public $row_styler = ""; // code for rowstyler
+    public $group_col = ""; // column for group data of datagrid
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -658,6 +659,7 @@ class easyuigii {
             , 'n' => $this->html_prefix
             , 'app_name' => $this->app_name
             , 'dg_inline' => $this->dg_inline
+            , 'group_col' => $this->group_col
         ));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
@@ -703,6 +705,7 @@ class easyuigii {
             , 'filter_base' => $this->filter_base
             , 'ck_row_styler' => $this->ck_row_styler
             , 'row_styler' => $this->row_styler
+            , 'group_col' => $this->group_col
         ));
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html

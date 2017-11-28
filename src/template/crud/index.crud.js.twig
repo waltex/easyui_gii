@@ -1,6 +1,9 @@
 {% if (dg_inline==1) %}
 var g_edit_index;
 {% endif %}
+{% if (group_col!='') %}
+var g_dg{{n}}_expand=false;
+{% endif %}
 $(document).ready(function () {
     $('#dg{{n}}_reload').bind('click', function () {
         load_dg{{n}}();
@@ -14,6 +17,17 @@ $(document).ready(function () {
     $('#dg1_export').bind('click', function () {
         JSONToCSVConvertor($('#dg{{n}}').datagrid('getRows'), "{{T('dati')}}", 'label')
     });
+    {% if (group_col!='') %}
+    $('#dg{{n}}_expand').on('click', function () {
+        if (g_dg{{n}}_expand) {
+            g_dg{{n}}_expand = false;
+            dg_collapse_expand('#dg{{n}}', 1);//espande
+        } else {
+            g_dg{{n}}_expand = true;
+            dg_collapse_expand('#dg{{n}}', 0);//contrae
+        }
+    });
+    {% endif %}
     function load_dg{{n}}() {
         //$('#tt').tabs('select', 'Tab{{n}}');
         $('#dg{{n}}').datagrid('uncheckAll');
@@ -70,6 +84,13 @@ $(document).ready(function () {
             {% if (ck_row_styler==1) %}
             rowStyler: function(index,row){
                 {{row_styler|raw}}
+            },
+            {% endif %}
+            {% if (group_col!='') %}
+            view: groupview,
+            groupField: '{{group_col}}',
+            groupFormatter: function (value, rows) {
+                return value + ' - ' + rows.length + ' {{T('elementi')}}';
             },
             {% endif %}
                 {#
