@@ -8,6 +8,7 @@ $(document).ready(function () {
     {% if (dg_inline==0) %}
     $('#dg{{n}}_insert').bind('click', function () {
         dg{{n}}_edit_form('insert');
+        $('#dg_edit').dialog('maximize');
     });
     {% endif %}
     $('#dg1_export').bind('click', function () {
