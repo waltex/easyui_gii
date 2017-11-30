@@ -4,6 +4,49 @@ var g_cfg_name
 var g_project_name
 var g_param_show = false;
 function init_app() {
+    function get_url_cfg() {
+        var app_url = parent.window.location.pathname.substr(0, parent.window.location.pathname.lastIndexOf('/'));
+        var param = '?project=' + g_project_name + '&cfg=' + g_cfg_name + '&app=crud'
+        var url = window.location.protocol + '//' + window.location.host + app_url + '/' + 'index.html' + param
+        if (g_project_name === undefined) {
+            return  null;
+        } else {
+            return url;
+        }
+
+    }
+
+    $('#bt_lnk_cfg_ext').html(T('apri configurazione su link esterno'));
+    $('#bt_lnk_cfg_info').html(T('mostra link configurazione'));
+    $('#sb_lnk').menubutton({
+        menu: '#mm_lnk',
+        iconCls: 'fa fa-link fa-lg',
+        plain: false,
+    });
+    $('#bt_lnk_cfg_ext').on('click', function () {
+        var url = get_url_cfg();
+        if (url != null) {
+            var win = window.open(url, '_blank');
+            win.focus();
+        } else {
+            $.messager.alert(T('configurazione'), T('non è stata salvata/caricata la configurazione'), 'warning');
+        }
+    });
+    $('#bt_lnk_cfg_info').on('click', function () {
+        var url = get_url_cfg();
+        if (url != null) {
+            $.messager.alert({
+                title: T('configurazione'),
+                msg: T('url configurazione:<br><br>' + url),
+                icon: 'info',
+                height: 250,
+                width: 350,
+            });
+        } else {
+            $.messager.alert(T('configurazione'), T('non è stata salvata/caricata la configurazione'), 'warning');
+        }
+    });
+
     $('#opt_import_field_model').html(T('Importa un campo del modello dal db'));
     $('#opt_set_width_form').html(T('Imposta larghezza campo sul form predefinita'));
     $('#tb_app_name').textbox({
