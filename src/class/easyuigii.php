@@ -677,6 +677,7 @@ class easyuigii {
         $pagination = $this->get_pagination();
         $on_after_edit = $this->get_crud_js_fn__on_after_edit();
 
+        $hide_id_ins = $this->get_id_hide_for_dg_edit_form();
         $input_cell = $this->get_input_cell_for_dg_edit_form();
         $options_obj = $this->get_option_for_dg_edit_form();
         $fn_dg_edit_form = "";
@@ -706,7 +707,10 @@ class easyuigii {
             , 'ck_row_styler' => $this->ck_row_styler
             , 'row_styler' => $this->row_styler
             , 'group_col' => $this->group_col
+            , 'form_full' => $this->form_full
+            , 'hide_id_ins' => $hide_id_ins
         ));
+
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
         //write template api_setup.php
@@ -829,12 +833,41 @@ class easyuigii {
                 }
                 $hide = ($hide_form) ? "display:none;" : "";
                 $id_colname = "dg$n" . "_" . $value["COL"];
+                $id_div = "dg$n" . "_div_" . $value["COL"];
                 $colname = $value["COL"];
-                $code .= "<div style=\"margin-top:5px;$hide\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
+                $code .= "<div id=\"$id_div\" style=\"margin-top:5px;$hide\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
             }
         }
         $code .= "\\n\\";
         return $code;
+    }
+
+    /**
+     * @return string code javascript for hide id for edit form row es. $('#dg1_NOMINATIVI_PROFILI').hide();
+     */
+    private function get_id_hide_for_dg_edit_form() {
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+            $n = $this->html_prefix;
+            $id_all = "";
+            $i = 0;
+            $model = $this->table_model;
+            foreach ($model as $value) {
+                $col = $value["COL"];
+                $hide_ins = (!isset($value["HIDE_INS"])) ? 0 : $value["HIDE_INS"];
+                if ($hide_ins == 1) {
+                    $i += 1;
+                    $dot = ($i > 1) ? ", " : "";
+                    $id_div = $dot . "#dg$n" . "_div_" . $value["COL"];
+                    $id_all = $id_all . $id_div;
+                }
+            }
+            return ($i > 0) ? "$('$id_all').hide();" : "";
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     /** cretate code for crud type column

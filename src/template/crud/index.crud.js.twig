@@ -11,7 +11,10 @@ $(document).ready(function () {
     {% if (dg_inline==0) %}
     $('#dg{{n}}_insert').bind('click', function () {
         dg{{n}}_edit_form('insert');
+        {% if (form_full==1) %}
         $('#dg_edit').dialog('maximize');
+        {% endif %}
+        {{hide_id_ins|raw}}
     });
     {% endif %}
     $('#dg1_export').bind('click', function () {
@@ -78,7 +81,9 @@ $(document).ready(function () {
             {% if (dg_inline==0) %}
             onDblClickRow: function (index, row) {
                 dg{{n}}_edit_form('update');
+                {% if (form_full==1) %}
                 $('#dg_edit').dialog('maximize');
+                {% endif %}
             },
             {% endif %}
             {% if (ck_row_styler==1) %}
