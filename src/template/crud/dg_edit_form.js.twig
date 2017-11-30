@@ -55,7 +55,8 @@ function dg{{n}}_edit_form(type) {
             var isValid = $(this).form('validate');
             if (!isValid) {
                 $.messager.progress('close');	// hide progress bar while the form is invalid
-            }
+                $.messager.alert('{{T('attenzione')}}', '{{T('completare i campi')}}', 'warning');
+                }
             return isValid;	// return false will stop the form submission
         },
         success: function (data) {
