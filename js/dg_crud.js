@@ -1334,7 +1334,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 method: 'post',
                 required: true,
                 panelWidth: 250,
-                editable: false,
+                //editable: false,
                 onSelect(record) {
                     $('#cc_id').combobox({url: 'api/dg/model/read/db/' + record.TEXT});
                     $('#cc_text').combobox({url: 'api/dg/model/read/db/' + record.TEXT});
