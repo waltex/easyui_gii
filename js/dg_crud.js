@@ -648,7 +648,8 @@ function init_app() {
                             }
                         });
                         dlg_msg.find('.messager-input').remove();
-                        var input_cel = '<div style="margin-top:5px"><a id="bt_imp_sql"></a></div><div style="margin-top:5px"><input id="tb_sql"></div>';
+                        var input_cel = '<div style="margin-top:5px"><a id="bt_imp_sql"></a></div>\n\
+                                         <div style="margin-top:5px"><input id="tb_sql"></div>';
                         dlg_msg.find('div').end().append(input_cel);
 
                         $('#tb_sql').textbox({
