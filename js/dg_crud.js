@@ -3,6 +3,7 @@ var g_keydown
 var g_cfg_name
 var g_project_name
 var g_param_show = false;
+var g_cfg = {sql_alias: 0};
 function init_app() {
     function get_url_cfg() {
         var app_url = parent.window.location.pathname.substr(0, parent.window.location.pathname.lastIndexOf('/'));
@@ -647,10 +648,24 @@ function init_app() {
                                 $('#tb_custom_sql').textbox('setValue', sql);
                             }
                         });
+
+
+
                         dlg_msg.find('.messager-input').remove();
+                        var txt_label2 = T('inserisci alias A sui campi');
                         var input_cel = '<div style="margin-top:5px"><a id="bt_imp_sql"></a></div>\n\
+                                         <div style="margin-top:5px"><input id="sb_sql_alias"><label style="margin-left:5px">' + txt_label2 + '</label></div>\n\
                                          <div style="margin-top:5px"><input id="tb_sql"></div>';
                         dlg_msg.find('div').end().append(input_cel);
+
+                        $("#sb_sql_alias").switchbutton({
+                            checked: true,
+                            onText: T('si'), offText: T('no'),
+                            checked: (g_cfg.sql_alias == 1) ? true : false,
+                            onChange: function (checked) {
+                                g_cfg.sql_alias = (checked) ? 1 : 0;
+                            },
+                        });
 
                         $('#tb_sql').textbox({
                             label: T('sql'),
@@ -1053,6 +1068,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var ck_row_styler = ($("#sb_row_styler").switchbutton('options').checked) ? 1 : 0;
         var row_styler = $('#tb_row_styler').textbox('getValue');
         var group_col = $('#cc_group_col').combobox('getText');
+        var sql_alias = g_cfg.sql_alias;
 
 
         var cfg = {
@@ -1078,6 +1094,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             ck_row_styler: ck_row_styler,
             row_styler: row_styler,
             group_col: group_col,
+            sql_alias: sql_alias,
         };
         return cfg;
     }
@@ -1138,6 +1155,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         (cfg.ck_row_styler == 1) ? $("#sb_row_styler").switchbutton('check') : $("#sb_row_styler").switchbutton('uncheck');
         $('#tb_row_styler').textbox('setValue', cfg.row_styler);
         $('#cc_group_col').combobox('setValue', cfg.group_col);
+        g_cfg.sql_alias = cfg.sql_alias;
 
     }
     function set_name_cfg(cfg_name, project_name) {
