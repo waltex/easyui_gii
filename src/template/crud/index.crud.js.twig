@@ -8,7 +8,7 @@ $(document).ready(function () {
     $('#dg{{n}}_reload').bind('click', function () {
         load_dg{{n}}();
     });
-    {% if (dg_inline==0) and (crud_u=="C")  %}
+    {% if (dg_inline==0) and (crud_u=="1")  %}
     $('#dg{{n}}_insert').bind('click', function () {
         dg{{n}}_edit_form('insert');
         {% if (form_full==1) %}
