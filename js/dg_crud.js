@@ -3,7 +3,7 @@ var g_keydown
 var g_cfg_name
 var g_project_name
 var g_param_show = false;
-var g_cfg = {sql_alias: 0};
+var g_cfg = {ck_sql_alias: 0};
 function init_app() {
     function get_url_cfg() {
         var app_url = parent.window.location.pathname.substr(0, parent.window.location.pathname.lastIndexOf('/'));
@@ -661,9 +661,9 @@ function init_app() {
                         $("#sb_sql_alias").switchbutton({
                             checked: true,
                             onText: T('si'), offText: T('no'),
-                            checked: (g_cfg.sql_alias == 1) ? true : false,
+                            checked: (g_cfg.ck_sql_alias == 1) ? true : false,
                             onChange: function (checked) {
-                                g_cfg.sql_alias = (checked) ? 1 : 0;
+                                g_cfg.ck_sql_alias = (checked) ? 1 : 0;
                             },
                         });
 
@@ -1068,7 +1068,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var ck_row_styler = ($("#sb_row_styler").switchbutton('options').checked) ? 1 : 0;
         var row_styler = $('#tb_row_styler').textbox('getValue');
         var group_col = $('#cc_group_col').combobox('getText');
-        var sql_alias = g_cfg.sql_alias;
+        var ck_sql_alias = g_cfg.ck_sql_alias;
 
 
         var cfg = {
@@ -1094,7 +1094,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             ck_row_styler: ck_row_styler,
             row_styler: row_styler,
             group_col: group_col,
-            sql_alias: sql_alias,
+            ck_sql_alias: ck_sql_alias,
         };
         return cfg;
     }
@@ -1155,7 +1155,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         (cfg.ck_row_styler == 1) ? $("#sb_row_styler").switchbutton('check') : $("#sb_row_styler").switchbutton('uncheck');
         $('#tb_row_styler').textbox('setValue', cfg.row_styler);
         $('#cc_group_col').combobox('setValue', cfg.group_col);
-        g_cfg.sql_alias = cfg.sql_alias;
+        g_cfg.ck_sql_alias = cfg.ck_sql_alias;
 
     }
     function set_name_cfg(cfg_name, project_name) {

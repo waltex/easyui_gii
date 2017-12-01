@@ -538,8 +538,10 @@ function get_sql_crud() {
         $app = Slim\Slim::getInstance();
         $table = $app->request->params('table_name');
         $model = $app->request->params('model');
+        $ck_sql_alias = $app->request->params('ck_sql_alias');
 
         $gii = new easyuigii();
+        $gii->ck_sql_alias = $ck_sql_alias;
         $data = $gii->get_sql_for_select($table, $model);
 
         $app->render(200, ['success' => true, 'sql' => $data]);

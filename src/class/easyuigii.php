@@ -40,7 +40,8 @@ class easyuigii {
     public $custom_sql = ""; // text  form custom sql for select
     public $ck_global_var = 0; //enable global var
     public $global_var = ""; // global var
-    private $alias_col_sql = ""; // es A  -> A.COLNAME
+    public $sql_alias = "A"; // es A  -> A.COLNAME
+    public $ck_sql_alias = ""; // 1 enable alias for col sql
     public $ck_row_styler = 0; //chewck for enable  code for rowstyler
     public $row_styler = ""; // code for rowstyler
     public $group_col = ""; // column for group data of datagrid
@@ -1210,8 +1211,8 @@ class easyuigii {
             //$model = $this->table_model;
             foreach ($model as $value) {
                 $col_name = $value["COL"];
-                $alias = $this->alias_col_sql; // "A";
-                $alias_str = ($alias != "") ? "$alias." : "";
+                $alias = $this->sql_alias; // "A";
+                $alias_str = ($this->ck_sql_alias == "1") ? "$alias." : "";
                 $col_name_w_a = $alias_str . $col_name;
                 $col_type = $value["TYPE"];
                 //skip cols
@@ -1225,7 +1226,8 @@ class easyuigii {
                     $str_col .= $strComma . $col_name; //list col without alias
                 }
             }
-            $strSql = "SELECT $str_col_w_a FROM $table $alias";
+            $str_col_alias = ($this->ck_sql_alias == "1") ? $alias : "";
+            $strSql = "SELECT $str_col_w_a FROM $table $str_col_alias";
             return $strSql;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
