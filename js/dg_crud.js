@@ -416,6 +416,22 @@ function init_app() {
     $('#opt_test').on('click', function () {
         $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
     });
+
+    $('#cc_crud').combobox({
+        valueField: 'value',
+        textField: 'text',
+        label: T('abilita comandi su dati (C.R.U.D.)'),
+        labelWidth: 250,
+        width: 500,
+        required: true,
+        value: ['C', 'R', 'U', 'D'],
+        //panelWidth: 300,
+        multiple: true,
+        editable: false,
+        prompt: T('seleziona'),
+        data: [{text: T('inserisci'), value: 'C'}, {text: T('leggi'), value: 'R'}, {text: T('aggiorna'), value: 'U'}, {text: T('elimina'), value: 'D'}],
+    });
+
     function load_menu_opt() {
         $('#bt_model_opt').menubutton({
             menu: '#mm_opt',
@@ -1050,6 +1066,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var table_name = $('#tb_table_name').combobox('getValue');
         var model_from_json = ($("#sb_model").switchbutton('options').checked) ? 1 : 0;
         var html_prefix = $('#nn_prefix').numberspinner('getValue');
+        var crud = $('#cc_crud').combobox('getValues');
+
 
         var dg_inline = ($("#sb_dg_inline").switchbutton('options').checked) ? 1 : 0;
         var pagination = ($("#sb_pagination").switchbutton('options').checked) ? 1 : 0;
@@ -1078,6 +1096,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             table_name: table_name,
             model_from_json: model_from_json,
             html_prefix: html_prefix,
+            crud: crud,
             dg_inline: dg_inline,
             pagination: pagination,
             pagination_list: pagination_list,
@@ -1120,6 +1139,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         $('#tb_table_name').combobox('setValue', cfg.table_name);
 
         $('#nn_prefix').numberspinner('setValue', cfg.html_prefix);
+        (cfg.crud) ? $('#cc_crud').combobox('setValue', cfg.crud) : $('#cc_crud').combobox('setValue', ['C', 'R', 'U', 'D']);
 
         if (cfg.dg_inline == 1) {
             $("#sb_dg_inline").switchbutton('check');
@@ -1821,6 +1841,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             width: 240,
         }).attr('id', 'fk_type');
     }
+
+
 
     //auto open project from link
     var project = getURLParameter('project');

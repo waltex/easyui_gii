@@ -45,6 +45,7 @@ class easyuigii {
     public $ck_row_styler = 0; //chewck for enable  code for rowstyler
     public $row_styler = ""; // code for rowstyler
     public $group_col = ""; // column for group data of datagrid
+    public $crud = ['C', 'R', 'U', 'D']; // abilitazioni
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
