@@ -184,6 +184,7 @@ function crud_generate() {
         $gii->table_model = $app->request->params('model');
 
         $gii->html_prefix = $app->request->params('html_prefix');
+        $gii->crud = $app->request->params('crud');
         $gii->pagination = $app->request->params('pagination');
         $gii->pagination_list = $app->request->params('pagination_list');
         $gii->pagination_size = $app->request->params('pagination_size');

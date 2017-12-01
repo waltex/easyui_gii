@@ -8,7 +8,7 @@ $(document).ready(function () {
     $('#dg{{n}}_reload').bind('click', function () {
         load_dg{{n}}();
     });
-    {% if (dg_inline==0) %}
+    {% if (dg_inline==0) and (crud_u=="C")  %}
     $('#dg{{n}}_insert').bind('click', function () {
         dg{{n}}_edit_form('insert');
         {% if (form_full==1) %}
@@ -37,7 +37,7 @@ $(document).ready(function () {
         {% if (filter_base==1) %} 
         $('#dg{{n}}').datagrid('disableFilter');
         {% endif %} 
-        $('#dg{{n}}').edatagrid({
+        $('#dg{{n}}').{{e}}datagrid({
             border: false,
             toolbar: '#tb{{n}}',
             title: '{{title}}',
@@ -78,12 +78,12 @@ $(document).ready(function () {
             },
             {% endif %}
             {{on_after_edit|raw}}
-            {% if (dg_inline==0) %}
+            {% if (dg_inline==0) and (crud_u==1) %}
             onDblClickRow: function (index, row) {
-                dg{{n}}_edit_form('update');
-                {% if (form_full==1) %}
-                $('#dg_edit').dialog('maximize');
-                {% endif %}
+                    dg{{n}}_edit_form('update');
+                    {% if (form_full==1) %}
+                    $('#dg_edit').dialog('maximize');
+                    {% endif %}
             },
             {% endif %}
             {% if (ck_row_styler==1) %}
@@ -115,5 +115,7 @@ $(document).ready(function () {
     }
 
     load_dg{{n}}();
+    {% if (crud_u==1) or (crud_c==1) %}
     {{fn_dg_edit_form|raw}}
+    {% endif %}
 });

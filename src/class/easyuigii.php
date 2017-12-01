@@ -46,6 +46,10 @@ class easyuigii {
     public $row_styler = ""; // code for rowstyler
     public $group_col = ""; // column for group data of datagrid
     public $crud = ['C', 'R', 'U', 'D']; // abilitazioni
+    private $crud_c = 0; //create
+    private $crud_r = 0; //read
+    private $crud_u = 0; //update
+    private $crud_d = 0; //delete
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -73,11 +77,33 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $this->set_db_setting();
+        $this->se_var_command_crud();
 
         if ($this->model_from_json == 0) {
             $this->table_model = $this->get_table_model_from_db($this->table_name);
         }
         $this->primary_key = $this->get_primary_key_from_model();
+    }
+
+    private function se_var_command_crud() {
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+            $crud = $this->crud;
+            foreach ($crud as $value) {
+                ($value == "C") ? $this->crud_c = 1 : false;
+                ($value == "R") ? $this->crud_r = 1 : false;
+                if ($value == "U") {
+                    $this->crud_u = 1;
+                    //$dg_inline = 1;
+                }
+
+                ($value == "D") ? $this->crud_d = 1 : false;
+            }
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     /** list table of db
@@ -662,6 +688,10 @@ class easyuigii {
             , 'app_name' => $this->app_name
             , 'dg_inline' => $this->dg_inline
             , 'group_col' => $this->group_col
+            , 'crud_c' => $this->crud_c
+            , 'crud_r' => $this->crud_r
+            , 'crud_u' => $this->crud_u
+            , 'crud_d' => $this->crud_d
         ));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
@@ -711,6 +741,11 @@ class easyuigii {
             , 'group_col' => $this->group_col
             , 'form_full' => $this->form_full
             , 'hide_id_ins' => $hide_id_ins
+            , 'crud_c' => $this->crud_c
+            , 'crud_r' => $this->crud_r
+            , 'crud_u' => $this->crud_u
+            , 'crud_d' => $this->crud_d
+            , 'e' => ($this->crud_u == 1) ? 'e' : ''
         ));
 
         $file = $dir . "/js/index.js";
