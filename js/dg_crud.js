@@ -1584,6 +1584,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 
                     }}];
 
+            var table_name = $('#cc_table').textbox('getValue');
             $('#dg_fields').edatagrid({
                 toolbar: dg_fields_tb,
                 height: '200px',
@@ -1602,6 +1603,14 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                         {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
                         {field: "SKIP", title: BR(T('Escludi Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                         {field: "HIDE", title: BR(T('Nascondi Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                        {field: "BINDFIELD", title: T('Associa Campo') + '<br>' + T('su Form'), width: '160px', editor: {type: 'combobox'
+                                , options: {
+                                    url: 'api/dg/model/read/db/' + table_name,
+                                    valueField: 'COL',
+                                    textField: 'COL',
+                                    panelWidth: 150,
+                                }}
+                        },
                     ]]
             });
             var current_val_fields = "";
