@@ -960,6 +960,8 @@ class easyuigii {
         $width_field = $row["WIDTH_FORM"];
         $width_label = $row["WIDTH_LABEL"];
         $type_pk_fk = $row["CONSTRAINT_TYPE"];
+        $readonly = isset($row["READONLY"]) ? $row["READONLY"] : 0;
+        $readonly = ($readonly == 1) ? "readonly:true," : "";
         $editable = ($row["EDIT"] == 0) ? "editable:false," : "";
         $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
         $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
@@ -1009,26 +1011,26 @@ class easyuigii {
             $yes = $this->T("si");
             $no = $this->T("no");
             $data = "[{text: '$yes',value:'1'},{text:'$no',value:'0'}]";
-            $editor = "$id_object" . "combobox({" . PHP_EOL . "valueField: 'value', textField: 'text', $width $label $required panelHeight:50, data:$data, limitToList: true, });" . PHP_EOL;
+            $editor = "$id_object" . "combobox({" . PHP_EOL . "valueField: 'value', textField: 'text', $width $label $required panelHeight:50, data:$data, limitToList: true, $readonly });" . PHP_EOL;
             $editor = str_replace(", ", "," . PHP_EOL, $editor); //only space return dot
             return $editor;
         }
 
 
         if ($type == "textbox") {
-            $editor = "$id_object" . "textbox({" . PHP_EOL . " $width $label $required $editable});" . PHP_EOL;
+            $editor = "$id_object" . "textbox({" . PHP_EOL . " $width $label $required  $readonly});" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
         if ($type == "textarea") {
-            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true,height:$height_area, $width $label $required $editable });" . PHP_EOL;
+            $editor = "$id_object" . "textbox({" . PHP_EOL . "multiline:true,height:$height_area, $width $label $required $readonly });" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
 
         //escludo the column primary key for edit
         if ($type == "numberbox") {
-            $editor = "$id_object" . "numberbox({" . PHP_EOL . " $width $label $required $editable});" . PHP_EOL;
+            $editor = "$id_object" . "numberbox({" . PHP_EOL . " $width $label $required $readonly});" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
@@ -1037,19 +1039,19 @@ class easyuigii {
             $with = "width: '100px',";
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
             $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
-            $editor = "$id_object" . "datebox({" . PHP_EOL . " $width $label $required $date_format});" . PHP_EOL;
+            $editor = "$id_object" . "datebox({" . PHP_EOL . " $width $label $required $readonly $date_format});" . PHP_EOL;
             $editor = str_replace(",", "," . PHP_EOL, $editor);
             return $editor;
         }
         if ($type == "combobox") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list });" . PHP_EOL;
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list $readonly});" . PHP_EOL;
 
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 return $editor;
             }
             if ($type_pk_fk == "LIST") {
-                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', $icon $cat data:$list, $required panelWidth: 250, $limit2list });" . PHP_EOL;
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', $icon $cat data:$list, $required panelWidth: 250, $limit2list $readonly});" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 return $editor;
             }
@@ -1057,7 +1059,7 @@ class easyuigii {
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
                 $filter = PHP_EOL . "$id_object combogrid('grid').datagrid('enableFilter');";
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list_combogrid #columns});$filter" . PHP_EOL;
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $readonly $limit2list_combogrid #columns});$filter" . PHP_EOL;
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
@@ -1080,7 +1082,10 @@ class easyuigii {
             $type = $row["TYPE"];
             $width_field = $row["WIDTH"];
             $type_pk_fk = $row["CONSTRAINT_TYPE"];
-            $edit = ($this->dg_inline == 1) ? $row["EDIT"] : "0";
+            
+            $readonly = isset($row["READONLY"]) ? $row["READONLY"] : 0;
+            $edit = ($this->dg_inline == 1) ? !$readonly : "0";
+
             $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
             $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
             $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
