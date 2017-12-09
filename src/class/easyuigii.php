@@ -985,6 +985,8 @@ class easyuigii {
         $icon = ($icon == "1") ? "showItemIcon:true," : "";
         $fields = (isset($row["FIELDS"])) ? $row["FIELDS"] : "";
         $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
+        // for bind field on select
+        $on_select_combogrid = ($fields != '') ? $this->get_for_combogrid__selecet_on($fields) : "";
 
         $id_object = "$('#dg$n_dg" . "_$col').";
 
@@ -1059,8 +1061,8 @@ class easyuigii {
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
                 $filter = PHP_EOL . "$id_object combogrid('grid').datagrid('enableFilter');";
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $readonly $limit2list_combogrid #columns});$filter" . PHP_EOL;
-                $editor = str_replace(",", "," . PHP_EOL, $editor);
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $readonly $limit2list_combogrid $on_select_combogrid #columns});$filter" . PHP_EOL;
+                $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
             }
@@ -1082,7 +1084,7 @@ class easyuigii {
             $type = $row["TYPE"];
             $width_field = $row["WIDTH"];
             $type_pk_fk = $row["CONSTRAINT_TYPE"];
-            
+
             $readonly = isset($row["READONLY"]) ? $row["READONLY"] : 0;
             $edit = ($this->dg_inline == 1) ? !$readonly : "0";
 
@@ -1202,6 +1204,56 @@ class easyuigii {
 
             $editor = ($edit == "1") ? "editor: {type: '??$type??', options: { $required}}," : "";
             return "{field: '$col', title: '$colt', $width $editor $sortable $hiden}," . PHP_EOL;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
+    /** from modele dg , from name FIELD get type es DESCART -> textbox
+     *
+     * @return string
+     * @throws Exception
+     */
+    private function get_type_field_from_model($find) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        $model = $this->table_model;
+        try {
+            foreach ($model as $value) {
+                if ($value["COL"] == $find) {
+                    return ($value["TYPE"] == "textarea") ? "textbox" : $value["TYPE"];
+                }
+            }
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
+    /** generate "onSelect" code for combogrid for bind fields
+     * 
+     * @param type $model rows combobox
+     * @return string
+     * @throws Exception
+     */
+    private function get_for_combogrid__selecet_on($model) {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        try {
+
+            $model_ord = json_decode($model, true);
+
+            //$model_ord = $this->model_order_primary_key();
+            $code = "";
+            foreach ($model_ord as $value) {
+                $col = $value["COL"];
+                if (($value["SKIP"] == "0") && ($value["BINDFIELD"] != "")) {
+                    $field_bind = "dg" . $this->html_prefix . "_" . $value["BINDFIELD"];
+                    $type = $this->get_type_field_from_model($value["BINDFIELD"]);
+                    $code .= "$('#$field_bind').$type('setValue',row.$col);";
+                }
+            }
+            $code = "onSelect: function(index,row){" . PHP_EOL . $code . PHP_EOL . "}," . PHP_EOL;
+            return $code;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
