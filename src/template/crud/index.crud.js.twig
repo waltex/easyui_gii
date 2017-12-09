@@ -2,7 +2,7 @@
 var g_edit_index;
 {% endif %}
 {% if (group_col!='') %}
-var g_dg{{n}}_expand=false;
+var g_dg{{n}}_expand=true;
 {% endif %}
 $(document).ready(function () {
     $('#dg{{n}}_reload').bind('click', function () {
@@ -110,7 +110,7 @@ $(document).ready(function () {
                 });
         {% if (filter_base==1) %}        
         $('#dg{{n}}').datagrid('enableFilter');
-        $('#dg1').datagrid('removeFilterRule');
+        $('#dg{{n}}').datagrid('removeFilterRule');
         {% endif %}
     }
 
