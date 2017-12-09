@@ -1345,7 +1345,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 method: 'post',
                 required: true,
                 panelWidth: 250,
-                editable: false,
+                editable: true,
             });
             $('#cc_text').combobox({
                 width: '390px',
@@ -1357,7 +1357,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 method: 'post',
                 required: true,
                 panelWidth: 250,
-                editable: false,
+                editable: true,
             });
             $("#sb_limit2list").switchbutton({
                 checked: true,
@@ -1454,6 +1454,10 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'VALUE_FIELD'});
                     $(ed.target).textbox('setValue', new_val_id);
 
+                    var new_val_text = $('#cc_text').combobox('getValue');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TEXT_FIELD'});
+                    $(ed.target).textbox('setValue', new_val_text);
+
                     var ck_limit2list = $("#sb_limit2list").switchbutton('options').checked
                     ck_limit2list = (ck_limit2list) ? 1 : 0;
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
@@ -1466,6 +1470,15 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     }
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FIELDS'});
                     $(ed.target).textbox('setValue', new_val_fields);
+
+                    var ck_sql_combo = $("#sb_custom_sql_combo").switchbutton('options').checked
+                    ck_sql_combo = (ck_sql_combo) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_SQL_COMBO'});
+                    $(ed.target).textbox('setValue', ck_sql_combo);
+
+                    var sql_combo = $('#tb_sql_combo').textbox('getValue');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'SQL_COMBO'});
+                    $(ed.target).textbox('setValue', sql_combo);
 
                 }
             });
@@ -1514,7 +1527,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 method: 'post',
                 required: true,
                 panelWidth: 250,
-                editable: false,
+                editable: true,
             });
             $('#cc_text').combobox({
                 width: '390px',
@@ -1526,7 +1539,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 method: 'post',
                 required: true,
                 panelWidth: 250,
-                editable: false,
+                editable: true,
             });
             $("#sb_limit2list").switchbutton({
                 checked: true,
@@ -1544,7 +1557,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 method: 'post',
                 required: true,
                 panelWidth: 250,
-                editable: false,
+                editable: true,
                 onChange: function (newValue, oldValue) {
                     $('#dg_fields').datagrid({url: 'api/dg/model/read/db/' + newValue});
                 },
