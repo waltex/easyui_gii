@@ -1,0 +1,18 @@
+
+var values = {};
+$.each($('#dg_fm').serializeArray(), function(i, field) {
+    values[field.name] = field.value;
+});
+
+$('#dg_fm').form('load', dg1_filter);
+
+var dg1_filter = {};
+$.each($('#dg_fm').serializeArray(), function(_, kv) {
+  if (dg1_filter.hasOwnProperty(kv.name)) {
+    dg1_filter[kv.name] = $.makeArray(dg1_filter[kv.name]);
+    dg1_filter[kv.name].push(kv.value);
+  }
+  else {
+    dg1_filter[kv.name] = kv.value;
+  }
+});
