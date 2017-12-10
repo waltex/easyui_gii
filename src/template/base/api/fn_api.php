@@ -2,11 +2,11 @@
 
 SvuotaLog();
 
-function add_col_combo($ar_combo, $ar_dg, $field_dg, $value_field, $text_field) {
+function gii_add_col_combo($ar_combo, $ar_dg, $field_dg, $value_field, $text_field) {
     $ar_dg2 = [];
     foreach ($ar_dg as $value) {
         $find = $value[$field_dg];
-        $key = array_search_multi($find, $value_field, $ar_combo);
+        $key = gii_array_search_multi($find, $value_field, $ar_combo);
         if ($key >= 0) {
             $text = $ar_combo[$key][$text_field];
             $value[$field_dg . "__TEXT"] = $text;
@@ -20,7 +20,7 @@ function add_col_combo($ar_combo, $ar_dg, $field_dg, $value_field, $text_field) 
     return $ar_dg2;
 }
 
-function array_search_multi($value, $key, $array) {
+function gii_array_search_multi($value, $key, $array) {
     foreach ($array as $k => $val) {
         if ($val[$key] == $value) {
             return $k;

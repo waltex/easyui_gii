@@ -801,7 +801,7 @@ class easyuigii {
                     $text_field = $value["TEXT_FIELD"];
                     $col_combo = $value["COL"];
                     $code_combo .= "\$combo$i = combo_$table" . "__" . $col_combo . "();" . PHP_EOL;
-                    $code_combo .= "\$data = add_col_combo(\$combo$i, \$data, \"$col_combo\", \"$value_field\", \"$text_field\");" . PHP_EOL;
+                    $code_combo .= "\$data = gii_add_col_combo(\$combo$i, \$data, \"$col_combo\", \"$value_field\", \"$text_field\");" . PHP_EOL;
                 }
             }
         }
