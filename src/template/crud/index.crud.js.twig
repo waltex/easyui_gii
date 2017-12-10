@@ -48,7 +48,7 @@ $(document).ready(function () {
             {% endif %}
             destroyUrl: '{{host_api}}{{api_url}}/DELETE',
             method: 'post',
-            rownumbers: true,
+            {{row_num}}
             striped: true,
             fit: true,
             idField: '{{pk|raw}}', /** {{T('importante')}} **/

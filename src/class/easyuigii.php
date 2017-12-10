@@ -34,6 +34,7 @@ class easyuigii {
     public $dg_inline = 1; // 1 edit in line , 0 edit on form
     public $width_form = ""; // width for crud modal form
     public $form_full = 0; // 1 open form on full screen on opened
+    public $row_num = 0; // 1 show numeric row on datagrid
     public $height_form = ""; // height for crud modal form
     public $filter_base = 0; // 1 enable simple filter on column
     public $ck_custom_sql = 0; //enable insert custom sql for select
@@ -746,6 +747,7 @@ class easyuigii {
             , 'crud_u' => $this->crud_u
             , 'crud_d' => $this->crud_d
             , 'e' => ($this->crud_u == 1) ? 'e' : ''
+            , 'row_num' => ($this->row_num == 1) ? 'rownumbers: true,' : ''
         ));
 
         $file = $dir . "/js/index.js";

@@ -192,6 +192,7 @@ function crud_generate() {
         $gii->width_form = $app->request->params('width_form');
         $gii->height_form = $app->request->params('height_form');
         $gii->form_full = $app->request->params('form_full');
+        $gii->row_num = $app->request->params('row_num');
         $gii->filter_base = $app->request->params('filter_base');
         $gii->ck_custom_sql = $app->request->params('ck_custom_sql');
         $gii->custom_sql = $app->request->params('custom_sql');

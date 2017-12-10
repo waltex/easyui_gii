@@ -1078,7 +1078,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var width_form = $('#tb_width_form').textbox('getValue');
         var height_form = $('#tb_height_form').textbox('getValue');
         var form_full = ($("#sb_form_full").switchbutton('options').checked) ? 1 : 0;
-
+        var row_num = ($("#sb_row_num").switchbutton('options').checked) ? 1 : 0;
         var filter_base = ($("#sb_filter_base").switchbutton('options').checked) ? 1 : 0;
         var ck_custom_sql = ($("#sb_custom_sql").switchbutton('options').checked) ? 1 : 0;
         var custom_sql = $('#tb_custom_sql').textbox('getValue');
@@ -1106,6 +1106,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             width_form: width_form,
             height_form: height_form,
             form_full: form_full,
+            row_num: row_num,
             filter_base: filter_base,
             ck_custom_sql: ck_custom_sql,
             custom_sql: custom_sql,
@@ -1164,6 +1165,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             $("#sb_form_full").switchbutton('uncheck');
         }
 
+        (cfg.row_num == 1) ? $("#sb_row_num").switchbutton('check') : $("#sb_row_num").switchbutton('uncheck');
 
         (cfg.filter_base == 1) ? $("#sb_filter_base").switchbutton('check') : $("#sb_filter_base").switchbutton('uncheck');
 
@@ -1213,6 +1215,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
     $("#sb_form_full_label").html(T("apri il form a schermo pieno"));
     $("#sb_form_full").switchbutton({
         checked: false,
+        onText: T('si'), offText: T('no'),
+    });
+    $("#sb_row_num_label").html(T("mostra numerazione righe"));
+    $("#sb_row_num").switchbutton({
+        checked: true,
         onText: T('si'), offText: T('no'),
     });
 
