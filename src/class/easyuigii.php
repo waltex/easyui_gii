@@ -1061,7 +1061,7 @@ class easyuigii {
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
                 $filter = PHP_EOL . "$id_object combogrid('grid').datagrid('enableFilter');";
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$pk', method: 'get',url: '$url_combobox',$required panelWidth: 250, $readonly $limit2list_combogrid $on_select_combogrid #columns});$filter" . PHP_EOL;
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', idField: '$value_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, $readonly $limit2list_combogrid $on_select_combogrid #columns});$filter" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
@@ -1159,7 +1159,7 @@ class easyuigii {
                                 row_dg['$col" . "__TEXT'] = row.$text_field
                             },";
                     $formatter = PHP_EOL . "formatter: function (value, row, index)" . PHP_EOL . " {return row.$col" . "__TEXT;}," . PHP_EOL;
-                    $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$pk', method: 'get', url: '$url_combobox', $required panelWidth: 250, $limit2list_combogrid $on_select #columns}},";
+                    $editor = "editor: {type: 'combogrid', options: {" . PHP_EOL . "valueField: '$value_field', textField: '$text_field', idField: '$value_field', method: 'get', url: '$url_combobox', $required panelWidth: 250, $limit2list_combogrid $on_select #columns}},";
                     $editor = str_replace(", ", "," . PHP_EOL, $editor);
                     $editor = str_replace("#columns", $columns, $editor);
                     $editor = ($edit == "1") ? $editor : "";
