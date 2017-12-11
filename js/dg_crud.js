@@ -257,7 +257,7 @@ function init_app() {
                                 panelWidth: 100,
                                 data: data_type,
                                 showItemIcon: true,
-                                buttonText: '<i class="fa fa-list-alt" aria-hidden="true"></i>',
+                                buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
                                 onClickButton: function () {
                                     var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
                                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TYPE'});
@@ -301,6 +301,16 @@ function init_app() {
                     {field: "EDIT", title: T('scrivi su') + '<br>' + T('database'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "REQUIRED", title: BR(T('Campo Richiesto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "SORTABLE", title: BR(T('Campo Ordinabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                    {field: "FILTER", title: BR(T('Filtra')), editor: {type: 'textbox', options: {
+                                buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+                                buttonAlign: 'right',
+                                editable: false,
+                                onClickButton: function () {
+                                    var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
+                                    edit_filter('textbox', index);
+                                }
+                            }
+                        }, formatter: mycheck, required: true},
                     {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
@@ -312,6 +322,7 @@ function init_app() {
                     {field: "LIST_ICON", title: T('lista valori') + '<br> ' + T('campo conCls'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_SQL_COMBO", title: T('sql personalizzato') + '<br> ' + T('abilita'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "SQL_COMBO", title: T('sql personalizzato') + '<br> ' + T('stringa sql'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "CK_FILTER", title: T('abilita filtro'), editor: {type: 'textbox', options: {}}, hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -392,7 +403,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -1872,7 +1883,53 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         }).attr('id', 'fk_type');
     }
 
+    function edit_filter(type, index) {
+        if ((type == "textbox") || (type == "texarea")) {
+            var dlg_msg = $.messager.prompt({
+                id: 'dlg_sql',
+                title: T('filtri avanzati'),
+                msg: T('imposta i parametri sotto'),
+                incon: 'info',
+                width: '60%',
+                height: '520px',
+                maximizable: true,
+                resizable: true,
+                fn: function () {
+                    var ck_filter = $("#sb_ck_filter").switchbutton('options').checked
+                    ck_filter = (ck_filter) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER'});
+                    $(ed.target).textbox('setValue', ck_filter);
+                }
+            });
 
+            dlg_msg.find('.messager-input').remove();
+            var label_filter = T('abilita filtro');
+            var input_cel = '<input id="sb_ck_filter"><label style="margin-left:5px">' + label_filter + '</label>';
+            dlg_msg.find('div').end().append(input_cel);
+
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER'});
+            var current_ck_filter = $(ed.target).textbox('getValue');
+
+            $("#sb_ck_filter").switchbutton({
+                checked: true,
+                onText: T('si'), offText: T('no'),
+                checked: (current_ck_filter == 1) ? true : false,
+            });
+            $('#tb_global_var_lg').textbox({
+                //label: T(''),
+                value: $('#tb_global_var').textbox('getValue'),
+                prompt: T('inserisci qui'),
+                labelPosition: 'top',
+                width: '98%',
+                height: '350px',
+                multiline: true,
+                required: true,
+            });
+
+
+
+        }
+    }
 
     //auto open project from link
     var project = getURLParameter('project');
