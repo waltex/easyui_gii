@@ -301,7 +301,7 @@ function init_app() {
                     {field: "EDIT", title: T('scrivi su') + '<br>' + T('database'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "REQUIRED", title: BR(T('Campo Richiesto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "SORTABLE", title: BR(T('Campo Ordinabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "FILTER", title: BR(T('Filtra')), editor: {type: 'textbox', options: {
+                    {field: "CK_FILTER", title: BR(T('Filtri<br>Avanzati')), editor: {type: 'textbox', options: {
                                 buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
                                 buttonAlign: 'right',
                                 editable: false,
@@ -311,6 +311,7 @@ function init_app() {
                                 }
                             }
                         }, formatter: mycheck, required: true},
+                    {field: "EMPTY", title: ' ', },
                     {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
@@ -322,7 +323,6 @@ function init_app() {
                     {field: "LIST_ICON", title: T('lista valori') + '<br> ' + T('campo conCls'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_SQL_COMBO", title: T('sql personalizzato') + '<br> ' + T('abilita'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "SQL_COMBO", title: T('sql personalizzato') + '<br> ' + T('stringa sql'), editor: {type: 'textbox', options: {}}, hidden: true},
-                    {field: "CK_FILTER", title: T('abilita filtro'), editor: {type: 'textbox', options: {}}, hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -403,7 +403,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', ];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
