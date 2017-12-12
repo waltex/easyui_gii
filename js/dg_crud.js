@@ -333,6 +333,7 @@ function init_app() {
                     {field: "CK_FILTER_LIKE", title: T('Filtro') + '<br> ' + T('Contiene'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_REQUIRED", title: T('Filtro') + '<br> ' + T('Richiesto'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_MULTIPLE", title: T('Filtro') + '<br> ' + T('Sel. Multipla'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "FILTER_DT_FIELD", title: T('Filtro') + '<br> ' + T('Associa Data'), editor: {type: 'textbox', options: {}}, hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -2036,7 +2037,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_REQUIRED'});
                     $(ed.target).textbox('setValue', ck_filter_required);
 
-                    var ck_filter_multiple = $("#sb_ck_filter_like").switchbutton('options').checked
+                    var ck_filter_multiple = $("#sb_ck_filter_multiple").switchbutton('options').checked
                     ck_filter_multiple = (ck_filter_multiple) ? 1 : 0;
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_MULTIPLE'});
                     $(ed.target).textbox('setValue', ck_filter_multiple);
@@ -2079,6 +2080,83 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 checked: true,
                 onText: T('si'), offText: T('no'),
                 checked: (current_ck_filter_multiple == 1) ? true : false,
+            });
+        }
+
+        if ((type == "datebox")) {
+            var dlg_msg = $.messager.prompt({
+                id: 'dlg_filter',
+                title: T('filtri avanzati'),
+                msg: T('imposta i parametri sotto'),
+                incon: 'info',
+                width: '60%',
+                height: '520px',
+                maximizable: true,
+                resizable: true,
+                fn: function () {
+                    var ck_filter = $("#sb_ck_filter").switchbutton('options').checked
+                    ck_filter = (ck_filter) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER'});
+                    $(ed.target).combobox('setValue', ck_filter);
+
+                    var ck_filter_required = $("#sb_ck_filter_required").switchbutton('options').checked
+                    ck_filter_required = (ck_filter_required) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_REQUIRED'});
+                    $(ed.target).textbox('setValue', ck_filter_required);
+
+                    var filter_dt_field = $("#cc_filter_dt_field").combobox('getValue');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FILTER_DT_FIELD'});
+                    $(ed.target).textbox('setValue', filter_dt_field);
+
+                }
+            });
+
+            dlg_msg.find('.messager-input').remove();
+            var input_cel = '\
+                    <input id="sb_ck_filter"><label style="margin-left:5px">' + T('abilita filtro') + '</label>\n\
+                    <div id="div_filter" style="margin-top:5px;display:none">\n\
+                        <div style="margin-top:5px"><input id="sb_ck_filter_required"><label style="margin-left:5px">' + T('campo obbligatorio') + '</label></div>\n\
+                        <div style="margin-top:5px"><input id="cc_filter_dt_field"></div>\n\
+                    </div>\n\
+                    ';
+            dlg_msg.find('div').end().append(input_cel);
+
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER'});
+            var current_ck_filter = $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_REQUIRED'});
+            var current_ck_filter_required = $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FILTER_DT_FIELD'});
+            var current_filter_dt_field = $(ed.target).textbox('getValue');
+
+            $("#sb_ck_filter").switchbutton({
+                checked: true,
+                onText: T('si'), offText: T('no'),
+                checked: (current_ck_filter == 1) ? true : false,
+                onChange: function (checked) {
+                    (checked) ? $('#div_filter').show() : $('#div_filter').hide();
+                }
+            });
+            (current_ck_filter == 1) ? $('#div_filter').show() : $('#div_filter').hide();
+            $("#sb_ck_filter_required").switchbutton({
+                checked: true,
+                onText: T('si'), offText: T('no'),
+                checked: (current_ck_filter_required == 1) ? true : false,
+            });
+
+            $('#cc_filter_dt_field').combobox({
+                //url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
+                width: 300,
+                label: T('campo data asociato'),
+                labelPosition: 'right',
+                labelWidth: 150,
+                valueField: 'COL',
+                textField: 'COL',
+                buttonIcon: 'icon-reload',
+                buttonAlign: 'left',
+                value: current_filter_dt_field,
+                onClickButton: function () {
+                    $(this).combobox({url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue')});
+                },
             });
         }
 
