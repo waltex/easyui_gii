@@ -988,7 +988,7 @@ class easyuigii {
         $fields = (isset($row["FIELDS"])) ? $row["FIELDS"] : "";
         $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
         // for bind field on select
-        $on_select_combogrid = ($fields != '') ? $this->get_for_combogrid__selecet_on($fields) : "";
+        $on_select_combogrid = ($fields != "") ? $this->get_for_combogrid__selecet_on($fields) : "";
 
         $id_object = "$('#dg$n_dg" . "_$col').";
 
@@ -1248,13 +1248,16 @@ class easyuigii {
             $code = "";
             foreach ($model_ord as $value) {
                 $col = $value["COL"];
-                if (($value["SKIP"] == "0") && ($value["BINDFIELD"] != "")) {
-                    $field_bind = "dg" . $this->html_prefix . "_" . $value["BINDFIELD"];
-                    $type = $this->get_type_field_from_model($value["BINDFIELD"]);
-                    $code .= "$('#$field_bind').$type('setValue',row.$col);";
+                if (isset($value["BINDFIELD"])) {
+                    if (($value["SKIP"] == "0") && ($value["BINDFIELD"] != "")) {
+                        $field_bind = "dg" . $this->html_prefix . "_" . $value["BINDFIELD"];
+                        $type = $this->get_type_field_from_model($value["BINDFIELD"]);
+                        $code .= "$('#$field_bind').$type('setValue',row.$col);";
+                    }
                 }
             }
-            $code = "onSelect: function(index,row){" . PHP_EOL . $code . PHP_EOL . "}," . PHP_EOL;
+
+            $code = ($code != "") ? "onSelect: function(index,row){" . PHP_EOL . $code . PHP_EOL . "}," . PHP_EOL : "";
             return $code;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');

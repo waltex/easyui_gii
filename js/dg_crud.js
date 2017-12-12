@@ -180,7 +180,7 @@ function init_app() {
             handler: function () {
                 $('#dg_model').edatagrid('destroyRow');
             }}, '-', {
-            text: T('Mostra Parametri'),
+            text: T('Parametri nascosti'),
             iconCls: 'fa fa-eye-slash fa-lg fa-blue',
             toggle: true,
             handler: function () {
@@ -323,7 +323,7 @@ function init_app() {
                     {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_LIMIT2LIST", title: T('Limita Lista') + '<br> ' + 'combobox', editor: {type: 'textbox', options: {}}, hidden: true},
-                    {field: "FIELDS", title: 'combogrid' + '<br> ' + T('lista campi'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "FIELDS", title: 'combogrid' + '<br> ' + T('lista campi'), width: 150, editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "LIST", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "LIST_CAT", title: T('lista valori') + '<br> ' + T('campo categoria'), editor: {type: 'textbox', options: {}}, hidden: true},
