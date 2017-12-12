@@ -15,4 +15,7 @@
 {% if (group_col!='') %}
     <a id="dg{{n}}_expand" href="#" class="easyui-linkbutton" iconCls="icon-database_add" plain="true">{{T('espandi')}}/{{T('contrai')}}</a>
 {% endif %}
+{% if (enable_filter==1) %}
+    <a id="dg{{n}}_filter" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true">{{T('Filtri avanzati')}}</a>
+{% endif %}
 </div>

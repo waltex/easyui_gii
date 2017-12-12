@@ -31,6 +31,11 @@ $(document).ready(function () {
         }
     });
     {% endif %}
+    {% if (enable_filter==1) %}
+    $('#dg{{n}}_filter').bind('click', function () {
+    dg{{n}}_filter_form();
+    });
+    {% endif %}
     function load_dg{{n}}() {
         //$('#tt').tabs('select', 'Tab{{n}}');
         $('#dg{{n}}').datagrid('uncheckAll');
@@ -118,4 +123,5 @@ $(document).ready(function () {
     {% if (crud_u==1) or (crud_c==1) %}
     {{fn_dg_edit_form|raw}}
     {% endif %}
+    {{fn_dg_filter_form|raw}}
 });

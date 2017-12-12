@@ -1,0 +1,55 @@
+function dg{{n}}_filter_form() {
+    var dlg_msg = $.messager.alert({
+        id: 'dg_filter',
+        title: '{{T('Filtri avanzati di ricerca')}}',
+        width : '{{width_form}}',
+        height: '{{height_form}}',
+        maximizable: true,
+        resizable: true,
+            buttons: [{
+                    text: '{{T('OK')}}',
+                    iconCls: 'icon-ok',
+                    onClick: function () {
+                        var isValid = $('#dg_fm').form('validate');
+                        if (!isValid) {
+                            $.messager.alert('{{T('attenzione')}}', '{{T('completare i campi')}}', 'warning');
+                        } else {
+                            $.each($('#dg_fm').serializeArray(), function (_, kv) {
+                                if (g_dg1_filter.hasOwnProperty(kv.name)) {
+                                    g_dg1_filter[kv.name] = $.makeArray(g_dg1_filter[kv.name]);
+                                    g_dg1_filter[kv.name].push(kv.value);
+                                } else {
+                                    g_dg1_filter[kv.name] = kv.value;
+                                }
+                            });
+                            $(dlg_msg).panel('close');
+                        }
+                    }
+                }, {
+                    text: '{{T('annulla')}}',
+                    iconCls: 'icon-cancel',
+                    onClick: function () {
+                        $(dlg_msg).panel('close');
+                    }
+                }]
+    });
+    $("div:not([class]):contains('undefined')").remove();
+
+    var input_cel = '<form id="dg_fm" method="post">\n\
+                        {#<div style="margin-top:5px"><input id="dg1_CAMPO1" name="CAMPO1">\n\#}
+                        {{input_cell_filter|raw}}
+                    </form>';
+    dlg_msg.find('div').end().append(input_cel);
+    {{options_obj_filter|raw}}
+    {#
+    $('#dg1_CAMPO1').textbox({
+        editable: true,
+        required: true,
+        name: 'CAMPO1',
+        prompt: 'ss',
+        label: 'Valore:',
+        labelPosition: 'left',
+        width: 240,
+    });
+    #}
+}
