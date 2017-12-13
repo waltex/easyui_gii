@@ -683,7 +683,7 @@ class easyuigii {
         ));
         $file = $dir . "/js/asset.js";
         file_put_contents($file, $js); //write generated html
-        $enable_filter = $this->enable_filter_dg();
+        $enable_filter = $this->enable_filter_dg(); //filtri avanzati
         //create page js and html
         $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig'
             , 'n' => $this->html_prefix
@@ -1051,11 +1051,7 @@ class easyuigii {
         // for bind field on select
         $on_select_combogrid = ($fields != "") ? $this->get_for_combogrid__selecet_on($fields) : "";
 
-        if ($filter) {
-            $id_object = "$('#dg$n_dg" . "_filter_$col').";
-        } else {
-            $id_object = "$('#dg$n_dg" . "_$col').";
-        }
+        $id_object = "$('#dg$n_dg" . "_$col').";
 
         $pk = $this->primary_key;
 

@@ -1,3 +1,7 @@
+
+{% if (enable_filter==1) %}
+var g_dg{{n}}_filter = {};
+{% endif %}
 {% if (dg_inline==1) %}
 var g_edit_index;
 {% endif %}
@@ -64,6 +68,9 @@ $(document).ready(function () {
             multiSort: false,
             autoRowHeight: false, //For Speed refresh
             {{pagination|raw}}
+            {% if (enable_filter==1) %}
+            queryParams: {filter: dg{{n}}_filter},
+            {% endif %}
             destroyMsg: {
                 norecord: {// when no record is selected
                     title: "{{T('Attenzione')}}",
