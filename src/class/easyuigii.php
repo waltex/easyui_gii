@@ -1627,6 +1627,31 @@ class easyuigii {
         return "TO_DATE($filed,'" . $this->date_format . "')";
     }
 
+    private function set_filter2sql($sql) {
+        $model = $this->table_model;
+        $str_filter = "";
+        foreach ($model as $value) {
+            if (isset($value["CK_FILTER"])) {
+                if ($value["CK_FILTER"] == 1) {
+                    $col = $value["COL"];
+                    if ($value["TYPE"] == "textbox") {
+                        if ($value["FILTER_LIKE"] == "1") {
+                            $str_filter .= "AND $col LIKE '%\$FILTER_$col3%'" . PHP_EOL;
+                        } else {
+                            $str_filter .= "AND $col = '\$FILTER_$col3'" . PHP_EOL;
+                        }
+                    }
+                }
+            }
+        }
+        $sql_filter = "SELECT * FROM (
+                    $sql
+                    ) WHERE 1= 1
+                    $str_filter
+                    ";
+        return $sql_filter;
+    }
+
     /** get string code  fn CrudBase
      *
      * @param type $fn_name
@@ -1636,8 +1661,11 @@ class easyuigii {
 
         if ($this->ck_custom_sql == 1) {
             $sql_select = $this->custom_sql;
+            $sql_select = set_filter2sql($sql_select);
+            $sql_select = ($this->enable_filter_dg) ? set_filter2sql($sql_select) : $sql_select;
         } else {
             $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
+            $sql_select = ($this->enable_filter_dg) ? set_filter2sql($sql_select) : $sql_select;
         }
 
         $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
