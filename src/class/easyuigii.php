@@ -1649,19 +1649,20 @@ class easyuigii {
             $model = $this->table_model;
             $str_filter = "";
             $var_filter = "";
+            $var_filter2 = "";
+            $param_api = "";
             foreach ($model as $value) {
                 if (isset($value["CK_FILTER"])) {
                     if ($value["CK_FILTER"] == 1) {
                         $col = $value["COL"];
-                        $param_api = "\$ar_filter = \"\$app->request->params('filter');\"";
+                        $param_api .= "\$FILTER_$col = \$filter[\"$col\"];";
+                        $var_filter2 .= "\$str_filter_$col=\"\";" . PHP_EOL; // for init var
+                        $var_filter .= "\$str_filter_$col" . PHP_EOL; // for sql
                         if ($value["TYPE"] == "textbox") {
                             if (array_search(["FILTER_LIKE" => 1], $value)) {
-                                $param_api .= "";
                                 $str_filter .= "\$str_filter_$col=\"AND $col LIKE '%\$FILTER_$col%'\";" . PHP_EOL;
-                                $var_filter .= "\$str_filter_$col" . PHP_EOL;
                             } else {
                                 $str_filter .= "\$str_filter_$col=\"AND $col = '\$FILTER_$col'\";" . PHP_EOL;
-                                $var_filter .= "\$str_filter_$col" . PHP_EOL;
                             }
                         }
                         if ($value["TYPE"] == "numberbox") {
@@ -1675,8 +1676,23 @@ class easyuigii {
                             $sql
                             ) WHERE 1= 1
                             $var_filter
-                          ";
-            $this->str_filter_dg = $str_filter;
+                            ";
+
+            $str_filter_all = "
+                               \$filter = \$app->request->params('filter'); // Param from Post user
+                               $param_api
+                               $var_filter2
+                               if (isset(\$filter)) {
+                                   $str_filter
+                               }
+                            ";
+
+            $this->str_filter_dg = $str_filter_all;
+
+            $param_api = "\$filter = \"\$app->request->params('filter');\"" . PHP_EOL . $param_api;
+
+
+
             return $sql_filter;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
