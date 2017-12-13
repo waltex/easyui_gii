@@ -2145,10 +2145,10 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 
             $('#cc_filter_dt_field').combobox({
                 //url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
-                width: 300,
-                label: T('campo data asociato'),
-                labelPosition: 'right',
-                labelWidth: 150,
+                width: 150,
+                label: T('associa campo data per filtrare i valori compresi tra le due date'),
+                labelPosition: 'top',
+                labelWidth: '350',
                 valueField: 'COL',
                 textField: 'COL',
                 buttonIcon: 'icon-reload',

@@ -69,7 +69,7 @@ $(document).ready(function () {
             autoRowHeight: false, //For Speed refresh
             {{pagination|raw}}
             {% if (enable_filter==1) %}
-            queryParams: {filter: dg{{n}}_filter},
+            queryParams: {filter: g_dg{{n}}_filter},
             {% endif %}
             destroyMsg: {
                 norecord: {// when no record is selected

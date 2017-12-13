@@ -715,9 +715,11 @@ class easyuigii {
         $hide_id_ins = $this->get_id_hide_for_dg_edit_form();
         $input_cell = $this->get_input_cell_for_dg_edit_form();
         $options_obj = $this->get_option_for_dg_edit_form();
-        if ($enable_filter == 1) {
-            $options_obj_filter = $this->get_option_for_dg_filter_form(); //similar edit form for filter
-        }
+
+        //for filter
+        $input_cell_filter = ($enable_filter == 1) ? $this->get_input_cell_for_dg_filter_form() : "";
+        $options_obj_filter = ($enable_filter == 1) ? $this->get_option_for_dg_filter_form() : ""; //similar edit form for filter
+
 
         $fn_dg_edit_form = "";
         if ($this->dg_inline == 0) {
@@ -735,13 +737,13 @@ class easyuigii {
         $fn_dg_filter_form = "";
         if ($enable_filter == 1) {
             $fn_dg_filter_form = $twig->render('/crud/dg_filter_form.js.twig', array(
-            'n' => $this->html_prefix
-            , 'input_cell_filter' => $input_cell
-            , 'options_obj_filter' => $options_obj_filter
-            , 'width_form' => $this->width_form
-            , 'height_form' => $this->height_form
-            , 'enable_filter' => $enable_filter
-        ));
+                'n' => $this->html_prefix
+                , 'input_cell_filter' => $input_cell_filter
+                , 'options_obj_filter' => $options_obj_filter
+                , 'width_form' => $this->width_form
+                , 'height_form' => $this->height_form
+                , 'enable_filter' => $enable_filter
+            ));
         }
 
         $js = $twig->render('/crud/index.crud.js.twig', array('n' => $this->html_prefix
@@ -870,6 +872,37 @@ class easyuigii {
         }
         $model_ord = array_merge([$key_row], $ar2); //model order by primary key
         return $model_ord;
+    }
+
+    /**
+     * @return string code javascript for edit form row es <div style="margin-top:5px"><input id="dg1_COMBO">
+     */
+    private function get_input_cell_for_dg_filter_form() {
+        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+        $model_ord = $this->model_order_primary_key();
+
+        $n = $this->html_prefix;
+        $code = "\\n\\" . PHP_EOL;
+        foreach ($model_ord as $value) {
+            $col = $value["COL"];
+            $type = $value["CONSTRAINT_TYPE"];
+            if (isset($value["CK_FILTER"])) {
+                if (($value["SKIP"] == "0") && ($value["CK_FILTER"] == "1")) {
+                    $hide_form = false;
+                    if (isset($value["HIDE_FORM"])) {
+                        $hide_form = ($value["HIDE_FORM"] == 1) ? true : false;
+                    }
+                    $hide = ($hide_form) ? "display:none;" : "";
+                    $id_colname = "dg$n" . "_" . $value["COL"];
+                    $id_div = "dg$n" . "_div_" . $value["COL"];
+                    $colname = $value["COL"];
+                    $code .= "<div id=\"$id_div\" style=\"margin-top:5px;$hide\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
+                }
+            }
+        }
+        $code .= "\\n\\";
+        return $code;
     }
 
     /**
@@ -1028,6 +1061,7 @@ class easyuigii {
         $editable = ($row["EDIT"] == 0) ? "editable:false," : "";
         $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
         $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
+
         $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
         $value_field = $row["VALUE_FIELD"]; // value for combobox
         $text_field = $row["TEXT_FIELD"];   // text for combobox
@@ -1064,6 +1098,18 @@ class easyuigii {
             //$width = "width: '$px',";
         } else {
             $width = "width: '$width_field',";
+        }
+
+        //for filter
+        $multiple = "";
+        if ($filter) {
+            $required = "";
+            if (isset($row["CK_FILTER_REQUIRED"])) {
+                $required = ($row["CK_FILTER_REQUIRED"] == 1) ? "required: true," : "required: false,";
+            }
+            if (isset($row["CK_FILTER_MULTIPLE"])) {
+                $multiple = ($row["CK_FILTER_MULTIPLE"] == 1) ? "multiple: true," : "multiple: false,";
+            }
         }
 
         if ($type_pk_fk == "PRIMARY_KEY") {
@@ -1110,7 +1156,7 @@ class easyuigii {
         }
         if ($type == "combobox") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list $readonly});" . PHP_EOL;
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list $readonly $multiple});" . PHP_EOL;
 
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 return $editor;
@@ -1124,7 +1170,7 @@ class easyuigii {
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
                 $filter = PHP_EOL . "$id_object combogrid('grid').datagrid('enableFilter');";
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field', textField: '$text_field', idField: '$value_field', method: 'get', url: '$url_combobox', $required panelWidth: 250, $readonly $limit2list_combogrid $on_select_combogrid #columns});$filter" . PHP_EOL;
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field', textField: '$text_field', idField: '$value_field', method: 'get', url: '$url_combobox', $required panelWidth: 250, $readonly $limit2list_combogrid $on_select_combogrid $multiple #columns});$filter" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;

@@ -8,21 +8,23 @@ function dg{{n}}_filter_form() {
         resizable: true,
             buttons: [{
                     text: '{{T('OK')}}',
-                    iconCls: 'icon-filter',
+                    iconCls: 'icon-search',
                     onClick: function () {
                         var isValid = $('#dg_fm').form('validate');
                         if (!isValid) {
                             $.messager.alert('{{T('attenzione')}}', '{{T('completare i campi')}}', 'warning');
                         } else {
+                            g_dg{{n}}_filter={};
                             $.each($('#dg_fm').serializeArray(), function (_, kv) {
-                                if (g_dg1_filter.hasOwnProperty(kv.name)) {
-                                    g_dg1_filter[kv.name] = $.makeArray(g_dg1_filter[kv.name]);
-                                    g_dg1_filter[kv.name].push(kv.value);
+                                if (g_dg{{n}}_filter.hasOwnProperty(kv.name)) {
+                                    g_dg{{n}}_filter[kv.name] = $.makeArray(g_dg{{n}}_filter[kv.name]);
+                                    g_dg{{n}}_filter[kv.name].push(kv.value);
                                 } else {
-                                    g_dg1_filter[kv.name] = kv.value;
+                                    g_dg{{n}}_filter[kv.name] = kv.value;
                                 }
                             });
                             $(dlg_msg).panel('close');
+                            load_dg{{n}}();
                         }
                     }
                 }, {
@@ -30,6 +32,12 @@ function dg{{n}}_filter_form() {
                     iconCls: 'icon-cancel',
                     onClick: function () {
                         $(dlg_msg).panel('close');
+                    }
+                }, {
+                    text: '{{T('resetta')}}',
+                    iconCls: 'icon-reload',
+                    onClick: function () {
+                        $('#dg_fm').form('reset');
                     }
                 }]
     });
@@ -52,4 +60,5 @@ function dg{{n}}_filter_form() {
         width: 240,
     });
     #}
+    $('#dg_fm').form('load', g_dg{{n}}_filter);
 }
