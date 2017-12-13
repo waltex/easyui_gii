@@ -9,6 +9,7 @@
         include 'api_setup.php';
 
         if ($command == 'SELECT') {
+            {{str_filter|raw}}
 
             $sql = "
             {{sql_select|raw}}

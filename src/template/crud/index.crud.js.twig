@@ -73,16 +73,16 @@ $(document).ready(function () {
             {% endif %}
             destroyMsg: {
                 norecord: {// when no record is selected
-                    title: "{{T('Attenzione')}}",
-                    msg: "{{T('Non è stata selezionata nessuna riga')}}"
+                    title: "{{T('attenzione')}}",
+                    msg: "{{T('Non e\' stata selezionata nessuna riga')}}"
                 },
                 confirm: {// when select a row
-                    title: "{{T('Conferma')}}",
+                    title: "{{T('conferma')}}",
                     msg: "{{T('Sei sicuro di voler cancellare?')}}"
                 }
             },
             onError: function (index, row) {
-                $.messager.alert("{{T('Contattare assistenza')}}", row.msg, 'error');
+                $.messager.alert("{{T('errore')}}", row.msg, 'error');
                 },
             {% if (dg_inline==1) %}
             onEdit: function (index, row) {

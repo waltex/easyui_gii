@@ -52,6 +52,7 @@ class easyuigii {
     private $crud_u = 0; //update
     private $crud_d = 0; //delete
     private $enable_filter_dg = 0; // true -> is enabled advanced filter
+    private $str_filter_dg = ""; // conditional string for add filter to sql
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -1627,29 +1628,60 @@ class easyuigii {
         return "TO_DATE($filed,'" . $this->date_format . "')";
     }
 
+    private function find_value($value, $find) {
+        if (isset($value)) {
+            return ($value == $find) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    /** add filter query to sql
+     *
+     * @param type $sql string sql
+     * @return type
+     * @throws Exception
+     */
     private function set_filter2sql($sql) {
-        $model = $this->table_model;
-        $str_filter = "";
-        foreach ($model as $value) {
-            if (isset($value["CK_FILTER"])) {
-                if ($value["CK_FILTER"] == 1) {
-                    $col = $value["COL"];
-                    if ($value["TYPE"] == "textbox") {
-                        if ($value["FILTER_LIKE"] == "1") {
-                            $str_filter .= "AND $col LIKE '%\$FILTER_$col3%'" . PHP_EOL;
-                        } else {
-                            $str_filter .= "AND $col = '\$FILTER_$col3'" . PHP_EOL;
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+            $model = $this->table_model;
+            $str_filter = "";
+            $var_filter = "";
+            foreach ($model as $value) {
+                if (isset($value["CK_FILTER"])) {
+                    if ($value["CK_FILTER"] == 1) {
+                        $col = $value["COL"];
+                        $param_api = "\$ar_filter = \"\$app->request->params('filter');\"";
+                        if ($value["TYPE"] == "textbox") {
+                            if (array_search(["FILTER_LIKE" => 1], $value)) {
+                                $param_api .= "";
+                                $str_filter .= "\$str_filter_$col=\"AND $col LIKE '%\$FILTER_$col%'\";" . PHP_EOL;
+                                $var_filter .= "\$str_filter_$col" . PHP_EOL;
+                            } else {
+                                $str_filter .= "\$str_filter_$col=\"AND $col = '\$FILTER_$col'\";" . PHP_EOL;
+                                $var_filter .= "\$str_filter_$col" . PHP_EOL;
+                            }
+                        }
+                        if ($value["TYPE"] == "numberbox") {
+                            $str_filter .= "\$str_filter_$col=\"AND $col = \$FILTER_$col\";" . PHP_EOL;
+                            $var_filter .= "\$str_filter_$col" . PHP_EOL;
                         }
                     }
                 }
             }
+            $sql_filter = "SELECT * FROM (
+                            $sql
+                            ) WHERE 1= 1
+                            $var_filter
+                          ";
+            $this->str_filter_dg = $str_filter;
+            return $sql_filter;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
         }
-        $sql_filter = "SELECT * FROM (
-                    $sql
-                    ) WHERE 1= 1
-                    $str_filter
-                    ";
-        return $sql_filter;
     }
 
     /** get string code  fn CrudBase
@@ -1657,56 +1689,61 @@ class easyuigii {
      * @param type $fn_name
      */
     private function get_api_fn_crud($api_fn_name) {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        if ($this->ck_custom_sql == 1) {
-            $sql_select = $this->custom_sql;
-            $sql_select = set_filter2sql($sql_select);
-            $sql_select = ($this->enable_filter_dg) ? set_filter2sql($sql_select) : $sql_select;
-        } else {
-            $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
-            $sql_select = ($this->enable_filter_dg) ? set_filter2sql($sql_select) : $sql_select;
+            if ($this->ck_custom_sql == 1) {
+                $sql_select = $this->custom_sql;
+                $sql_select = ($this->enable_filter_dg == 1) ? $this->set_filter2sql($sql_select) : $sql_select;
+            } else {
+                $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
+                $sql_select = ($this->enable_filter_dg == 1) ? $this->set_filter2sql($sql_select) : $sql_select;
+            }
+
+            $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
+            $sql_insert = $this->get_sql_for_insert(); //for template
+            $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
+            $bind_insert = $this->get_param_for_bind_insert_update(false);
+            $param_return = $this->get_param_insert_update_return();
+            $param_api_upd = $this->get_param_api_for_insert_update(true); //for template
+            $param_log_update = $this->get_param_sql_for_log_insert_update(true);
+            $sql_update = $this->get_sql_for_update();
+            $bind_update = $this->get_param_for_bind_insert_update(true);
+
+            $var_combo = $this->get_code_var_return_combo();
+
+            //build template html
+            $root_template = $this->root_gii . $this->template_root_path;
+            $loader = new Twig_Loader_Filesystem($root_template);
+            $twig = new Twig_Environment($loader);
+
+            $php = $twig->render('/crud/api/crud.api.oci.php.twig', array(
+                'api_fn_name' => $api_fn_name
+                , 'sql_select' => $sql_select
+                , 'var_combo' => $var_combo
+                , 'sql_insert' => $sql_insert
+                , 'table' => $this->table_name
+                , 'pk' => $this->primary_key
+                , 'param_api_ins' => $param_api_ins
+                , 'param_log_insert' => $param_log_insert
+                , 'bind_insert' => $bind_insert
+                , 'param_return' => $param_return
+                , 'param_api_upd' => $param_api_upd
+                , 'param_log_update' => $param_log_update
+                , 'sql_update' => $sql_update
+                , 'bind_update' => $bind_update
+                , 'drv_cn_var' => $this->oci_cn_var
+                , 'drv_user_var' => $this->oci_user_var
+                , 'drv_password_var' => $this->oci_password_var
+                , 'drv_charset' => $this->oci_charset
+                , 'str_filter' => $this->str_filter_dg
+            ));
+            $php = str_replace("<?php", "", $php);
+            return $php;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
         }
-
-        $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
-        $sql_insert = $this->get_sql_for_insert(); //for template
-        $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
-        $bind_insert = $this->get_param_for_bind_insert_update(false);
-        $param_return = $this->get_param_insert_update_return();
-        $param_api_upd = $this->get_param_api_for_insert_update(true); //for template
-        $param_log_update = $this->get_param_sql_for_log_insert_update(true);
-        $sql_update = $this->get_sql_for_update();
-        $bind_update = $this->get_param_for_bind_insert_update(true);
-
-        $var_combo = $this->get_code_var_return_combo();
-
-        //build template html
-        $root_template = $this->root_gii . $this->template_root_path;
-        $loader = new Twig_Loader_Filesystem($root_template);
-        $twig = new Twig_Environment($loader);
-
-        $php = $twig->render('/crud/api/crud.api.oci.php.twig', array(
-            'api_fn_name' => $api_fn_name
-            , 'sql_select' => $sql_select
-            , 'var_combo' => $var_combo
-            , 'sql_insert' => $sql_insert
-            , 'table' => $this->table_name
-            , 'pk' => $this->primary_key
-            , 'param_api_ins' => $param_api_ins
-            , 'param_log_insert' => $param_log_insert
-            , 'bind_insert' => $bind_insert
-            , 'param_return' => $param_return
-            , 'param_api_upd' => $param_api_upd
-            , 'param_log_update' => $param_log_update
-            , 'sql_update' => $sql_update
-            , 'bind_update' => $bind_update
-            , 'drv_cn_var' => $this->oci_cn_var
-            , 'drv_user_var' => $this->oci_user_var
-            , 'drv_password_var' => $this->oci_password_var
-            , 'drv_charset' => $this->oci_charset
-        ));
-        $php = str_replace("<?php", "", $php);
-        return $php;
     }
 
     /** get string code  for js function onAfterEit
