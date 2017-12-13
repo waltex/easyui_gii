@@ -51,6 +51,7 @@ class easyuigii {
     private $crud_r = 0; //read
     private $crud_u = 0; //update
     private $crud_d = 0; //delete
+    private $enable_filter_dg = 0; // true -> is enabled advanced filter
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -683,7 +684,8 @@ class easyuigii {
         ));
         $file = $dir . "/js/asset.js";
         file_put_contents($file, $js); //write generated html
-        $enable_filter = $this->enable_filter_dg(); //filtri avanzati
+
+        $this->set_enable_filter_dg();
         //create page js and html
         $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig'
             , 'n' => $this->html_prefix
@@ -694,7 +696,7 @@ class easyuigii {
             , 'crud_r' => $this->crud_r
             , 'crud_u' => $this->crud_u
             , 'crud_d' => $this->crud_d
-            , 'enable_filter' => $enable_filter
+            , 'enable_filter' => $this->enable_filter_dg
         ));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
@@ -717,8 +719,8 @@ class easyuigii {
         $options_obj = $this->get_option_for_dg_edit_form();
 
         //for filter
-        $input_cell_filter = ($enable_filter == 1) ? $this->get_input_cell_for_dg_filter_form() : "";
-        $options_obj_filter = ($enable_filter == 1) ? $this->get_option_for_dg_filter_form() : ""; //similar edit form for filter
+        $input_cell_filter = ($this->enable_filter_dg == 1) ? $this->get_input_cell_for_dg_filter_form() : "";
+        $options_obj_filter = ($this->enable_filter_dg == 1) ? $this->get_option_for_dg_filter_form() : ""; //similar edit form for filter
 
 
         $fn_dg_edit_form = "";
@@ -735,14 +737,14 @@ class easyuigii {
         }
 
         $fn_dg_filter_form = "";
-        if ($enable_filter == 1) {
+        if ($this->enable_filter_dg == 1) {
             $fn_dg_filter_form = $twig->render('/crud/dg_filter_form.js.twig', array(
                 'n' => $this->html_prefix
                 , 'input_cell_filter' => $input_cell_filter
                 , 'options_obj_filter' => $options_obj_filter
                 , 'width_form' => $this->width_form
                 , 'height_form' => $this->height_form
-                , 'enable_filter' => $enable_filter
+                , 'enable_filter' => $this->enable_filter_dg
             ));
         }
 
@@ -769,7 +771,7 @@ class easyuigii {
             , 'crud_d' => $this->crud_d
             , 'e' => ($this->crud_u == 1) ? 'e' : ''
             , 'row_num' => ($this->row_num == 1) ? 'rownumbers: true,' : ''
-            , 'enable_filter' => $enable_filter
+            , 'enable_filter' => $this->enable_filter_dg
         ));
 
         $file = $dir . "/js/index.js";
@@ -889,16 +891,10 @@ class easyuigii {
             $type = $value["CONSTRAINT_TYPE"];
             if (isset($value["CK_FILTER"])) {
                 if (($value["SKIP"] == "0") && ($value["CK_FILTER"] == "1")) {
-                    $hide_form = false;
-                    if (isset($value["HIDE_FORM"])) {
-                        $hide_form = ($value["HIDE_FORM"] == 1) ? true : false;
-                    }
-                    $hide = ($hide_form) ? "display:none;" : "";
                     $id_colname = "dg$n" . "_" . $value["COL"];
                     $id_div = "dg$n" . "_div_" . $value["COL"];
                     $colname = $value["COL"];
-                    $code .= "<div id=\"$id_div\" style=\"margin-top:5px;$hide\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
-                    //($code .= (!empty($value["FILTER_DT_FIELD"])) ? "<div style=\"display:none\" \"><input name=\"" . $colname . "_ASS\" value=" . $value["FILTER_DT_FIELD"] . "></div>\\n\\" . PHP_EOL : "";
+                    $code .= "<div id=\"$id_div\" style=\"margin-top:5px;\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
                 }
             }
         }
@@ -983,10 +979,10 @@ class easyuigii {
         return $code;
     }
 
-    /** flag for enable advanced filter
+    /** set if enable advanced filter
      * @throws Exception
      */
-    private function enable_filter_dg() {
+    private function set_enable_filter_dg() {
         try {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
             $enable_filter = 0;
@@ -998,7 +994,7 @@ class easyuigii {
                     }
                 }
             }
-            return $enable_filter;
+            $this->enable_filter_dg = $enable_filter;
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
