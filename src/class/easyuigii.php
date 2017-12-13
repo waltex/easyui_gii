@@ -898,6 +898,7 @@ class easyuigii {
                     $id_div = "dg$n" . "_div_" . $value["COL"];
                     $colname = $value["COL"];
                     $code .= "<div id=\"$id_div\" style=\"margin-top:5px;$hide\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
+                    //($code .= (!empty($value["FILTER_DT_FIELD"])) ? "<div style=\"display:none\" \"><input name=\"" . $colname . "_ASS\" value=" . $value["FILTER_DT_FIELD"] . "></div>\\n\\" . PHP_EOL : "";
                 }
             }
         }
