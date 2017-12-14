@@ -1628,12 +1628,22 @@ class easyuigii {
         return "TO_DATE($filed,'" . $this->date_format . "')";
     }
 
-    private function find_value($value, $find) {
-        if (isset($value)) {
-            return ($value == $find) ? true : false;
+
+    private function array_search_multi($value, $key, $array) {
+        if (isset($array)) {
+            foreach ($array as $k => $val) {
+                if (in_array($key, $haystack)) {
+                    if ($val[$key] == $value) {
+                        return $k;
+                    }
+                } else {
+                    return false;
+                }
+            }
         } else {
             return false;
         }
+        return false;
     }
 
     /** add filter query to sql
@@ -1649,27 +1659,30 @@ class easyuigii {
             $model = $this->table_model;
             $str_filter = "";
             $var_filter = "";
-            $var_filter2 = "";
-            $param_api = "";
+            $var_filter_assign = "";
+            $str_condition = "";
             foreach ($model as $value) {
-                if (isset($value["CK_FILTER"])) {
-                    if ($value["CK_FILTER"] == 1) {
-                        $col = $value["COL"];
-                        $param_api .= "\$FILTER_$col = \$filter[\"$col\"];";
-                        $var_filter2 .= "\$str_filter_$col=\"\";" . PHP_EOL; // for init var
-                        $var_filter .= "\$str_filter_$col" . PHP_EOL; // for sql
-                        if ($value["TYPE"] == "textbox") {
-                            if (array_search(["FILTER_LIKE" => 1], $value)) {
-                                $str_filter .= "\$str_filter_$col=\"AND $col LIKE '%\$FILTER_$col%'\";" . PHP_EOL;
-                            } else {
-                                $str_filter .= "\$str_filter_$col=\"AND $col = '\$FILTER_$col'\";" . PHP_EOL;
-                            }
-                        }
-                        if ($value["TYPE"] == "numberbox") {
-                            $str_filter .= "\$str_filter_$col=\"AND $col = \$FILTER_$col\";" . PHP_EOL;
-                            $var_filter .= "\$str_filter_$col" . PHP_EOL;
+                //$tmp = array_search("1", array_column($value, 'CK_FILTER'));
+                $tmp = $this->array_search_multi("1", "CK_FILTER", $value);
+
+                if (array_search(["CK_FILTER" => 1], $value)) {
+                    $col = $value["COL"];
+
+                    $var_filter .= "\$FILTER_$col" . PHP_EOL;
+                    //assign parameter
+                    $var_filter_assign .= "\$FILTER_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                    if ($value["TYPE"] == "textbox") {
+                        if (array_search(["FILTER_LIKE" => 1], $value)) {
+                            $str_condition = "AND $col LIKE '%\$FILTER_$col%'\";";
+                        } else {
+                            $str_condition = "AND $col = '\$FILTER_$col'\";";
                         }
                     }
+                    if ($value["TYPE"] == "numberbox") {
+                        $str_condition = "AND $col = \$FILTER_$col\";";
+                    }
+                    // es..  $str_filter_CAMPO1 = ($FILTER_CAMPO1 != "") ? "AND CAMPO1 = '$FILTER_CAMPO1'" : "";
+                    $str_filter = "\$str_filter_CAMPO1 = (\$FILTER_CAMPO1 != \"\") ? $str_condition : \"\"" . PHP_EOL;
                 }
             }
             $sql_filter = "SELECT * FROM (
@@ -1678,20 +1691,13 @@ class easyuigii {
                             $var_filter
                             ";
 
-            $str_filter_all = "
+            $param_all = "
                                \$filter = \$app->request->params('filter'); // Param from Post user
-                               $param_api
-                               $var_filter2
-                               if (isset(\$filter)) {
-                                   $str_filter
-                               }
+                               $var_filter_assign
+                               $str_filter
                             ";
 
-            $this->str_filter_dg = $str_filter_all;
-
-            $param_api = "\$filter = \"\$app->request->params('filter');\"" . PHP_EOL . $param_api;
-
-
+            $this->str_filter_dg = $param_all;
 
             return $sql_filter;
         } catch (Exception $e) {
