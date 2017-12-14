@@ -1642,31 +1642,36 @@ class easyuigii {
             $str_filter = "";
             $var_filter = "";
             $var_filter_assign = "";
-            $str_condition = "";
             foreach ($model as $value) {
-                if (isset($value["CK_FILTER"])) {
-                    if ($value["CK_FILTER"] == 1) {
-                        $col = $value["COL"];
+                if ((isset($value["CK_FILTER"])) && ($value["CK_FILTER"] == 1) && ($value["CK_FILTER"] == 1)) {
+                    $col = $value["COL"];
+                    $str_condition = "\"\"";
 
-                        $var_filter .= "\$str_filter_$col" . PHP_EOL;
-                        //assign parameter
-                        $var_filter_assign .= "\$FILTER_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
-                        if ($value["TYPE"] == "textbox") {
-                            if ($value["CK_FILTER"] == 1) {
-                                $str_condition = "\"AND $col LIKE '%\$FILTER_$col%'\"";
-                            } else {
-                                $str_condition = "\"AND $col = '\$FILTER_$col'\"";
-                            }
+                    $var_filter .= "\$str_filter_$col" . PHP_EOL;
+                    //assign parameter
+                    $var_filter_assign .= "\$FILTER_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                    if ($value["TYPE"] == "textbox") {
+                        if ($value["CK_FILTER_LIKE"] == 1) {
+                            $str_condition = "\"AND $col LIKE '%\$FILTER_$col%'\"";
+                        } else {
+                            $str_condition = "\"AND $col = '\$FILTER_$col'\"";
                         }
-                        if ($value["TYPE"] == "numberbox") {
-                            $str_condition = "\"AND $col = \$FILTER_$col\"";
-                        }
-                        // es..  $str_filter_CAMPO1 = ($FILTER_CAMPO1 != "") ? "AND CAMPO1 = '$FILTER_CAMPO1'" : "";
-                        $str_filter .= "\$str_filter_$col = (\$FILTER_$col != \"\") ? $str_condition : \"\";" . PHP_EOL;
                     }
+                    // for number box
+                    if (($value["TYPE"] == "numberbox") && ($value["CK"] == "0")) {
+                        $str_condition = "\"AND $col = \$FILTER_$col\"";
+                    }
+                    // for field yes/no
+                    if (($value["TYPE"] == "numberbox") && ($value["CK"] == "1")) {
+                        $str_condition = "\"AND $col in (\$FILTER_$col)\"";
+                    }
+
+                    // es..  $str_filter_CAMPO1 = ($FILTER_CAMPO1 != "") ? "AND CAMPO1 = '$FILTER_CAMPO1'" : "";
+                    $str_filter .= "\$str_filter_$col = (\$FILTER_$col != \"\") ? $str_condition : \"\";" . PHP_EOL;
                 }
             }
-            $sql_filter = "SELECT * FROM (
+            $sql_filter = "
+                            SELECT * FROM (
                             $sql
                             ) WHERE 1= 1
                             $var_filter
