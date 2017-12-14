@@ -1628,24 +1628,6 @@ class easyuigii {
         return "TO_DATE($filed,'" . $this->date_format . "')";
     }
 
-
-    private function array_search_multi($value, $key, $array) {
-        if (isset($array)) {
-            foreach ($array as $k => $val) {
-                if (in_array($key, $haystack)) {
-                    if ($val[$key] == $value) {
-                        return $k;
-                    }
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
-        }
-        return false;
-    }
-
     /** add filter query to sql
      *
      * @param type $sql string sql
@@ -1662,27 +1644,26 @@ class easyuigii {
             $var_filter_assign = "";
             $str_condition = "";
             foreach ($model as $value) {
-                //$tmp = array_search("1", array_column($value, 'CK_FILTER'));
-                $tmp = $this->array_search_multi("1", "CK_FILTER", $value);
+                if (isset($value["CK_FILTER"])) {
+                    if ($value["CK_FILTER"] == 1) {
+                        $col = $value["COL"];
 
-                if (array_search(["CK_FILTER" => 1], $value)) {
-                    $col = $value["COL"];
-
-                    $var_filter .= "\$FILTER_$col" . PHP_EOL;
-                    //assign parameter
-                    $var_filter_assign .= "\$FILTER_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
-                    if ($value["TYPE"] == "textbox") {
-                        if (array_search(["FILTER_LIKE" => 1], $value)) {
-                            $str_condition = "AND $col LIKE '%\$FILTER_$col%'\";";
-                        } else {
-                            $str_condition = "AND $col = '\$FILTER_$col'\";";
+                        $var_filter .= "\$str_filter_$col" . PHP_EOL;
+                        //assign parameter
+                        $var_filter_assign .= "\$FILTER_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                        if ($value["TYPE"] == "textbox") {
+                            if ($value["CK_FILTER"] == 1) {
+                                $str_condition = "\"AND $col LIKE '%\$FILTER_$col%'\"";
+                            } else {
+                                $str_condition = "\"AND $col = '\$FILTER_$col'\"";
+                            }
                         }
+                        if ($value["TYPE"] == "numberbox") {
+                            $str_condition = "\"AND $col = \$FILTER_$col\"";
+                        }
+                        // es..  $str_filter_CAMPO1 = ($FILTER_CAMPO1 != "") ? "AND CAMPO1 = '$FILTER_CAMPO1'" : "";
+                        $str_filter .= "\$str_filter_$col = (\$FILTER_$col != \"\") ? $str_condition : \"\";" . PHP_EOL;
                     }
-                    if ($value["TYPE"] == "numberbox") {
-                        $str_condition = "AND $col = \$FILTER_$col\";";
-                    }
-                    // es..  $str_filter_CAMPO1 = ($FILTER_CAMPO1 != "") ? "AND CAMPO1 = '$FILTER_CAMPO1'" : "";
-                    $str_filter = "\$str_filter_CAMPO1 = (\$FILTER_CAMPO1 != \"\") ? $str_condition : \"\"" . PHP_EOL;
                 }
             }
             $sql_filter = "SELECT * FROM (
