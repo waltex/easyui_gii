@@ -1108,6 +1108,7 @@ class easyuigii {
             if (isset($row["CK_FILTER_MULTIPLE"])) {
                 $multiple = ($row["CK_FILTER_MULTIPLE"] == 1) ? "multiple: true," : "multiple: false,";
             }
+            $multiple = ($row["CK"] == 1) ? "multiple: true," : "";
         }
 
         if ($type_pk_fk == "PRIMARY_KEY") {
@@ -1120,7 +1121,7 @@ class easyuigii {
             $yes = $this->T("si");
             $no = $this->T("no");
             $data = "[{text: '$yes',value:'1'},{text:'$no',value:'0'}]";
-            $editor = "$id_object" . "combobox({" . PHP_EOL . "valueField: 'value', textField: 'text', $width $label $required panelHeight:50, data:$data, limitToList: true, $readonly });" . PHP_EOL;
+            $editor = "$id_object" . "combobox({" . PHP_EOL . "valueField: 'value', textField: 'text', $width $label $required panelHeight:50, data:$data, limitToList: true, $readonly $multiple });" . PHP_EOL;
             $editor = str_replace(", ", "," . PHP_EOL, $editor); //only space return dot
             return $editor;
         }
@@ -1649,7 +1650,15 @@ class easyuigii {
 
                     $var_filter .= "\$str_filter_$col" . PHP_EOL;
                     //assign parameter
-                    $var_filter_assign .= "\$FILTER_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                    $multiple = false;
+                    ($value["CK"] == "1") ? $multiple = true : false;
+
+                    if (!$multiple) {
+                        $var_filter_assign .= "\$FILTER_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                    } else {
+                        $var_filter_assign .= "\$FILTER_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                        $var_filter_assign .= "\$FILTER_$col = (is_array(\$filter[\"$col\"])) ? implode(\",\", \$filter[\"$col\"]) : \$filter[\"$col\"];" . PHP_EOL;
+                    }
                     if ($value["TYPE"] == "textbox") {
                         if ($value["CK_FILTER_LIKE"] == 1) {
                             $str_condition = "\"AND $col LIKE '%\$FILTER_$col%'\"";
