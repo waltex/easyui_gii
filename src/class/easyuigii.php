@@ -1108,7 +1108,10 @@ class easyuigii {
             if (isset($row["CK_FILTER_MULTIPLE"])) {
                 $multiple = ($row["CK_FILTER_MULTIPLE"] == 1) ? "multiple: true," : "multiple: false,";
             }
-            $multiple = ($row["CK"] == 1) ? "multiple: true," : "";
+
+            
+            //for last
+            ($row["CK"] == 1) ? $multiple = "multiple: true," : false;
         }
 
         if ($type_pk_fk == "PRIMARY_KEY") {
@@ -1652,12 +1655,16 @@ class easyuigii {
                     //assign parameter
                     $multiple = false;
                     ($value["CK"] == "1") ? $multiple = true : false;
+                    ($value["TYPE"] == "combogrid") ? $multiple = true : false;
+                    ($value["TYPE"] == "combobox") ? $multiple = true : false;
 
+                    //((isset($filter)) && $filter["CAMPO1"])
                     if (!$multiple) {
-                        $var_filter_assign .= "\$filter_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                        $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
                     } else {
-                        $var_filter_assign .= "\$filter_$col = (isset(\$filter)) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
-                        $var_filter_assign .= "\$filter_$col = (is_array(\$filter[\"$col\"])) ? implode(\",\", \$filter[\"$col\"]) : \$filter[\"$col\"];" . PHP_EOL;
+                        //$filter_COMBO
+                        $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                        $var_filter_assign .= "\$filter_$col = (is_array(\$filter_$col)) ? implode(\",\", \$filter_$col) : \$filter_$col;" . PHP_EOL;
                     }
                     if ($value["TYPE"] == "textbox") {
                         if ($value["CK_FILTER_LIKE"] == 1) {
@@ -1672,6 +1679,10 @@ class easyuigii {
                     }
                     // for field yes/no
                     if (($value["TYPE"] == "numberbox") && ($value["CK"] == "1")) {
+                        $str_condition = "\"AND $col in (\$filter_$col)\"";
+                    }
+
+                    if (($value["TYPE"] == "combobox") || ($value["TYPE"] == "combogrid")) {
                         $str_condition = "\"AND $col in (\$filter_$col)\"";
                     }
 
