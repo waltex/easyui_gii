@@ -1658,6 +1658,8 @@ class easyuigii {
                     ($value["TYPE"] == "combogrid") ? $multiple = true : false;
                     ($value["TYPE"] == "combobox") ? $multiple = true : false;
 
+               
+
                     //((isset($filter)) && $filter["CAMPO1"])
                     if (!$multiple) {
                         $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
@@ -1684,6 +1686,12 @@ class easyuigii {
 
                     if (($value["TYPE"] == "combobox") || ($value["TYPE"] == "combogrid")) {
                         $str_condition = "\"AND $col in (\$filter_$col)\"";
+                        // for id cpmbobox in text
+                        $quote = "";
+                        if (isset($value["CK_FILTER_IDTEXT"])) {
+                            $var_filter_assign .= "// for quote on combo" . PHP_EOL;
+                            $var_filter_assign .= "\$filter_$col = (\$filter_$col != \"\") ? \"'\" . str_replace(\",\", \"','\", \$filter_$col) . \"'\" : \"\";" . PHP_EOL . PHP_EOL;
+                        }
                     }
 
                     // es..  $str_filter_CAMPO1 = ($filter_CAMPO1 != "") ? "AND CAMPO1 = '$filter_CAMPO1'" : "";
