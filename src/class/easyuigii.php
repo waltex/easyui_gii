@@ -1647,7 +1647,7 @@ class easyuigii {
             $var_filter = "";
             $var_filter_assign = "";
             foreach ($model as $value) {
-                if ((isset($value["CK_FILTER"])) && ($value["CK_FILTER"] == 1) && ($value["CK_FILTER"] == 1)) {
+                if ((isset($value["CK_FILTER"])) && ($value["CK_FILTER"] == 1)) {
                     $col = $value["COL"];
                     $str_condition = "\"\"";
 

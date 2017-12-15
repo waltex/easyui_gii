@@ -333,6 +333,7 @@ function init_app() {
                     {field: "CK_FILTER_LIKE", title: T('Filtro') + '<br> ' + T('Contiene'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_REQUIRED", title: T('Filtro') + '<br> ' + T('Richiesto'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_MULTIPLE", title: T('Filtro') + '<br> ' + T('Sel. Multipla'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "CK_FILTER_IDTEXT", title: T('Filtro') + '<br> ' + T('ID testo'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "FILTER_DT_FIELD", title: T('Filtro') + '<br> ' + T('Associa Data'), editor: {type: 'textbox', options: {}}, hidden: true},
                 ]],
         });
@@ -414,7 +415,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -2042,6 +2043,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_MULTIPLE'});
                     $(ed.target).textbox('setValue', ck_filter_multiple);
 
+                    var ck_filter_idtext = $("#sb_ck_filter_idtext").switchbutton('options').checked
+                    ck_filter_idtext = (ck_filter_idtext) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_IDTEXT'});
+                    $(ed.target).textbox('setValue', ck_filter_idtext);
+
                 }
             });
 
@@ -2051,6 +2057,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     <div id="div_filter" style="margin-top:5px;display:none">\n\
                         <div style="margin-top:5px"><input id="sb_ck_filter_required"><label style="margin-left:5px">' + T('campo obbligatorio') + '</label></div>\n\
                         <div style="margin-top:5px"><input id="sb_ck_filter_multiple"><label style="margin-left:5px">' + T('selezione multipla') + '</label></div>\n\
+\n\                     <div style="margin-top:5px"><input id="sb_ck_filter_idtext"><label style="margin-left:5px">' + T('ritorno valori (id) in formato testo') + '</label></div>\n\
                     </div>\n\
                     ';
             dlg_msg.find('div').end().append(input_cel);
@@ -2061,6 +2068,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var current_ck_filter_required = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_MULTIPLE'});
             var current_ck_filter_multiple = $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_IDTEXT'});
+            var current_ck_filter_idtext = $(ed.target).textbox('getValue');
 
             $("#sb_ck_filter").switchbutton({
                 checked: true,
@@ -2080,6 +2089,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 checked: true,
                 onText: T('si'), offText: T('no'),
                 checked: (current_ck_filter_multiple == 1) ? true : false,
+            });
+            $("#sb_ck_filter_idtext").switchbutton({
+                checked: true,
+                onText: T('si'), offText: T('no'),
+                checked: (current_ck_filter_idtext == 1) ? true : false,
             });
         }
 
