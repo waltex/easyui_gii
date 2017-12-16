@@ -895,7 +895,9 @@ class easyuigii {
                     $id_colname = "dg$n" . "_" . $value["COL"];
                     $id_div = "dg$n" . "_div_" . $value["COL"];
                     $colname = $value["COL"];
-                    $code .= "<div id=\"$id_div\" style=\"margin-top:5px;\"><input id=\"$id_colname\" name=\"$colname\"></div>\\n\\" . PHP_EOL;
+                    //<input class="easyui-datebox" sharedCalendar="#sc">
+                    $dt_beteen = ($value["CK_FILTER_BETWEEN"] == "1") ? "&nbsp;<input id=\"$id_colname" . "__TO\" name=\"$colname" . "__TO\">" : "";
+                    $code .= "<div id=\"$id_div\" style=\"margin-top:5px;\"><input id=\"$id_colname\" name=\"$colname\">$dt_beteen</div>\\n\\" . PHP_EOL;
                 }
             }
         }
@@ -1014,6 +1016,12 @@ class easyuigii {
             if (isset($value["CK_FILTER"])) {
                 if (($value["SKIP"] == "0") && ($value["CK_FILTER"] == "1")) {
                     $code .= $this->get_option_for_field_form($value, true); //for filter
+                    if ($value["CK_FILTER_BETWEEN"] == "1") {
+                        //add second date
+                        $value["COL"] = $value["COL"] . "__TO";
+                        $value["TITLE"] = $this->T("compreso");
+                        $code .= $this->get_option_for_field_form($value, true); //for filter
+                    }
                 }
             }
         }
@@ -1109,7 +1117,7 @@ class easyuigii {
                 $multiple = ($row["CK_FILTER_MULTIPLE"] == 1) ? "multiple: true," : "multiple: false,";
             }
 
-            
+
             //for last
             ($row["CK"] == 1) ? $multiple = "multiple: true," : false;
         }
@@ -1658,11 +1666,12 @@ class easyuigii {
                     ($value["TYPE"] == "combogrid") ? $multiple = true : false;
                     ($value["TYPE"] == "combobox") ? $multiple = true : false;
 
-               
+
 
                     //((isset($filter)) && $filter["CAMPO1"])
                     if (!$multiple) {
                         $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                        $var_filter_assign .= ($value["CK_FILTER_BETWEEN"] == "1") ? "\$filter_$col" . "__TO = ((isset(\$filter)) && isset(\$filter[\"$col" . "__TO\"])) ? \$filter[\"$col" . "__TO\"] : \"\";" . PHP_EOL : ""; // assign 2°  for date between
                     } else {
                         //$filter_COMBO
                         $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
@@ -1695,13 +1704,13 @@ class easyuigii {
                     }
 
                     if ($value["TYPE"] == "datebox") {
-                        if ($value["FILTER_DT_FIELD"] == "") {
-                            $str_condition = "\"AND $col = '\$filter_$col'\"";
-                        } else {
-                            $col2 = $value["FILTER_DT_FIELD"];
+                        if ($value["CK_FILTER_BETWEEN"] == "1") {
                             $dt = $this->format_dt2todate($col);
-
-                            $str_condition = "\"AND $dt BETWEEN '\$filter_$col' and '\$filter_$col2' \"";
+                            $dt_from = $this->format_dt2todate("'\$filter_" . $col . "'");
+                            $dt_to = $this->format_dt2todate("'\$filter_" . $col . "__TO'");
+                            $str_condition = "\"AND $dt BETWEEN $dt_from and $dt_to\"";
+                        } else {
+                            $str_condition = "\"AND $col = '\$filter_$col'\"";
                         }
                     }
 

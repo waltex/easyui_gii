@@ -334,7 +334,7 @@ function init_app() {
                     {field: "CK_FILTER_REQUIRED", title: T('Filtro') + '<br> ' + T('Richiesto'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_MULTIPLE", title: T('Filtro') + '<br> ' + T('Sel. Multipla'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_IDTEXT", title: T('Filtro') + '<br> ' + T('ID testo'), editor: {type: 'textbox', options: {}}, hidden: true},
-                    {field: "FILTER_DT_FIELD", title: T('Filtro') + '<br> ' + T('Associa Data'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "CK_FILTER_BETWEEN", title: T('Filtro') + '<br> ' + T('intervallo date'), editor: {type: 'textbox', options: {}}, hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -415,7 +415,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -2118,9 +2118,12 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_REQUIRED'});
                     $(ed.target).textbox('setValue', ck_filter_required);
 
-                    var filter_dt_field = $("#cc_filter_dt_field").combobox('getValue');
-                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FILTER_DT_FIELD'});
-                    $(ed.target).textbox('setValue', filter_dt_field);
+                    var ck_filter_between = $("#sb_ck_filter_between").switchbutton('options').checked
+                    ck_filter_between = (ck_filter_between) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_BETWEEN'});
+                    $(ed.target).textbox('setValue', ck_filter_between);
+
+
 
                 }
             });
@@ -2130,7 +2133,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     <input id="sb_ck_filter"><label style="margin-left:5px">' + T('abilita filtro') + '</label>\n\
                     <div id="div_filter" style="margin-top:5px;display:none">\n\
                         <div style="margin-top:5px"><input id="sb_ck_filter_required"><label style="margin-left:5px">' + T('campo obbligatorio') + '</label></div>\n\
-                        <div style="margin-top:5px"><input id="cc_filter_dt_field"></div>\n\
+                        <div style="margin-top:5px"><input id="sb_ck_filter_between"><label style="margin-left:5px">' + T('intervallo tra due date') + '</label></div>\n\
                     </div>\n\
                     ';
             dlg_msg.find('div').end().append(input_cel);
@@ -2139,8 +2142,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var current_ck_filter = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_REQUIRED'});
             var current_ck_filter_required = $(ed.target).textbox('getValue');
-            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FILTER_DT_FIELD'});
-            var current_filter_dt_field = $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_FILTER_BETWEEN'});
+            var current_ck_filter_between = $(ed.target).textbox('getValue');
 
             $("#sb_ck_filter").switchbutton({
                 checked: true,
@@ -2157,20 +2160,10 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 checked: (current_ck_filter_required == 1) ? true : false,
             });
 
-            $('#cc_filter_dt_field').combobox({
-                //url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
-                width: 150,
-                label: T('associa campo data per filtrare i valori compresi tra le due date'),
-                labelPosition: 'top',
-                labelWidth: '350',
-                valueField: 'COL',
-                textField: 'COL',
-                buttonIcon: 'icon-reload',
-                buttonAlign: 'left',
-                value: current_filter_dt_field,
-                onClickButton: function () {
-                    $(this).combobox({url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue')});
-                },
+            $("#sb_ck_filter_between").switchbutton({
+                checked: false,
+                onText: T('si'), offText: T('no'),
+                checked: (current_ck_filter_between == 1) ? true : false,
             });
         }
 
