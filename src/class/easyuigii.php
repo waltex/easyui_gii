@@ -1694,6 +1694,17 @@ class easyuigii {
                         }
                     }
 
+                    if ($value["TYPE"] == "datebox") {
+                        if ($value["FILTER_DT_FIELD"] == "") {
+                            $str_condition = "\"AND $col = '\$filter_$col'\"";
+                        } else {
+                            $col2 = $value["FILTER_DT_FIELD"];
+                            $dt = $this->format_dt2todate($col);
+
+                            $str_condition = "\"AND $dt BETWEEN '\$filter_$col' and '\$filter_$col2' \"";
+                        }
+                    }
+
                     // es..  $str_filter_CAMPO1 = ($filter_CAMPO1 != "") ? "AND CAMPO1 = '$filter_CAMPO1'" : "";
                     $str_filter .= "\$str_filter_$col = (\$filter_$col != \"\") ? $str_condition : \"\";" . PHP_EOL;
                 }
