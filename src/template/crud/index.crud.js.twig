@@ -76,7 +76,7 @@ $(document).ready(function () {
             destroyMsg: {
                 norecord: {// when no record is selected
                     title: "{{T('attenzione')}}",
-                    msg: "{{T('Non e\' stata selezionata nessuna riga')}}"
+                    msg: "{{T('Non è stata selezionata nessuna riga'|raw)}}"
                 },
                 confirm: {// when select a row
                     title: "{{T('conferma')}}",
@@ -125,6 +125,9 @@ $(document).ready(function () {
         {% if (filter_base==1) %}        
         $('#dg{{n}}').datagrid('enableFilter');
         $('#dg{{n}}').datagrid('removeFilterRule');
+        {% endif %}
+        {% if (enable_filter==1) %}
+        console.log('?&filter='+JSON.stringify(g_dg{{n}}_filter));
         {% endif %}
     }
     {% if (crud_u==1) or (crud_c==1) %}
