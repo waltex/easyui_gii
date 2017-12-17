@@ -9,10 +9,12 @@ var g_edit_index;
 var g_dg{{n}}_expand=true;
 {% endif %}
 $(document).ready(function () {
+    {% if (crud_r=="1")  %}
     $('#dg{{n}}_reload').bind('click', function () {
         load_dg{{n}}();
     });
-    {% if (dg_inline==0) and (crud_u=="1")  %}
+    {% endif %}
+    {% if (dg_inline==0) and (crud_c=="1")  %}
     $('#dg{{n}}_insert').bind('click', function () {
         dg{{n}}_edit_form('insert');
         {% if (form_full==1) %}
@@ -125,10 +127,13 @@ $(document).ready(function () {
         $('#dg{{n}}').datagrid('removeFilterRule');
         {% endif %}
     }
-
-    load_dg{{n}}();
     {% if (crud_u==1) or (crud_c==1) %}
     {{fn_dg_edit_form|raw}}
     {% endif %}
     {{fn_dg_filter_form|raw}}
+    {% if (enable_filter==1) %}
+    var filter = getURLParameter('filter');
+    (filter != null) ? g_dg{{n}}_filter = JSON.parse(filter) : false;
+    {% endif %}
+    load_dg{{n}}();
 });

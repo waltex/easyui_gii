@@ -148,7 +148,7 @@ class easyuigii {
             $value_field = "";
             ($value["TYPE"] == "datebox") ? $value_field = $par_dt : false;
             ($value["TYPE"] == "combobox") ? $value_field = $par_combo : false;
-            ($value["TYPE"] == "textbox") ? $value_field = $par_text : false;
+            (($value["TYPE"] == "textbox") || ($value["TYPE"] == "textarea")) ? $value_field = $par_text : false;
             ($value["TYPE"] == "numberbox") ? $value_field = $par_number : false;
             ($value["CK"] == "1") ? $value_field = $par_onoff : false;
             $value["WIDTH_FORM"] = $value_field;

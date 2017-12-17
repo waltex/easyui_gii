@@ -95,3 +95,6 @@ function dg_collapse_expand(dg, collapse) {
         (collapse == 1) ? $(dg).datagrid('collapseGroup', i) : $(dg).datagrid('expandGroup', i);
     }
 }
+function getURLParameter(name) {
+    return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
+}
