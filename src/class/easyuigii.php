@@ -1677,7 +1677,7 @@ class easyuigii {
                         $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
                         $var_filter_assign .= "\$filter_$col = (is_array(\$filter_$col)) ? implode(\",\", \$filter_$col) : \$filter_$col;" . PHP_EOL;
                     }
-                    if ($value["TYPE"] == "textbox") {
+                    if (($value["TYPE"] == "textbox") || ($value["TYPE"] == "textarea")) {
                         if ($value["CK_FILTER_LIKE"] == 1) {
                             $str_condition = "\"AND $col LIKE '%\$filter_$col%'\"";
                         } else {
