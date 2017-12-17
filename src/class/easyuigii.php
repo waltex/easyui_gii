@@ -1015,6 +1015,7 @@ class easyuigii {
         foreach ($model_ord as $value) {
             if (isset($value["CK_FILTER"])) {
                 if (($value["SKIP"] == "0") && ($value["CK_FILTER"] == "1")) {
+                    ($value["TYPE"] == "textarea") ? $value["TYPE"] = "textbox" : false;
                     $code .= $this->get_option_for_field_form($value, true); //for filter
                     if ($value["CK_FILTER_BETWEEN"] == "1") {
                         //add second date
