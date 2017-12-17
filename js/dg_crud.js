@@ -924,10 +924,24 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 
     $('#cc_group_col').combobox({
         //url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
-        width: 300,
+        width: 350,
         label: T('raggruppa per colonna'),
         labelPosition: 'right',
-        labelWidth: 150,
+        labelWidth: 200,
+        valueField: 'COL',
+        textField: 'COL',
+        buttonIcon: 'icon-reload',
+        buttonAlign: 'left',
+        onClickButton: function () {
+            $(this).combobox({url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue')});
+        },
+    });
+    $('#cc_lock_col').combobox({
+        //url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
+        width: 350,
+        label: T('blocca scorrimento colonna'),
+        labelPosition: 'right',
+        labelWidth: 200,
         valueField: 'COL',
         textField: 'COL',
         buttonIcon: 'icon-reload',
@@ -1110,6 +1124,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var ck_row_styler = ($("#sb_row_styler").switchbutton('options').checked) ? 1 : 0;
         var row_styler = $('#tb_row_styler').textbox('getValue');
         var group_col = $('#cc_group_col').combobox('getText');
+        var lock_col = $('#cc_lock_col').combobox('getText');
         var ck_sql_alias = g_cfg.ck_sql_alias;
 
 
@@ -1138,6 +1153,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             ck_row_styler: ck_row_styler,
             row_styler: row_styler,
             group_col: group_col,
+            lock_col: lock_col,
             ck_sql_alias: ck_sql_alias,
         };
         return cfg;
@@ -1201,6 +1217,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         (cfg.ck_row_styler == 1) ? $("#sb_row_styler").switchbutton('check') : $("#sb_row_styler").switchbutton('uncheck');
         $('#tb_row_styler').textbox('setValue', cfg.row_styler);
         $('#cc_group_col').combobox('setValue', cfg.group_col);
+        $('#cc_lock_col').combobox('setValue', cfg.lock_col);
         g_cfg.ck_sql_alias = cfg.ck_sql_alias;
 
     }
@@ -1896,7 +1913,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
     }
 
     function edit_filter(type, index) {
-        if ((type == "textbox") || (type == "texarea")) {
+        if ((type == "textbox") || (type == "textarea")) {
             var dlg_msg = $.messager.prompt({
                 id: 'dlg_filter',
                 title: T('filtri avanzati'),

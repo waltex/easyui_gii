@@ -201,6 +201,7 @@ function crud_generate() {
         $gii->ck_row_styler = $app->request->params('ck_row_styler');
         $gii->row_styler = $app->request->params('row_styler');
         $gii->group_col = $app->request->params('group_col');
+        $gii->lock_col = $app->request->params('lock_col');
 
         $gii->build_app_crud();
 

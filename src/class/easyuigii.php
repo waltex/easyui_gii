@@ -46,6 +46,7 @@ class easyuigii {
     public $ck_row_styler = 0; //chewck for enable  code for rowstyler
     public $row_styler = ""; // code for rowstyler
     public $group_col = ""; // column for group data of datagrid
+    public $lock_col = ""; // lock scroll column of datagrid
     public $crud = ['C', 'R', 'U', 'D']; // abilitazioni
     private $crud_c = 0; //create
     private $crud_r = 0; //read
@@ -970,16 +971,34 @@ class easyuigii {
         ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
         $model_ord = $this->model_order_primary_key();
-        $code = "";
-        foreach ($model_ord as $value) {
-            $col = $value["COL"];
-            $type = $value["CONSTRAINT_TYPE"];
-            if ($value["SKIP"] == "0") {
-                $code .= $this->get_js_inline_crud_col($value);
+
+        if ($this->lock_col == "") {
+            $code = "";
+            foreach ($model_ord as $value) {
+                $col = $value["COL"];
+                $type = $value["CONSTRAINT_TYPE"];
+                if ($value["SKIP"] == "0") {
+                    $code .= $this->get_js_inline_crud_col($value);
+                }
             }
+            $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
+            return $code;
+        } else { // for frozen col, is lock scrolling col
+            $code = "";
+            $code_frozen = "";
+            $is_frozen = true;
+            foreach ($model_ord as $value) {
+                $col = $value["COL"];
+                $type = $value["CONSTRAINT_TYPE"];
+                if ($value["SKIP"] == "0") {
+                    ($is_frozen) ? $code_frozen .= $this->get_js_inline_crud_col($value) : $code .= $this->get_js_inline_crud_col($value);
+                    ($col == $this->lock_col) ? $is_frozen = false : false;
+                }
+            }
+            $code_frozen = "frozenColumns: [[" . PHP_EOL . $code_frozen . PHP_EOL . "]]," . PHP_EOL;
+            $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
+            return $code_frozen . $code;
         }
-        $code = "columns: [[" . PHP_EOL . $code . PHP_EOL . "]]," . PHP_EOL;
-        return $code;
     }
 
     /** set if enable advanced filter
