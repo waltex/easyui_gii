@@ -448,7 +448,7 @@ function init_app() {
         label: T('abilita comandi su dati (C.R.U.D.)'),
         labelWidth: 250,
         width: 500,
-        required: true,
+        required: false,
         value: ['C', 'R', 'U', 'D'],
         //panelWidth: 300,
         multiple: true,

@@ -1039,7 +1039,7 @@ class easyuigii {
                     if ($this->is_array_gii($value, "CK_FILTER_BETWEEN", 1, 0) == "1") {
                         //add second date
                         $value["COL"] = $value["COL"] . "__TO";
-                        $value["TITLE"] = $this->T("compreso");
+                        $value["TITLE"] = $this->T("intervallo date");
                         $code .= $this->get_option_for_field_form($value, true); //for filter
                     }
                 }
