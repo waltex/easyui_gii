@@ -98,3 +98,13 @@ function dg_collapse_expand(dg, collapse) {
 function getURLParameter(name) {
     return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [, ""])[1].replace(/\+/g, '%20')) || null;
 }
+function add_bt2datebox(bt_text, dt_value) {
+    var buttons = $.extend([], $.fn.datebox.defaults.buttons);
+    buttons.splice(1, 0, {
+        text: bt_text, //'9999',
+        handler: function (target) {
+            $(target).datebox('setValue', dt_value);//'31-12-9999'
+        }
+    });
+    return buttons;
+}

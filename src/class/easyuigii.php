@@ -1110,6 +1110,9 @@ class easyuigii {
         $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
         // for bind field on select
         $on_select_combogrid = ($fields != "") ? $this->get_for_combogrid__selecet_on($fields) : "";
+        $dt_bt_text = $this->app_setting["testo pulsante data massima per datebox"];
+        $dt_value_max = $this->app_setting["valore data massima per datebox"];
+        $buttons_dt = ($this->is_array_gii($row, "CK_DT_MAX", 1, 0) == 1) ? "buttons: add_bt2datebox('$dt_bt_text','$dt_value_max')," : "";
 
         $id_object = "$('#dg$n_dg" . "_$col').";
 
@@ -1180,8 +1183,8 @@ class easyuigii {
             $with = "width: '100px',";
             ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
             $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
-            $editor = "$id_object" . "datebox({" . PHP_EOL . " $width $label $required $readonly $date_format});" . PHP_EOL;
-            $editor = str_replace(",", "," . PHP_EOL, $editor);
+            $editor = "$id_object" . "datebox({" . PHP_EOL . " $width $label $required $readonly $buttons_dt $date_format});" . PHP_EOL;
+            $editor = str_replace(", ", "," . PHP_EOL, $editor);
             return $editor;
         }
         if ($type == "combobox") {
@@ -1245,6 +1248,9 @@ class easyuigii {
             $icon = ($icon == "1") ? "showItemIcon:true," : "";
             $fields = (isset($row["FIELDS"])) ? $row["FIELDS"] : "";
             $columns = ($fields != '') ? $this->get_fields_for_combogrid($fields) : "";
+            $dt_bt_text = $this->app_setting["testo pulsante data massima per datebox"];
+            $dt_value_max = $this->app_setting["valore data massima per datebox"];
+            $buttons_dt = ($this->is_array_gii($row, "CK_DT_MAX", 1, 0) == 1) ? "buttons: add_bt2datebox('$dt_bt_text','$dt_value_max')," : "";
 
             $pk = $this->primary_key;
 
@@ -1288,7 +1294,7 @@ class easyuigii {
                 $with = "width: '100px',";
                 ($this->date_format = "DD-MM-YYYY") ? $type_dt = "it" : $type_dt = "en";
                 $date_format = "formatter: myformatter_d_$type_dt, parser: myparser_d_$type_dt,";
-                $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required}}," : "";
+                $editor = ($edit == "1") ? "editor: {type: 'datebox', options: { $date_format $required $buttons_dt}}," : "";
                 return "{field: '$col', title: '$colt', $width $editor $sortable $hiden}," . PHP_EOL;
             }
             if ($type == "combogrid") {

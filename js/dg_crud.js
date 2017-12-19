@@ -335,6 +335,7 @@ function init_app() {
                     {field: "CK_FILTER_MULTIPLE", title: T('Filtro') + '<br> ' + T('Sel. Multipla'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_IDTEXT", title: T('Filtro') + '<br> ' + T('ID testo'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_BETWEEN", title: T('Filtro') + '<br> ' + T('intervallo date'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "CK_DT_MAX", title: T('Abilita pulsante') + '<br> ' + T('data massima'), editor: {type: 'textbox', options: {}}, hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -415,7 +416,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN', 'CK_DT_MAX'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -1306,6 +1307,39 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 labelPosition: 'left',
                 width: 180,
             }).attr('id', 'nn_n_row');
+        }
+
+        if (type == "datebox") {
+            var dlg_msg = $.messager.prompt({
+                id: 'dlg_datebox',
+                title: T('datebox'),
+                msg: T('imposta i parametri sotto'),
+                incon: 'info',
+                width: '60%',
+                height: '520px',
+                maximizable: true,
+                resizable: true,
+                fn: function () {
+                    var ck_dt_max = $("#sb_ck_dt_max").switchbutton('options').checked
+                    ck_dt_max = (ck_dt_max) ? 1 : 0;
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_DT_MAX'});
+                    $(ed.target).textbox('setValue', ck_dt_max);
+                }
+            });
+            dlg_msg.find('.messager-input').remove();
+            var input_cel = '\
+                    <input id="sb_ck_dt_max"><label style="margin-left:5px">' + T('abilita pulsante data massima') + '</label>\n\
+                    ';
+            dlg_msg.find('div').end().append(input_cel);
+
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_DT_MAX'});
+            var current_ck_dt_max = $(ed.target).textbox('getValue');
+
+            $("#sb_ck_dt_max").switchbutton({
+                checked: true,
+                onText: T('si'), offText: T('no'),
+                checked: (current_ck_dt_max == 1) ? true : false,
+            });
         }
     }
     function open_opt_fk(type_fk, index) {
