@@ -897,7 +897,7 @@ class easyuigii {
                     $id_div = "dg$n" . "_div_" . $value["COL"];
                     $colname = $value["COL"];
                     //<input class="easyui-datebox" sharedCalendar="#sc">
-                    $dt_beteen = ($value["CK_FILTER_BETWEEN"] == "1") ? "&nbsp;<input id=\"$id_colname" . "__TO\" name=\"$colname" . "__TO\">" : "";
+                    $dt_beteen = ($this->is_array_gii($value, "CK_FILTER_BETWEEN", 1, 0) == "1") ? "&nbsp;<input id=\"$id_colname" . "__TO\" name=\"$colname" . "__TO\">" : "";
                     $code .= "<div id=\"$id_div\" style=\"margin-top:5px;\"><input id=\"$id_colname\" name=\"$colname\">$dt_beteen</div>\\n\\" . PHP_EOL;
                 }
             }
@@ -1036,7 +1036,7 @@ class easyuigii {
                 if (($value["SKIP"] == "0") && ($value["CK_FILTER"] == "1")) {
                     ($value["TYPE"] == "textarea") ? $value["TYPE"] = "textbox" : false;
                     $code .= $this->get_option_for_field_form($value, true); //for filter
-                    if ($value["CK_FILTER_BETWEEN"] == "1") {
+                    if ($this->is_array_gii($value, "CK_FILTER_BETWEEN", 1, 0) == "1") {
                         //add second date
                         $value["COL"] = $value["COL"] . "__TO";
                         $value["TITLE"] = $this->T("compreso");
@@ -1660,6 +1660,32 @@ class easyuigii {
         return "TO_DATE($filed,'" . $this->date_format . "')";
     }
 
+    /** check if valute is in to arary and return $default if not present  es $value['aaa']
+     * is_array_gii(is_array_gii($value,'ID', 1, 0)  ->  1 if present or 0 if not present
+     * @param type $ar
+     * @param type $property
+     * @param type $find
+     * @param type $default
+     * @return type
+     * @throws Exception
+     */
+    private function is_array_gii($ar, $property, $find, $default) {
+        try {
+            if (isset($ar)) {
+                if (isset($ar[$property])) {
+                    return ($ar[$property] == $find) ? $find : $default;
+                } else {
+                    return $default;
+                }
+            } else {
+                return $default;
+            }
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
     /** add filter query to sql
      *
      * @param type $sql string sql
@@ -1687,11 +1713,10 @@ class easyuigii {
                     ($value["TYPE"] == "combobox") ? $multiple = true : false;
 
 
-
                     //((isset($filter)) && $filter["CAMPO1"])
                     if (!$multiple) {
                         $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
-                        $var_filter_assign .= ($value["CK_FILTER_BETWEEN"] == "1") ? "\$filter_$col" . "__TO = ((isset(\$filter)) && isset(\$filter[\"$col" . "__TO\"])) ? \$filter[\"$col" . "__TO\"] : \"\";" . PHP_EOL : ""; // assign 2°  for date between
+                        $var_filter_assign .= ($this->is_array_gii($value, "CK_FILTER_BETWEEN", 1, 0) == "1") ? "\$filter_$col" . "__TO = ((isset(\$filter)) && isset(\$filter[\"$col" . "__TO\"])) ? \$filter[\"$col" . "__TO\"] : \"\";" . PHP_EOL : ""; // assign 2°  for date between
                     } else {
                         //$filter_COMBO
                         $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
@@ -1724,7 +1749,7 @@ class easyuigii {
                     }
 
                     if ($value["TYPE"] == "datebox") {
-                        if ($value["CK_FILTER_BETWEEN"] == "1") {
+                        if ($this->is_array_gii($value, "CK_FILTER_BETWEEN", 1, 0) == "1") {
                             $dt = $this->format_dt2todate($col);
                             $dt_from = $this->format_dt2todate("'\$filter_" . $col . "'");
                             $dt_to = $this->format_dt2todate("'\$filter_" . $col . "__TO'");
