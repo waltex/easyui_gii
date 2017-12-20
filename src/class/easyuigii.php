@@ -28,6 +28,8 @@ class easyuigii {
     public $table_model = []; //tabel model structure
     public $date_format = "DD-MM-YYYY";
     public $html_prefix = "";
+    public $ck_title = 0; //1 enable title toolbar datagrid
+    public $title = ""; // title toolbar datagrid
     public $pagination = 0;
     public $pagination_list = "";  //string list es. [25,50]
     public $pagination_size = "";
@@ -49,6 +51,7 @@ class easyuigii {
     public $row_styler = ""; // code for rowstyler
     public $group_col = ""; // column for group data of datagrid
     public $lock_col = ""; // lock scroll column of datagrid
+    public $ck_load_dg = 1; // carica dati a avvio
     public $crud = ['C', 'R', 'U', 'D']; // abilitazioni
     private $crud_c = 0; //create
     private $crud_r = 0; //read
@@ -689,6 +692,9 @@ class easyuigii {
         $file = $dir . "/js/asset.js";
         file_put_contents($file, $js); //write generated html
 
+        $desc_title = $this->title;
+        $title = ($this->ck_title == 1) ? "title:'$desc_title'," : "";
+
         $this->set_enable_filter_dg();
         //create page js and html
         $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig'
@@ -701,6 +707,7 @@ class easyuigii {
             , 'crud_u' => $this->crud_u
             , 'crud_d' => $this->crud_d
             , 'enable_filter' => $this->enable_filter_dg
+            , 'title' => $title
         ));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
@@ -755,7 +762,7 @@ class easyuigii {
         $js = $twig->render('/crud/index.crud.js.twig', array('n' => $this->html_prefix
             , 'host_api' => $this->host_api
             , 'api_url' => $url_api_crud
-            , 'title' => $this->app_name
+            , 'title' => $title
             , 'col_crud' => $this->get_template_js_crud() //this function use after $this->get_api_fn_crud
             , 'pk' => $this->primary_key
             , 'on_after_edit' => $on_after_edit
@@ -776,6 +783,7 @@ class easyuigii {
             , 'e' => ($this->crud_u == 1) ? 'e' : ''
             , 'row_num' => ($this->row_num == 1) ? 'rownumbers: true,' : ''
             , 'enable_filter' => $this->enable_filter_dg
+            , 'load_dg' => $this->ck_load_dg
         ));
 
         $file = $dir . "/js/index.js";

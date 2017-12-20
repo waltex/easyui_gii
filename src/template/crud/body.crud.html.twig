@@ -1,4 +1,4 @@
-<table id="dg{{n}}" class="easyui-datagrid" data-options="toolbar:'#tb{{n}}',title:' '"></table>
+<table id="dg{{n}}" class="easyui-datagrid" data-options="toolbar:'#tb{{n}}',{{title|raw}}"></table>
 <div id="tb{{n}}" style="display: none">
     {% if (crud_r=="1")  %}
     <a id="dg{{n}}_reload" href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true">{{T('Ricarica')}}</a>

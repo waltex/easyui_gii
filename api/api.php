@@ -193,6 +193,8 @@ function crud_generate() {
         $gii->height_form = $app->request->params('height_form');
         $gii->form_full = $app->request->params('form_full');
         $gii->row_num = $app->request->params('row_num');
+        $gii->ck_title = $app->request->params('ck_title');
+        $gii->title = $app->request->params('title');
         $gii->filter_base = $app->request->params('filter_base');
         $gii->ck_custom_sql = $app->request->params('ck_custom_sql');
         $gii->custom_sql = $app->request->params('custom_sql');
@@ -204,6 +206,7 @@ function crud_generate() {
         $gii->row_styler = $app->request->params('row_styler');
         $gii->group_col = $app->request->params('group_col');
         $gii->lock_col = $app->request->params('lock_col');
+        $gii->ck_load_dg = $app->request->params('ck_load_dg');
 
         $gii->build_app_crud();
 

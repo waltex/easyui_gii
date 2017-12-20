@@ -35,8 +35,11 @@
             <div id="p_crud" class="easyui-panel"
                  style="width:98%;height:auto;background:#fafafa;padding:1% 1% 1% 1%"
                  data-options="iconCls:'fa fa fa-cog fa-lg fa-grey',collapsible:true,collapsed:true">
-                <input id="sb_model" class="easyui-switchbutton" checked>
-                <label id="sb_model_label" for="sb_model"></label>
+
+                <div style="margin-top: 10px">
+                    <input id="sb_model" class="easyui-switchbutton" checked>
+                    <label id="sb_model_label" for="sb_model"></label>
+                </div>
                 <div id="div_model" style="margin-bottom: 10px;margin-top: 10px;height:275px;display:none">
                     <table id="dg_model" class="easyui-datagrid" style="display:none;">
                     </table>
@@ -50,7 +53,7 @@
                 </div>
                 <div style="margin-top: 10px">
                     <input id="sb_dg_inline" class="easyui-switchbutton">
-                    <label id="sb_dg_inline_label" for="sb_pagination"></label>
+                    <label id="sb_dg_inline_label" for="sb_dg_inline"></label>
                 </div>
                 <div id="div_dg_inline" style="display: none">
                     <div style="margin-top: 10px">
@@ -62,6 +65,15 @@
                     <div style="margin-top: 10px">
                         <input id="sb_form_full" class="easyui-switchbutton" checked>
                         <label id="sb_form_full_label" for="sb_form_full"></label><!-- open form in ful screen -->
+                    </div>
+                </div>
+                <div style="margin-top: 10px">
+                    <div>
+                        <input id="sb_title" class="easyui-switchbutton">
+                        <label id="sb_title_label" for="sb_pagination"></label>
+                        <div id="div_title" style="display:none;margin-top: 10px;">
+                            <input id="tb_title" class="easyui-textbox">
+                        </div>
                     </div>
                 </div>
                 <div style="margin-top: 10px">
@@ -127,6 +139,10 @@
                 </div>
                 <div style="margin-top: 10px">
                     <input id="cc_lock_col">
+                </div>
+                <div style="margin-top: 10px">
+                    <input id="sb_load_dg" class="easyui-switchbutton" checked>
+                    <label id="sb_load_dg_label" for="sb_load_dg"></label><!-- load data on start  -->
                 </div>
 
             </div>

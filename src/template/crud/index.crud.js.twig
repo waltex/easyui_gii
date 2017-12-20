@@ -51,7 +51,7 @@ $(document).ready(function () {
         $('#dg{{n}}').{{e}}datagrid({
             border: false,
             toolbar: '#tb{{n}}',
-            title: '{{title}}',
+            {{title|raw}}
             url: '{{host_api}}{{api_url}}/SELECT',
             {% if (dg_inline==1) %}
             saveUrl: '{{host_api}}{{api_url}}/INSERT',
@@ -138,5 +138,7 @@ $(document).ready(function () {
     var filter = getURLParameter('filter');
     (filter != null) ? g_dg{{n}}_filter = JSON.parse(filter) : false;
     {% endif %}
+    {% if (load_dg==1) %}
     load_dg{{n}}();
+    {% endif %}
 });

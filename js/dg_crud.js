@@ -620,6 +620,21 @@ function init_app() {
 
     });
 
+    $("#sb_title_label").html(T("mostra titolo"));
+    $("#sb_title").switchbutton({
+        checked: false,
+        onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            (checked) ? $('#div_title').show() : $('#div_title').hide();
+        }
+    });
+    $('#tb_title').textbox({
+        width: 450,
+        label: T('titolo'),
+        labelWith: 150,
+        prompt: T('digita qui'),
+    })
+
     $("#sb_pagination_label").html(T("Paginazione Tabella"));
     $("#sb_pagination").switchbutton({
         checked: false,
@@ -1169,6 +1184,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var height_form = $('#tb_height_form').textbox('getValue');
         var form_full = ($("#sb_form_full").switchbutton('options').checked) ? 1 : 0;
         var row_num = ($("#sb_row_num").switchbutton('options').checked) ? 1 : 0;
+        var ck_title = ($("#sb_title").switchbutton('options').checked) ? 1 : 0;
+        var title = $('#tb_title').textbox('getValue');
         var filter_base = ($("#sb_filter_base").switchbutton('options').checked) ? 1 : 0;
         var ck_custom_sql = ($("#sb_custom_sql").switchbutton('options').checked) ? 1 : 0;
         var custom_sql = $('#tb_custom_sql').textbox('getValue');//befor filter
@@ -1181,6 +1198,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var group_col = $('#cc_group_col').combobox('getText');
         var lock_col = $('#cc_lock_col').combobox('getText');
         var ck_sql_alias = g_cfg.ck_sql_alias;
+        var ck_load_dg = ($("#sb_load_dg").switchbutton('options').checked) ? 1 : 0;
 
 
         var cfg = {
@@ -1190,6 +1208,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             table_name: table_name,
             model_from_json: model_from_json,
             html_prefix: html_prefix,
+            ck_title: ck_title,
+            title: title,
             crud: crud,
             dg_inline: dg_inline,
             pagination: pagination,
@@ -1212,6 +1232,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             group_col: group_col,
             lock_col: lock_col,
             ck_sql_alias: ck_sql_alias,
+            ck_load_dg: ck_load_dg,
         };
         return cfg;
     }
@@ -1245,12 +1266,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             $("#sb_dg_inline").switchbutton('uncheck');
         }
 
-        if (cfg.pagination == 1) {
-            $("#sb_pagination").switchbutton('check');
-        } else {
-            $("#sb_pagination").switchbutton('uncheck');
-        }
-
+        (cfg.pagination == 1) ? $("#sb_pagination").switchbutton('check') : $("#sb_pagination").switchbutton('uncheck');
         $('#cc_pagination_list').combobox('setValue', JSON.parse(cfg.pagination_list));
         $('#cc_pagination_size').combobox('setValue', cfg.pagination_size);
         $('#tb_width_form').textbox('setValue', cfg.width_form);
@@ -1262,6 +1278,9 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         }
 
         (cfg.row_num == 1) ? $("#sb_row_num").switchbutton('check') : $("#sb_row_num").switchbutton('uncheck');
+
+        (cfg.ck_title == 1) ? $("#sb_title").switchbutton('check') : $("#sb_title").switchbutton('uncheck');
+        $('#tb_title').textbox('setValue', cfg.title);
 
         (cfg.filter_base == 1) ? $("#sb_filter_base").switchbutton('check') : $("#sb_filter_base").switchbutton('uncheck');
 
@@ -1279,6 +1298,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         $('#cc_group_col').combobox('setValue', cfg.group_col);
         $('#cc_lock_col').combobox('setValue', cfg.lock_col);
         g_cfg.ck_sql_alias = cfg.ck_sql_alias;
+        (cfg.ck_load_dg == 1) ? $("#sb_load_dg").switchbutton('check') : $("#sb_load_dg").switchbutton('uncheck');
 
     }
     function set_name_cfg(cfg_name, project_name) {
@@ -1322,7 +1342,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         checked: true,
         onText: T('si'), offText: T('no'),
     });
-
+    $("#sb_load_dg_label").html(T("carica dati datagrid a avvio"));
+    $("#sb_load_dg").switchbutton({
+        checked: true,
+        onText: T('si'), offText: T('no'),
+    });
     function open_opt_type(type, index) {
         if (type == "combobox") {
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CONSTRAINT_TYPE'});
