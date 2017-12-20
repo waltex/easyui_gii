@@ -37,8 +37,10 @@ class easyuigii {
     public $row_num = 0; // 1 show numeric row on datagrid
     public $height_form = ""; // height for crud modal form
     public $filter_base = 0; // 1 enable simple filter on column
-    public $ck_custom_sql = 0; //enable insert custom sql for select
-    public $custom_sql = ""; // text  form custom sql for select
+    public $ck_custom_sql = 0; //enable insert custom sql for select, befor filter
+    public $custom_sql = ""; // text  form custom sql for select, berfort filter
+    public $ck_custom_sql2 = 0; //enable insert custom sql for select, after filter
+    public $custom_sql2 = ""; // text  form custom sql for select, after filter
     public $ck_global_var = 0; //enable global var
     public $global_var = ""; // global var
     public $sql_alias = "A"; // es A  -> A.COLNAME
@@ -1707,7 +1709,8 @@ class easyuigii {
             $var_filter = "";
             $var_filter_assign = "";
             foreach ($model as $value) {
-                if ((isset($value["CK_FILTER"])) && ($value["CK_FILTER"] == 1)) {
+                if ($this->is_array_gii($value, "CK_FILTER", 1, 0) == "1") {
+                    //if ((isset($value["CK_FILTER"])) && ($value["CK_FILTER"] == 1)) {
                     $col = $value["COL"];
                     $str_condition = "\"\"";
 
@@ -1769,11 +1772,15 @@ class easyuigii {
                     $str_filter .= "\$str_filter_$col = (\$filter_$col != \"\") ? $str_condition : \"\";" . PHP_EOL;
                 }
             }
+            $str_after_filter = ($this->ck_custom_sql2 == 0) ? "SELECT * FROM QRY" : $this->custom_sql2;
             $sql_filter = "
-                            SELECT * FROM (
-                            $sql
-                            ) WHERE 1= 1
-                            $var_filter
+                            WITH QRY AS (   
+                                SELECT * FROM (
+                                $sql
+                                ) WHERE 1= 1
+                                $var_filter
+                            )
+                            $str_after_filter
                             ";
 
             $param_all = "

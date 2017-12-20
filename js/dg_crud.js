@@ -663,7 +663,7 @@ function init_app() {
     });
     $("#sb_filter_base_label").html(T("Filtro semplice per colonna"));
 
-    $("#sb_custom_sql_label").html(T("personalizza SQL per la SELECT"));
+    $("#sb_custom_sql_label").html(T("personalizza SQL, viene eseguita prima di filtrare i dati"));
     $("#sb_custom_sql").switchbutton({
         checked: false,
         onText: T('si'), offText: T('no'),
@@ -678,7 +678,7 @@ function init_app() {
                         var dlg_msg = $.messager.prompt({
                             id: 'dlg_sql',
                             title: T('stringa sql'),
-                            msg: T('impostare la stringa sql'),
+                            msg: T('impostare la stringa sql, verrà eseguita prima di eseguire i filtri'),
                             incon: 'info',
                             width: '60%',
                             height: '520px',
@@ -744,6 +744,58 @@ function init_app() {
                 });
             } else {
                 $('#div_custom_sql').hide();
+            }
+        }
+    });
+
+
+    $("#sb_custom_sql2_label").html(T("personalizza SQL, viene eseguita con i dati filtrati"));
+    $("#sb_custom_sql2").switchbutton({
+        checked: false,
+        onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            if (checked) {
+                $('#div_custom_sql2').show();
+                $('#tb_custom_sql2').textbox({
+                    multiline: true,
+                    buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+                    buttonAlign: 'left',
+                    onClickButton: function () {
+                        var dlg_msg = $.messager.prompt({
+                            id: 'dlg_sql',
+                            title: T('stringa sql'),
+                            msg: T('impostare la stringa sql, verrà eseguita con i dati filtrati<br>usare la sintassi SELECT * FROM QRY  (la tabella QRY è un alias impostato con la WITH)'),
+                            incon: 'info',
+                            width: '60%',
+                            height: '520px',
+                            maximizable: true,
+                            resizable: true,
+                            fn: function () {
+                                var sql = $('#tb_sql2').textbox('getValue');
+                                $('#tb_custom_sql2').textbox('setValue', sql);
+                            }
+                        });
+
+                        dlg_msg.find('.messager-input').remove();
+                        var txt_label2 = T('inserisci alias A sui campi');
+                        var input_cel = '<div style="margin-top:5px"><input id="tb_sql2"></div>';
+                        dlg_msg.find('div').end().append(input_cel);
+
+
+                        $('#tb_sql2').textbox({
+                            label: T('sql'),
+                            value: $('#tb_custom_sql2').textbox('getValue'),
+                            prompt: T('inserisci qui'),
+                            labelPosition: 'top',
+                            width: '98%',
+                            height: '350px',
+                            multiline: true,
+                            required: true,
+                        });
+                    },
+                });
+            } else {
+                $('#div_custom_sql2').hide();
             }
         }
     });
@@ -1119,7 +1171,9 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var row_num = ($("#sb_row_num").switchbutton('options').checked) ? 1 : 0;
         var filter_base = ($("#sb_filter_base").switchbutton('options').checked) ? 1 : 0;
         var ck_custom_sql = ($("#sb_custom_sql").switchbutton('options').checked) ? 1 : 0;
-        var custom_sql = $('#tb_custom_sql').textbox('getValue');
+        var custom_sql = $('#tb_custom_sql').textbox('getValue');//befor filter
+        var ck_custom_sql2 = ($("#sb_custom_sql2").switchbutton('options').checked) ? 1 : 0;
+        var custom_sql2 = $('#tb_custom_sql2').textbox('getValue');//after filter
         var ck_global_var = ($("#sb_global_var").switchbutton('options').checked) ? 1 : 0;
         var global_var = $('#tb_global_var').textbox('getValue');
         var ck_row_styler = ($("#sb_row_styler").switchbutton('options').checked) ? 1 : 0;
@@ -1149,6 +1203,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             filter_base: filter_base,
             ck_custom_sql: ck_custom_sql,
             custom_sql: custom_sql,
+            ck_custom_sql2: ck_custom_sql2,
+            custom_sql2: custom_sql2,
             ck_global_var: ck_global_var,
             global_var: global_var,
             ck_row_styler: ck_row_styler,
@@ -1211,6 +1267,9 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 
         (cfg.ck_custom_sql == 1) ? $("#sb_custom_sql").switchbutton('check') : $("#sb_custom_sql").switchbutton('uncheck');
         $('#tb_custom_sql').textbox('setValue', cfg.custom_sql);
+
+        (cfg.ck_custom_sql2 == 1) ? $("#sb_custom_sql2").switchbutton('check') : $("#sb_custom_sql2").switchbutton('uncheck');
+        $('#tb_custom_sql2').textbox('setValue', cfg.custom_sql2);
 
         (cfg.ck_global_var == 1) ? $("#sb_global_var").switchbutton('check') : $("#sb_global_var").switchbutton('uncheck');
         $('#tb_global_var').textbox('setValue', cfg.global_var);
