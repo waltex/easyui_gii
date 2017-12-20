@@ -783,7 +783,6 @@ class easyuigii {
             , 'e' => ($this->crud_u == 1) ? 'e' : ''
             , 'row_num' => ($this->row_num == 1) ? 'rownumbers: true,' : ''
             , 'enable_filter' => $this->enable_filter_dg
-            , 'load_dg' => $this->ck_load_dg
         ));
 
         $file = $dir . "/js/index.js";
@@ -1732,11 +1731,11 @@ class easyuigii {
 
                     //((isset($filter)) && $filter["CAMPO1"])
                     if (!$multiple) {
-                        $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                        $var_filter_assign .= "\$filter_$col = (isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
                         $var_filter_assign .= ($this->is_array_gii($value, "CK_FILTER_BETWEEN", 1, 0) == "1") ? "\$filter_$col" . "__TO = ((isset(\$filter)) && isset(\$filter[\"$col" . "__TO\"])) ? \$filter[\"$col" . "__TO\"] : \"\";" . PHP_EOL : ""; // assign 2°  for date between
                     } else {
                         //$filter_COMBO
-                        $var_filter_assign .= "\$filter_$col = ((isset(\$filter)) && isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
+                        $var_filter_assign .= "\$filter_$col = (isset(\$filter[\"$col\"])) ? \$filter[\"$col\"] : \"\";" . PHP_EOL; // assign parameter
                         $var_filter_assign .= "\$filter_$col = (is_array(\$filter_$col)) ? implode(\",\", \$filter_$col) : \$filter_$col;" . PHP_EOL;
                     }
                     if (($value["TYPE"] == "textbox") || ($value["TYPE"] == "textarea")) {
@@ -1859,6 +1858,12 @@ class easyuigii {
                 , 'drv_password_var' => $this->oci_password_var
                 , 'drv_charset' => $this->oci_charset
                 , 'str_filter' => $this->str_filter_dg
+                , 'enable_filter' => $this->enable_filter_dg
+                , 'load_dg' => $this->ck_load_dg
+                , 'crud_c' => $this->crud_c
+                , 'crud_r' => $this->crud_r
+                , 'crud_u' => $this->crud_u
+                , 'crud_d' => $this->crud_d
             ));
             $php = str_replace("<?php", "", $php);
             return $php;

@@ -138,7 +138,5 @@ $(document).ready(function () {
     var filter = getURLParameter('filter');
     (filter != null) ? g_dg{{n}}_filter = JSON.parse(filter) : false;
     {% endif %}
-    {% if (load_dg==1) %}
     load_dg{{n}}();
-    {% endif %}
 });

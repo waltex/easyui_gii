@@ -9,6 +9,13 @@
         include 'api_setup.php';
 
         if ($command == 'SELECT') {
+            {% if (enable_filter==1) %}
+                $filter = $app->request->params('filter'); // Param from Post user
+            {% endif %}
+            {% if (load_dg==1) %}
+                $data = [];
+                if (isset($filter)) {
+            {% endif %}
             {{str_filter|raw}}
 
             $sql = "
@@ -24,13 +31,15 @@
             $rs = oci_execute($db);
 
             oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
-
+            {% if (load_dg==1) %}
+            }
+            {% endif %}
             {{var_combo|raw}}
 
             $app->response()->body(json_encode($data));
 
     }
-
+        {% if (crud_d==1) %}
         if ($command == 'DELETE') {
             //retun lower id
             $ID = $app->request->params('id'); // Param from Post user
@@ -47,7 +56,8 @@
             $rs = oci_execute($db);
             $app->render(200, ['success' => true, 'rows affected' => oci_num_rows($db)]);
         }
-
+        {% endif %}
+        {% if (crud_u==1) %}
         if ($command == 'UPDATE') {
             {#
             $ID = $app->request->params('ID'); // Param from Post user
@@ -89,7 +99,8 @@
             ];
             $app->response()->body(json_encode($data_r));
         }
-
+        {% endif %}
+        {% if (crud_c==1) %}
         if ($command == 'INSERT') {
              
             {# $NOME_CATEGORIA = $app->request->params('NOME_CATEGORIA'); // Param from Post user #}
@@ -138,6 +149,7 @@
             ];
             $app->response()->body(json_encode($data_r));
         }
+        {% endif %}
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . ' errore - crud {{table|raw}}: ' . $e->getMessage() . PHP_EOL, 3, 'error.log');
