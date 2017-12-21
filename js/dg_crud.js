@@ -2326,11 +2326,46 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
     $("#sb_model_xls_label").html(T("abilita esportazione dei dati della datagrid in formato excel"));
 
     var data_type_xls = [{value: 'text', text: T('testo')}, {value: 'number', text: T('numero')}];
+    var dg_model_tb_xls = ['-', {
+            text: T('Aggiungi'),
+            iconCls: 'icon-add',
+            id: 'bt_add',
+            handler: function (e) {
+                $('#dg_model_xls').edatagrid('addRow');
+            }}, '-', {
+            text: T('Conferma'),
+            iconCls: 'icon-ok',
+            handler: function () {
+                $('#dg_model_xls').edatagrid('saveRow');
+            }}, '-', {
+            text: T('Annulla'),
+            iconCls: 'icon-undo',
+            handler: function () {
+                $('#dg_model_xls').edatagrid('cancelRow');
+            }}, '-', {
+            text: T('Elimina'),
+            iconCls: 'icon-remove',
+            handler: function () {
+                $('#dg_model_xls').edatagrid('destroyRow');
+            }}, '-', {
+            text: T('Importa dal db'),
+            iconCls: 'icon-add',
+            handler: function () {
+                var table = $('#tb_table_name').combobox('getValue');
+                if (table != "") {
+                    $('#dg_model_xls').datagrid('options').url = 'api/dg/model/read/db/' + table;
+                    $('#dg_model_xls').datagrid('reload');
+                } else {
+                    $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
+                }
+            }
+        }];
+
     function load_dg_model_xls() {
         $('#dg_model_xls').datagrid('removeFilterRule');
         $('#dg_model_xls').datagrid('disableFilter');
         $('#dg_model_xls').edatagrid({
-            //toolbar: dg_model_tb,
+            toolbar: dg_model_tb_xls,
             fit: true,
             rownumbers: true,
             striped: true,
