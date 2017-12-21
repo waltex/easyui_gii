@@ -2351,6 +2351,29 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             text: T('Importa dal db'),
             iconCls: 'icon-add',
             handler: function () {
+                $.messager.progress({title: T('elaborazione'), msg: T('recupero campi, attendere...')});
+                $('#dg_model').datagrid('removeFilterRule');
+                $('#dg_model').datagrid('disableFilter');
+                var model = $('#dg_model').datagrid('getRows');
+                $('#dg_model').datagrid('enableFilter');
+                var cfg = read_cfg_from_input();
+                $.post('api/get/field/from/model', {model: model, cfg: cfg})
+                        .done(function (data) {
+                            $.messager.progress('close');
+                            if (data.success) {
+                                var model = data.model;
+                                $('#dg_model_xls').datagrid('loadData', model);
+                            } else {
+                                $.messager.alert(T('errore'), data.msg, 'error');
+                            }
+                        })
+                        .fail(function () {
+                            $.messager.progress('close');
+                            $.messager.alert(T('attenzione'), T('Si è verificato un errore'), 'error');
+                        });
+            }
+            /*
+             handler: function () {          
                 var table = $('#tb_table_name').combobox('getValue');
                 if (table != "") {
                     $('#dg_model_xls').datagrid('options').url = 'api/dg/model/read/db/' + table;
@@ -2359,6 +2382,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
                 }
             }
+            */
         }];
 
     function load_dg_model_xls() {
