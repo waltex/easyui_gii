@@ -107,6 +107,13 @@ function init_app() {
         var hide = $($('#p_base').panel('body')[0]).css('display') == 'none';
         (hide) ? $('#p_base').panel('expand', true) : $('#p_base').panel('collapse', true);
     });
+    $('#p_excel').panel({
+        title: T("Esportazione dati in excel"),
+    });
+    $('#p_excel').panel('header').click(function () {
+        var hide = $($('#p_excel').panel('body')[0]).css('display') == 'none';
+        (hide) ? $('#p_excel').panel('expand', true) : $('#p_excel').panel('collapse', true);
+    });
 
     $('#bt_gencode').linkbutton({text: T('Genera il codice')});
     // expand and collapse on click
@@ -2301,6 +2308,86 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             });
         }
 
+    }
+
+    $("#sb_model_xls").switchbutton({
+        checked: false,
+        onText: T('si'), offText: T('no'),
+        onChange: function (checked) {
+            if (checked) {
+                $('#div_model_xls').show();
+                load_dg_model_xls();
+            } else {
+                $('#div_model_xls').hide();
+            }
+            //load_menu_opt();
+        }
+    });
+    $("#sb_model_xls_label").html(T("abilita esportazione dei dati della datagrid in formato excel"));
+
+    var data_type_xls = [{value: 'text', text: T('testo')}, {value: 'number', text: T('numero')}];
+    function load_dg_model_xls() {
+        $('#dg_model_xls').datagrid('removeFilterRule');
+        $('#dg_model_xls').datagrid('disableFilter');
+        $('#dg_model_xls').edatagrid({
+            //toolbar: dg_model_tb,
+            fit: true,
+            rownumbers: true,
+            striped: true,
+            singleSelect: true,
+            checkOnSelect: false,
+            selectOnCheck: false,
+            fitColumns: true,
+            dragSelection: true,
+            destroyMsg: {
+                norecord: {// when no record is selected
+                    title: T('attenzione'),
+                    msg: T('Nessun record selezionato'),
+                },
+                confirm: {// when select a row
+                    title: T('conferma'),
+                    msg: T('Sei sicuro che vuoi cancellare?')
+                }
+            },
+            onLoadSuccess: function () {
+                $(this).datagrid('enableDnd');
+                //load_menu_opt();
+            },
+            onEdit: function (index, row) {
+            },
+            frozenColumns: [[
+                    {field: 'ck', checkbox: true},
+                    {field: "COL", width: 150, title: BR(T('Nome Campo')), editor: "text"},
+                    {field: "TITLE", width: 150, title: BR(T('Titolo Campo')), editor: "text"},
+                    {field: "TYPE", width: 120, title: BR(T('Tipo Campo')), editor: {type: 'combobox', options: {
+                                valueField: 'value',
+                                textField: 'text',
+                                editable: false,
+                                panelWidth: 100,
+                                data: data_type_xls,
+                                showItemIcon: true,
+                            }}},
+                ]],
+            columns: [[
+                    //{field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
+                    //{field: "WIDTH_FORM", title: T('Larghezza') + '<br>' + T('Campo Form'), editor: "text"},
+                    //{field: "WIDTH_LABEL", title: T('Larghezza') + '<br>' + T('Campo Etichetta'), editor: "text"},
+                    {field: "SKIP", title: BR(T('Escludi Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
+                ]],
+        });
+        $('#dg_model_xls').datagrid('enableFilter');
+        $('#dg_model_xls').datagrid('enableFilter', [{
+                field: 'SKIP',
+                type: 'combobox',
+                options: {
+                    valueField: 'id',
+                    textField: 'text',
+                    editable: false,
+                    data: [{id: '√', text: T('si')}, {id: '-', text: T('no')}],
+                    panelHeight: 60,
+                },
+                op: ['equal']
+            }]);
     }
 
     //auto open project from link

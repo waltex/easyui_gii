@@ -91,3 +91,48 @@ function SvuotaLog() {
         //$app->stop($e);
     }
 }
+
+
+function gii_export_array2xls($data, $folder_local, $file_local, $ar_int, $opt) {
+    try {
+
+        (!is_dir($folder_local)) ? mkdir($folder_local, 0777, true) : false; //create folder
+
+        $file_local = $folder_local . $file_local;
+        // Create new PHPExcel object
+        $objPHPExcel = new PHPExcel();
+        $sheet = $objPHPExcel->getSheet(0);
+
+        //intestation
+        $row = 1;
+        $col = 0;
+        foreach ($ar_int as $value) {
+            $sheet->setCellValueByColumnAndRow($col, $row, $value);
+            $col += 1;
+        }
+        //content
+        $riga = 1;
+        foreach ($data as $row) {
+            $riga += 1;
+            $totcol = count($row) - 1;
+            for ($col = 0; $col <= $totcol; ++$col) {
+                $key = array_keys($row);
+                $keyValue = $key[$col];
+                $value = $row[$keyValue];
+                $type = PHPExcel_Cell_DataType::TYPE_STRING;
+
+                /*
+                  $type = PHPExcel_Cell_DataType::TYPE_NUMERIC;
+                  $sheet->getCellByColumnAndRow($col, $riga)->setValueExplicit($value, $type);
+                  $sheet->getStyle('G' . $riga)->getNumberFormat()->setFormatCode('#,##0.00');
+                 */
+                $sheet->getCellByColumnAndRow($col, $riga)->setValueExplicit($value, $type);
+            }
+        }
+
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        $objWriter->save($file_local);
+    } catch (Exception $e) {
+        error_log(LogTime() . ' error - create file excel: ' . $e->getMessage() . PHP_EOL, 3, 'error.log');
+    }
+}

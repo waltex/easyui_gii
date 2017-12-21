@@ -6,6 +6,7 @@ class easyuigii {
 
     private $template_base_path = "/src/template/base";
     private $template_root_path = "/src/template";
+    private $template_excel_path = "/src/template/excel";
     private $root_gii = ""; // path root easyui gii
     private $primary_key = ""; // auto find from table structure
     private $app_setting = []; // array app setting from json file
@@ -59,6 +60,7 @@ class easyuigii {
     private $crud_d = 0; //delete
     private $enable_filter_dg = 0; // true -> is enabled advanced filter
     private $str_filter_dg = ""; // conditional string for add filter to sql
+    public $export2xls = 1; // 1 enable export to excel. 0 only csv with javascript
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -2262,13 +2264,20 @@ class easyuigii {
             $zip_file = $this->root_gii . $this->template_base_path . '/css.zip';
             $this->unzip($zip_file, $dir);
 
-            $zip_file = $this->root_gii . $this->template_base_path . '/vendor.zip';
-            $this->unzip($zip_file, $dir . "/");
-
+            if ($this->export2xls == 0) {
+                $zip_file = $this->root_gii . $this->template_base_path . '/vendor.zip';
+                $this->unzip($zip_file, $dir . "/");
+                $composer_path = $this->root_gii . $this->template_base_path;
+            }
+            if ($this->export2xls == 1) {
+                $zip_file = $this->root_gii . $this->template_excel_path . '/vendor.zip';
+                $this->unzip($zip_file, $dir . "/");
+                $composer_path = $this->root_gii . $this->template_excel_path;
+            }
             $template_path = $this->root_gii . $this->template_base_path;
             $ar_files = [
                 [$template_path . "/LICENSE", $dir . "/"],
-                [$template_path . "/composer.json", $dir . "/"],
+                [$composer_path . "/composer.json", $dir . "/"],
                 [$template_path . "/.htaccess", $dir . "/"], //for disable cache javascript
                 [$template_path . "/api/.htaccess", $dir . "/api/"],
                 [$template_path . "/api/fn_api.php", $dir . "/api/"],
