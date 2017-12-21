@@ -1487,6 +1487,62 @@ class easyuigii {
         }
     }
 
+    /** get field from excel
+     *
+     * @throws Exception
+     */
+    public function get_field_from_model_xls() {
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+            $model = $this->get_field_from_model();
+            $new_model = [];
+            foreach ($model as $value) {
+                //CONSTRAINT_TYPE]:FOREIGN_KEY
+                if (in_array($value["TYPE"], ["numberbox", "combobox", "combogrid"])) {
+                    $tst = strpos($value["TYPE"], "__TEXT");
+                    (strpos($value["COL"], "__TEXT") > 0) ? $value['TYPE'] = "text" : $value['TYPE'] = "number";
+                    $new_model[] = $value;
+                } else {
+                    $value['TYPE'] = "text";
+                    $new_model[] = $value;
+                }
+            }
+            return $new_model;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
+    /** get field from model and add hide field generated from combo
+     *
+     * @throws Exception
+     */
+    public function get_field_from_model() {
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+
+            $model = $this->table_model;
+            $new_model = [];
+            foreach ($model as $value) {
+                //CONSTRAINT_TYPE]:FOREIGN_KEY
+                if ($value["CONSTRAINT_TYPE"] == "FOREIGN_KEY") {
+                    $add_value = $value;
+                    $add_value["COL"] = $value["COL"] . "__TEXT";
+                    $new_model[] = $value; //duplicate record
+                    $new_model[] = $add_value;
+                } else {
+                    $new_model[] = $value;
+                }
+            }
+            return $new_model;
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
     /** get table model from db
      *
      * @return type

@@ -250,6 +250,10 @@ function init_app() {
             onLoadSuccess: function () {
                 $(this).datagrid('enableDnd');
                 load_menu_opt();
+            }, rowStyler: function (index, row) {
+                if (row.SKIP == 1) {
+                    return 'color:#cc0000';
+                }
             },
             onEdit: function (index, row) {
             },
@@ -2352,7 +2356,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             iconCls: 'icon-add',
             handler: function () {
                 var cfg = read_cfg_from_input();
-                $.post('api/get/field/from/model', {cfg: cfg})
+                $.post('api/get/field/for/model/excel', {cfg: cfg})
                         .done(function (data) {
                             $.messager.progress('close');
                             if (data.success) {
@@ -2406,6 +2410,10 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             onLoadSuccess: function () {
                 $(this).datagrid('enableDnd');
                 //load_menu_opt();
+            }, rowStyler: function (index, row) {
+                if (row.SKIP == 1) {
+                    return 'color:#cc0000';
+                }
             },
             onEdit: function (index, row) {
             },
