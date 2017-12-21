@@ -2348,16 +2348,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             handler: function () {
                 $('#dg_model_xls').edatagrid('destroyRow');
             }}, '-', {
-            text: T('Importa dal db'),
+            text: T('Importa dal modello'),
             iconCls: 'icon-add',
             handler: function () {
-                $.messager.progress({title: T('elaborazione'), msg: T('recupero campi, attendere...')});
-                $('#dg_model').datagrid('removeFilterRule');
-                $('#dg_model').datagrid('disableFilter');
-                var model = $('#dg_model').datagrid('getRows');
-                $('#dg_model').datagrid('enableFilter');
                 var cfg = read_cfg_from_input();
-                $.post('api/get/field/from/model', {model: model, cfg: cfg})
+                $.post('api/get/field/from/model', {cfg: cfg})
                         .done(function (data) {
                             $.messager.progress('close');
                             if (data.success) {

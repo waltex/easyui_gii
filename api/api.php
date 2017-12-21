@@ -44,8 +44,7 @@ $app->post('/set/width/field/form', 'set_width_form'); //set default width form
 $app->post('/list/project', 'list_project'); //set default width form
 $app->post('/get/sql/crud', 'get_sql_crud'); //get sql for crud
 $app->post('/get/sql/combo', 'get_sql_combo'); //get sql for combo
-
-
+$app->post('/get/field/from/model', 'get_field_from_model'); //get field from model
 
 include 'fn_api.php';
 $start = new easyuigii();
@@ -575,5 +574,32 @@ function get_sql_combo() {
     } catch (Exception $e) {
         $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
         error_log(LogTime() . 'error - get sql for combo' . PHP_EOL, 3, 'logs/error.log');
+    }
+}
+
+function get_field_from_model() {
+    try {
+        $app = Slim\Slim::getInstance();
+        $gii = new easyuigii;
+        $cfg = $app->request->params('cfg');
+        $model = $cfg['model'];
+        $new_model = [];
+        foreach ($new_model as $value) {
+            //CONSTRAINT_TYPE]:FOREIGN_KEY
+            if ($value == "FOREIGN_KEY") {
+                $value["COL"] = $value["COL"] . "__TEXT";
+                $value["TITLE"] = $value["COL"] . "__TEXT";
+                $new_model[] = $value;
+            }
+        }
+
+        $gii = new easyuigii();
+        //$model_combo = $gii->get_table_model_from_db($table);
+
+
+        $app->render(200, ['success' => true, 'model' => $model]);
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . 'error - get field from model' . PHP_EOL, 3, 'logs/error.log');
     }
 }
