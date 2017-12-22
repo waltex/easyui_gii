@@ -60,7 +60,8 @@ class easyuigii {
     private $crud_d = 0; //delete
     private $enable_filter_dg = 0; // true -> is enabled advanced filter
     private $str_filter_dg = ""; // conditional string for add filter to sql
-    public $export2xls = 1; // 1 enable export to excel. 0 only csv with javascript
+    public $ck_model_xls = 1; // 1 enable export to excel. 0 only csv with javascript
+    public $model_xls = []; // array model for param for export excel
 
     function __construct() {
         $this->root_gii = str_replace('/src/class', '', str_replace('\\', '/', __DIR__)); //apllication path
@@ -1487,6 +1488,25 @@ class easyuigii {
         }
     }
 
+    /** get fileds for intestation excel
+     *  @throws Exception
+     */
+    public function get_field_intestation_for_xls() {
+        try {
+            $ar_xls = [];
+            $model = $this->model_xls;
+            foreach ($model as $value) {
+                if ($value["SKIP"] == "0") {
+                    $ar_xls[] = "\"" . $value["TITLE"] . "\"";
+                }
+            }
+            return implode(",", $ar_xls);
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
+    }
+
     /** get field from excel
      *
      * @throws Exception
@@ -1890,6 +1910,7 @@ class easyuigii {
             $bind_update = $this->get_param_for_bind_insert_update(true);
 
             $var_combo = $this->get_code_var_return_combo();
+            $int_xls = ($this->ck_model_xls == 1) ? $this->get_field_intestation_for_xls() : "";
 
             //build template html
             $root_template = $this->root_gii . $this->template_root_path;
@@ -1922,6 +1943,9 @@ class easyuigii {
                 , 'crud_r' => $this->crud_r
                 , 'crud_u' => $this->crud_u
                 , 'crud_d' => $this->crud_d
+                , 'int_xls' => $int_xls
+                , 'ck_model_xls' => $this->ck_model_xls
+                , 'n' => $this->html_prefix
             ));
             $php = str_replace("<?php", "", $php);
             return $php;
@@ -2320,12 +2344,12 @@ class easyuigii {
             $zip_file = $this->root_gii . $this->template_base_path . '/css.zip';
             $this->unzip($zip_file, $dir);
 
-            if ($this->export2xls == 0) {
+            if ($this->ck_model_xls == 0) {
                 $zip_file = $this->root_gii . $this->template_base_path . '/vendor.zip';
                 $this->unzip($zip_file, $dir . "/");
                 $composer_path = $this->root_gii . $this->template_base_path;
             }
-            if ($this->export2xls == 1) {
+            if ($this->ck_model_xls == 1) {
                 $zip_file = $this->root_gii . $this->template_excel_path . '/vendor.zip';
                 $this->unzip($zip_file, $dir . "/");
                 $composer_path = $this->root_gii . $this->template_excel_path;
