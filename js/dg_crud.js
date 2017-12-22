@@ -14,7 +14,6 @@ function init_app() {
         } else {
             return url;
         }
-
     }
 
     $('#bt_lnk_cfg_ext').html(T('apri configurazione su link esterno'));
@@ -210,16 +209,16 @@ function init_app() {
 
     var data_pk_fk = [{
             text: T('Chiave Primaria'),
-            id: 'PRIMARY_KEY'
+            value: 'PRIMARY_KEY'
         }, {
             text: T('Tabella Collegata'),
-            id: 'FOREIGN_KEY',
+            value: 'FOREIGN_KEY',
         }, {
             text: T('Lista Valori'),
-            id: 'LIST',
+            value: 'LIST',
         }, {
             text: T('Nessuna'),
-            id: null
+            value: null
         }];
     var data_type = [{text: 'textbox'}, {text: 'textarea', iconCls: 'icon-edit', }, {text: 'datebox', }, {text: 'numberbox'}, {text: 'combobox', iconCls: 'icon-edit'}, {text: 'combogrid', iconCls: 'icon-edit'}];
     function load_dg_model() {
@@ -286,7 +285,7 @@ function init_app() {
                             }}},
                     {field: "CONSTRAINT_TYPE", title: T('Vincoli Campo') + '<br>' + T('Origine Dati'), width: '160px', editor: {type: 'combobox'
                             , options: {
-                                valueField: 'id',
+                                valueField: 'value',
                                 textField: 'text',
                                 editable: false,
                                 panelWidth: 150,
@@ -433,9 +432,9 @@ function init_app() {
         }
     }
 
-    function combo_get_text(id, data) {
+    function combo_get_text(value, data) {
         for (var i = 0; i < data.length; i++) {
-            if (data[i].id == id)
+            if (data[i].value == value)
                 return data[i].text;
         }
 
@@ -1008,12 +1007,23 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         labelPosition: 'right',
         labelWidth: 200,
         valueField: 'COL',
-        textField: 'COL',
+        textField: 'TITLE',
+        dField: 'COL',
         buttonIcon: 'icon-reload',
         buttonAlign: 'left',
-        onClickButton: function () {
-            $(this).combobox({url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue')});
+        queryParams: {
+            //cfg: read_cfg_from_input(),
         },
+        //onClickButton: function () {
+            //$(this).combobox({url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue')});
+            //$(this).combobox({url: 'api/get/field/from/model'});
+        //},
+        /*
+        columns: [[
+                {field: 'COL', title: T('Nome Campo'), sortable: true, hidden: true, },
+                {field: 'TITLE', title: T('Titolo Campo'), sortable: true, },
+            ]],
+        */
     });
     $('#cc_lock_col').combobox({
         //url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
@@ -1134,7 +1144,6 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var cfg_name = $('#cfg_name').combobox('getValue');
                     var project_name = $('#project_name').combobox('getValue');
                     open_cfg(project_name, cfg_name);
-
                 }
 
             });
@@ -1211,6 +1220,12 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         var ck_sql_alias = g_cfg.ck_sql_alias;
         var ck_load_dg = ($("#sb_load_dg").switchbutton('options').checked) ? 1 : 0;
 
+        $('#dg_model_xls').datagrid('removeFilterRule');
+        $('#dg_model_xls').datagrid('disableFilter');
+        var model_xls = $('#dg_model_xls').datagrid('getRows');
+        $('#dg_model_xls').datagrid('enableFilter');
+        var ck_model_xls = ($("#sb_model_xls").switchbutton('options').checked) ? 1 : 0;
+
 
         var cfg = {
             type_cfg: 'crud',
@@ -1244,6 +1259,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             lock_col: lock_col,
             ck_sql_alias: ck_sql_alias,
             ck_load_dg: ck_load_dg,
+            model_xls: model_xls,
+            ck_model_xls: ck_model_xls,
         };
         return cfg;
     }
@@ -1253,11 +1270,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
      * @returns {undefined}
      */
     function read_cfg_from_json(cfg) {
-        if (cfg.model_from_json == 1) {
-            $("#sb_model").switchbutton('check');
-        } else {
-            $("#sb_model").switchbutton('uncheck');
-        }
+        (cfg.model_from_json == 1) ? $("#sb_model").switchbutton('check') : $("#sb_model").switchbutton('uncheck');
 
         if (cfg.model === undefined) {
             cfg.model = [];
@@ -1311,6 +1324,12 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         g_cfg.ck_sql_alias = cfg.ck_sql_alias;
         (cfg.ck_load_dg == 1) ? $("#sb_load_dg").switchbutton('check') : $("#sb_load_dg").switchbutton('uncheck');
 
+        (cfg.ck_model_xls == 1) ? $("#sb_model_xls").switchbutton('check') : $("#sb_model_xls").switchbutton('uncheck');
+
+        if (cfg.model_xls === undefined) {
+            cfg.model_xls = [];
+        }
+        $('#dg_model_xls').datagrid('loadData', cfg.model_xls);
     }
     function set_name_cfg(cfg_name, project_name) {
         $('#p_base').panel({
@@ -2347,11 +2366,6 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             handler: function () {
                 $('#dg_model_xls').edatagrid('cancelRow');
             }}, '-', {
-            text: T('Elimina'),
-            iconCls: 'icon-remove',
-            handler: function () {
-                $('#dg_model_xls').edatagrid('destroyRow');
-            }}, '-', {
             text: T('Importa dal modello'),
             iconCls: 'icon-add',
             handler: function () {
@@ -2428,7 +2442,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                                 panelWidth: 100,
                                 data: data_type_xls,
                                 showItemIcon: true,
-                            }}},
+                            }}, formatter: function (value, row, index) {
+                            var data = combo_get_text(value, data_type_xls);
+                            return data;
+                        }
+                    },
                 ]],
             columns: [[
                     //{field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
