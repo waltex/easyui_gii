@@ -37,7 +37,7 @@
             {{var_combo|raw}}
             {% if (ck_model_xls==1) %}
             $ar_int = [{{int_xls|raw}}];
-            gii_export_array2xls($data, "data/", "dg{{n}}_export.xls", $ar_int, []);
+            gii_export_array2xls($data, "data/", "{{table}}_dg{{n}}_export.xls", $ar_int, []);
             {% endif %}
             
 
