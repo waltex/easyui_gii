@@ -1011,13 +1011,13 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         dField: 'COL',
         buttonIcon: 'icon-reload',
         buttonAlign: 'left',
-        queryParams: {
-            //cfg: read_cfg_from_input(),
-        },
-        //onClickButton: function () {
-            //$(this).combobox({url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue')});
-            //$(this).combobox({url: 'api/get/field/from/model'});
+        //queryParams: {
+        //cfg: read_cfg_from_input(),
         //},
+        onClickButton: function () {
+            $(this).combobox({url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue')});
+            //$(this).combobox({url: 'api/get/field/from/model'});
+        },
         /*
         columns: [[
                 {field: 'COL', title: T('Nome Campo'), sortable: true, hidden: true, },

@@ -207,6 +207,8 @@ function crud_generate() {
         $gii->group_col = $app->request->params('group_col');
         $gii->lock_col = $app->request->params('lock_col');
         $gii->ck_load_dg = $app->request->params('ck_load_dg');
+        $gii->ck_model_xls = $app->request->params('ck_model_xls');
+        $gii->model_xls = $app->request->params('model_xls');
 
         $gii->build_app_crud();
 
