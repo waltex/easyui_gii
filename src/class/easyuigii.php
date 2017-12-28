@@ -1497,7 +1497,7 @@ class easyuigii {
             $model = $this->model_xls;
             foreach ($model as $value) {
                 if ($value["SKIP"] == "0") {
-                    $ar_xls[] = "\"" . $value["TITLE"] . "\"";
+                    $ar_xls[] = "\"" . $value["COL"] . "\"=>\"" . $value["TITLE"] . "\"";
                 }
             }
             return implode(",", $ar_xls);
