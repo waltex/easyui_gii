@@ -25,7 +25,12 @@
         <a id="dg{{n}}_delete" href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="javascript:$('#dg{{n}}').edatagrid('destroyRow')">{{T('Elimina')}}</a>
     {% endif %}
 {% endif %}
+    {% if ck_model_xls==0 %}
     <a id="dg{{n}}_export" class="easyui-linkbutton"  data-options="iconCls:'icon-excel1',plain:true">{{T('Esporta')}}</a>
+    {% endif %}
+    {% if ck_model_xls==1 %}
+    <a id="dg{{n}}_export" href="{{url_export_xls}}" class="easyui-linkbutton"  data-options="iconCls:'icon-excel1',plain:true" download>{{T('Esporta')}}</a>
+    {% endif %}
 {% if (group_col!='') %}
     <a id="dg{{n}}_expand" href="#" class="easyui-linkbutton" iconCls="icon-database_add" plain="true">{{T('espandi')}}/{{T('contrai')}}</a>
 {% endif %}

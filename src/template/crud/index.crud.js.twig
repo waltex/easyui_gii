@@ -23,9 +23,11 @@ $(document).ready(function () {
         {{hide_id_ins|raw}}
     });
     {% endif %}
+    {% if ck_model_xls==0 %}
     $('#dg1_export').bind('click', function () {
-        JSONToCSVConvertor($('#dg{{n}}').datagrid('getRows'), "{{T('dati')}}", 'label')
+        JSONToCSVConvertor($('#dg{{n}}').datagrid('getRows'), "{{T('dati')}}", false)
     });
+    {% endif %}
     {% if (group_col!='') %}
     $('#dg{{n}}_expand').on('click', function () {
         if (g_dg{{n}}_expand) {

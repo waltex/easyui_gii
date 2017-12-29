@@ -699,6 +699,11 @@ class easyuigii {
         $title = ($this->ck_title == 1) ? "title:'$desc_title'," : "";
 
         $this->set_enable_filter_dg();
+
+        $url_api_crud = "/crud/" . $this->table_name;
+        $api_fn_name_crud = "crud_" . $this->table_name;
+        $url_export_xls = "api/data/$api_fn_name_crud.xls"; //associo il nome della funzione dell api x rendere il file univoco
+
         //create page js and html
         $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig'
             , 'n' => $this->html_prefix
@@ -711,12 +716,13 @@ class easyuigii {
             , 'crud_d' => $this->crud_d
             , 'enable_filter' => $this->enable_filter_dg
             , 'title' => $title
+            , 'url_export_xls' => $url_export_xls
+            , 'ck_model_xls' => $this->ck_model_xls
         ));
         $file = $dir . "/index.html";
         file_put_contents($file, $html); //write generated html
 
-        $url_api_crud = "/crud/" . $this->table_name;
-        $api_fn_name_crud = "crud_" . $this->table_name;
+
 
         $api_url = $this->get_api_name($url_api_crud . "/:command", $api_fn_name_crud); //create code url api + function
         $api_url_combo = $this->get_api_name_for_combobox();
@@ -786,6 +792,7 @@ class easyuigii {
             , 'e' => ($this->crud_u == 1) ? 'e' : ''
             , 'row_num' => ($this->row_num == 1) ? 'rownumbers: true,' : ''
             , 'enable_filter' => $this->enable_filter_dg
+            , 'ck_model_xls' => $this->ck_model_xls
         ));
 
         $file = $dir . "/js/index.js";
@@ -1945,7 +1952,6 @@ class easyuigii {
                 , 'crud_d' => $this->crud_d
                 , 'int_xls' => $int_xls
                 , 'ck_model_xls' => $this->ck_model_xls
-                , 'n' => $this->html_prefix
             ));
             $php = str_replace("<?php", "", $php);
             return $php;
