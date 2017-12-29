@@ -1112,7 +1112,7 @@ class easyuigii {
         $text_field = $row["TEXT_FIELD"];   // text for combobox
         $ck_limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
         $limit2list = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "limitToList: true," : "";
-        $limit2list_combogrid = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "editable: false," : "";
+        
         $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
         $n_dg = $this->html_prefix;
         $n_row = $row["N_ROW_TEXTAREA"];
@@ -1222,7 +1222,7 @@ class easyuigii {
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
                 $filter = PHP_EOL . "$id_object combogrid('grid').datagrid('enableFilter');";
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field', textField: '$text_field', idField: '$value_field', method: 'get', url: '$url_combobox', $required panelWidth: 250, $readonly $limit2list_combogrid $on_select_combogrid $multiple #columns});$filter" . PHP_EOL;
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label valueField: '$value_field', textField: '$text_field', idField: '$value_field', method: 'get', url: '$url_combobox', $required panelWidth: 250, $readonly $limit2list $readonly reserved:true, $on_select_combogrid $multiple #columns});$filter" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
