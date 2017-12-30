@@ -132,20 +132,35 @@ class easyuigii {
      * @return type
      */
     public function list_table_db() {
-        ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
+        try {
+            ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-        $sql = "
+            if ($this->current_driver == "oci") {
+                $sql = "
                 SELECT table_name TEXT FROM dba_tables WHERE OWNER=user ORDER BY 1
                 ";
-        error_log(LogTime() . ' Sql, get list table of db: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+                error_log(LogTime() . ' Sql, get list table of db: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
 
-        $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
-        $db = oci_parse($conn, $sql);
-        $rs = oci_execute($db);
+                $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
+                $db = oci_parse($conn, $sql);
+                $rs = oci_execute($db);
 
-        oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
-        return $data;
+                oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+                return $data;
+            }
+
+            if ($this->current_driver == "odbc") {
+
+                $dbh = odbc_connect($this->odbc_cn, $this->odbc_user, $this->odbc_password);
+                $result = odbc_tables($dbh);
+
+                return $result;
+            }
+        } catch (Exception $e) {
+            error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
+            throw new Exception(message_err($e));
+        }
     }
 
     /** set width field form for form crud 
