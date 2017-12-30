@@ -1,0 +1,16 @@
+<?php
+
+$debug = true;
+$debug_log_mb = 1; //max megabyte logs, -1 no limite
+$api_log_mb = 1; //max megabyte logs, -1 no limite
+$error_log_mb = 1; //max megabyte logs, -1 no limite
+
+{% if (ck_global_var==1) %}
+    {{global_var|raw}}
+{% endif %}
+
+//{{cn_name|raw}}
+{{odbc_user_var|raw}}='{{odbc_user|raw}}';
+{{odbc_password_var|raw}}='{{odbc_password|raw}}';
+{{odbc_cn_var|raw}}='{{odbc_cn|raw}}';
+

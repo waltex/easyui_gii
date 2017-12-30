@@ -13,6 +13,7 @@ class easyuigii {
     private $host_api = "api"; // for remote/local host es. (local) api or remote) http:/192.168.20/easui_gii/api
     private $current_languange = ''; //from app_setting.json
     public $debug_on_file = ''; //from app_setting.json
+    private $current_driver = ""; // oci | odbc
     private $oci_cn = ""; //current connection string for driver  oracle (oci)
     private $oci_user = ""; //current user for driver  oracle (oci)
     private $oci_password = ""; //current psw for driver oracle (oci)
@@ -22,6 +23,15 @@ class easyuigii {
     private $oci_cn_var = "";
     private $oci_user_var = ""; //for code generated
     private $oci_password_var = ""; //for code generated
+    private $odbc_cn = ""; //current connection string for driver odbc
+    private $odbc_user = ""; //current user for driver odbc
+    private $odbc_password = ""; //current psw for driver odbc
+    private $odbc_name = ""; //name connection
+    private $odbc_charset = "";
+    private $odbc_production = "";
+    private $odbc_cn_var = "";
+    private $odbc_user_var = ""; //for code generated
+    private $odbc_password_var = ""; //for code generated
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
@@ -606,6 +616,7 @@ class easyuigii {
                 }
             }
             if (array_key_exists("nome connessione database ORACLE (oci driver)", $ar_db)) {
+                $this->current_driver = "oci";
                 $this->oci_name = $ar_db["nome connessione database ORACLE (oci driver)"]; //user
                 $this->oci_cn = $ar_db["tnsnames.ora"]; //
                 $this->oci_user = $ar_db["utente database"]; //user
@@ -616,6 +627,20 @@ class easyuigii {
                 $this->oci_user_var = $ar_db["variabile utente"]; //user var
                 $this->oci_password_var = $ar_db["variabile password"]; //password var
                 $this->oci_cn_var = $ar_db["variabile stringa di connessione"]; //name var of tsname.ora
+            }
+
+            if (array_key_exists("nome connessione database (ODBC driver)", $ar_db)) {
+                $this->current_driver = "odbc";
+                $this->odbc_name = $ar_db["nome connessione database (ODBC driver)"]; //user
+                $this->odbc_cn = $ar_db["stringa di connessione ODBC"]; //
+                $this->odbc_user = $ar_db["utente database"]; //user
+                $this->odbc_password = $ar_db["password database"]; //password
+                $this->odbc_charset = $ar_db["codifica charset"]; //charset
+                $this->odbc_production = $ar_db["in produzione"]; //in production
+                //for code generated
+                $this->odbc_user_var = $ar_db["variabile utente"]; //user var
+                $this->odbc_password_var = $ar_db["variabile password"]; //password var
+                $this->odbc_cn_var = $ar_db["variabile stringa di connessione"]; //name var of tsname.ora
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
@@ -703,7 +728,6 @@ class easyuigii {
         $url_api_crud = "/crud/" . $this->table_name;
         $api_fn_name_crud = "crud_" . $this->table_name;
         $url_export_xls = "api/data/$api_fn_name_crud.xls"; //associo il nome della funzione dell api x rendere il file univoco
-
         //create page js and html
         $html = $twig->render('/base/index.html.twig', array('url_body' => 'crud/body.crud.html.twig'
             , 'n' => $this->html_prefix
@@ -798,16 +822,33 @@ class easyuigii {
         $file = $dir . "/js/index.js";
         file_put_contents($file, $js); //write generated html
         //write template api_setup.php
-        $api_setup = $twig->render('/base/api/api_setup.oci.php.twig', array(
-            'oci_cn_var' => $this->oci_cn_var
-            , 'oci_user_var' => $this->oci_user_var
-            , 'oci_password_var' => $this->oci_password_var
-            , 'oci_cn' => $this->oci_cn
-            , 'oci_user' => $this->oci_user
-            , 'oci_password' => $this->oci_password
-            , 'ck_global_var' => $this->ck_global_var
-            , 'global_var' => $this->global_var
-        ));
+        if ($this->current_driver == "oci") {
+            $api_setup = $twig->render('/base/api/api_setup.oci.php.twig', array(
+                'cn_name' => $this->oci_name
+                , 'oci_cn_var' => $this->oci_cn_var
+                , 'oci_user_var' => $this->oci_user_var
+                , 'oci_password_var' => $this->oci_password_var
+                , 'oci_cn' => $this->oci_cn
+                , 'oci_user' => $this->oci_user
+                , 'oci_password' => $this->oci_password
+                , 'ck_global_var' => $this->ck_global_var
+                , 'global_var' => $this->global_var
+            ));
+        }
+        if ($this->current_driver == "odbc") {
+            $api_setup = $twig->render('/base/api/api_setup.odbc.php.twig', array(
+                'cn_name' => $this->odbc_name
+                , 'odbc_cn_var' => $this->odbc_cn_var
+                , 'odbc_user_var' => $this->odbc_user_var
+                , 'odbc_password_var' => $this->odbc_password_var
+                , 'odbc_cn' => $this->odbc_cn
+                , 'odbc_user' => $this->odbc_user
+                , 'odbc_password' => $this->odbc_password
+                , 'ck_global_var' => $this->ck_global_var
+                , 'global_var' => $this->global_var
+            ));
+        }
+
         $file = $dir . "/api/api_setup.php";
         file_put_contents($file, $api_setup); //write generated html
         //create api
@@ -1113,7 +1154,7 @@ class easyuigii {
         $text_field = $row["TEXT_FIELD"];   // text for combobox
         $ck_limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
         $limit2list = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "limitToList: true," : "";
-        
+
         $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
         $n_dg = $this->html_prefix;
         $n_row = $row["N_ROW_TEXTAREA"];
