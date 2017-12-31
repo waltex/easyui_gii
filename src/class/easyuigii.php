@@ -14,6 +14,7 @@ class easyuigii {
     private $current_languange = ''; //from app_setting.json
     public $debug_on_file = ''; //from app_setting.json
     private $current_driver = ""; // oci | odbc | pdo
+    private $type_db = ""; //oracle | mysql | mssql
     private $oci_cn = ""; //current connection string for driver  oracle (oci)
     private $oci_user = ""; //current user for driver  oracle (oci)
     private $oci_password = ""; //current psw for driver oracle (oci)
@@ -674,7 +675,8 @@ class easyuigii {
 
             if (array_key_exists("nome connessione database (PDO driver)", $ar_db)) {
                 $this->current_driver = "pdo";
-                $this->pdo_name = $ar_db["nome connessione database (PDO driver)"]; //user
+                $this->type_db = $ar_db["tipo database"]; //type db
+                $this->pdo_name = $ar_db["nome connessione database (PDO driver)"]; //connection string
                 $this->pdo_cn = $ar_db["stringa di connessione PDO"]; //
                 $this->pdo_user = $ar_db["utente database"]; //user
                 $this->pdo_password = $ar_db["password database"]; //password
@@ -1764,10 +1766,13 @@ class easyuigii {
                 return $data_r4;
             }
             if ($this->current_driver == "pdo") {
-                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
-                $result = $dbh->query("SHOW TABLES");
-                while ($row = $result->fetch(PDO::FETCH_NUM)) {
-                    $tableList[]["TEXT"] = $row[0];
+                if ($this->type_db == "mysql") {
+                    $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
+                    $sql = "";
+                    $result = $dbh->query("SHOW TABLES");
+                    while ($row = $result->fetch(PDO::FETCH_NUM)) {
+                        $tableList[]["TEXT"] = $row[0];
+                    }
                 }
             }
         } catch (Exception $e) {
