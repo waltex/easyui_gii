@@ -734,9 +734,6 @@ class easyuigii {
         $this->debug_on_file = $ar_file["debug su file"];
     }
 
-
- 
-
     /** folder create and file
      */
     public function build_app_crud() {
@@ -1682,8 +1679,8 @@ class easyuigii {
 
             $app = Slim\Slim::getInstance();
             //$table = $this->table_name;
-
-            $sql = "
+            if ($this->current_driver == "oci") {
+                $sql = "
                         WITH COL_CONSTRAINT AS (
                                         SELECT
                                         C.TABLE_NAME
@@ -1746,25 +1743,33 @@ class easyuigii {
                         WHERE A.TABLE_NAME='$table' AND A.OWNER=USER
                         ORDER BY A.COLUMN_ID
                         ";
-            error_log(LogTime() . ' Sql, get model table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+                error_log(LogTime() . ' Sql, get model table: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
 
-            //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
-            $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
-            $db = oci_parse($conn, $sql);
-            $rs = oci_execute($db);
+                //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+                $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
+                $db = oci_parse($conn, $sql);
+                $rs = oci_execute($db);
 
-            oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
-            $data_r = $this->set_title_model_from_ar_setting($data);
-            $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
-            $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
-            $data_r4 = $this->set_width_for_field_form_crud($data_r3);
+                oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+                $data_r = $this->set_title_model_from_ar_setting($data);
+                $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
+                $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
+                $data_r4 = $this->set_width_for_field_form_crud($data_r3);
 
-            //save json model
-            //$json = json_encode($data);
-            //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
-            //file_put_contents($file, $json);
-            return $data_r4;
+                //save json model
+                //$json = json_encode($data);
+                //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
+                //file_put_contents($file, $json);
+                return $data_r4;
+            }
+            if ($this->current_driver == "pdo") {
+                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
+                $result = $dbh->query("SHOW TABLES");
+                while ($row = $result->fetch(PDO::FETCH_NUM)) {
+                    $tableList[]["TEXT"] = $row[0];
+                }
+            }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
