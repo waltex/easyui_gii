@@ -13,13 +13,13 @@ class easyuigii {
     private $host_api = "api"; // for remote/local host es. (local) api or remote) http:/192.168.20/easui_gii/api
     private $current_languange = ''; //from app_setting.json
     public $debug_on_file = ''; //from app_setting.json
-    private $current_driver = ""; // oci | odbc
+    private $current_driver = ""; // oci | odbc | pdo
     private $oci_cn = ""; //current connection string for driver  oracle (oci)
     private $oci_user = ""; //current user for driver  oracle (oci)
     private $oci_password = ""; //current psw for driver oracle (oci)
     private $oci_name = ""; //name connection
     private $oci_charset = "";
-    private $oci_production = "";
+    private $oci_production = ""; //true|false
     private $oci_cn_var = "";
     private $oci_user_var = ""; //for code generated
     private $oci_password_var = ""; //for code generated
@@ -27,11 +27,18 @@ class easyuigii {
     private $odbc_user = ""; //current user for driver odbc
     private $odbc_password = ""; //current psw for driver odbc
     private $odbc_name = ""; //name connection
-    private $odbc_charset = "";
-    private $odbc_production = "";
+    private $odbc_production = ""; //true|false
     private $odbc_cn_var = "";
     private $odbc_user_var = ""; //for code generated
     private $odbc_password_var = ""; //for code generated
+    private $pdo_cn = ""; //current connection string for driver pdo
+    private $pdo_user = ""; //current user for driver pdo
+    private $pdo_password = ""; //current psw for driver pdo
+    private $pdo_name = ""; //name connection
+    private $pdo_production = ""; //true|false
+    private $pdo_cn_var = "";
+    private $pdo_user_var = ""; //for code generated
+    private $pdo_password_var = ""; //for code generated
     public $app_name = "";
     public $app_folder = "";
     public $table_name = "";
@@ -151,11 +158,19 @@ class easyuigii {
             }
 
             if ($this->current_driver == "odbc") {
-
                 $dbh = odbc_connect($this->odbc_cn, $this->odbc_user, $this->odbc_password);
                 $result = odbc_tables($dbh);
-
                 return $result;
+            }
+
+            if ($this->current_driver == "pdo") {
+                $tableList = [];
+                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
+                $result = $dbh->query("SHOW TABLES");
+                while ($row = $result->fetch(PDO::FETCH_NUM)) {
+                    $tableList[]["TEXT"] = $row[0];
+                }
+                return $tableList;
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
@@ -650,12 +665,24 @@ class easyuigii {
                 $this->odbc_cn = $ar_db["stringa di connessione ODBC"]; //
                 $this->odbc_user = $ar_db["utente database"]; //user
                 $this->odbc_password = $ar_db["password database"]; //password
-                $this->odbc_charset = $ar_db["codifica charset"]; //charset
                 $this->odbc_production = $ar_db["in produzione"]; //in production
                 //for code generated
                 $this->odbc_user_var = $ar_db["variabile utente"]; //user var
                 $this->odbc_password_var = $ar_db["variabile password"]; //password var
                 $this->odbc_cn_var = $ar_db["variabile stringa di connessione"]; //name var of tsname.ora
+            }
+
+            if (array_key_exists("nome connessione database (PDO driver)", $ar_db)) {
+                $this->current_driver = "pdo";
+                $this->pdo_name = $ar_db["nome connessione database (PDO driver)"]; //user
+                $this->pdo_cn = $ar_db["stringa di connessione PDO"]; //
+                $this->pdo_user = $ar_db["utente database"]; //user
+                $this->pdo_password = $ar_db["password database"]; //password
+                $this->pdo_production = $ar_db["in produzione"]; //in production
+                //for code generated
+                $this->pdo_user_var = $ar_db["variabile utente"]; //user var
+                $this->pdo_password_var = $ar_db["variabile password"]; //password var
+                $this->pdo_cn_var = $ar_db["variabile stringa di connessione"]; //name var of tsname.ora
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
@@ -706,6 +733,9 @@ class easyuigii {
         $this->current_languange = $ar_file["lingua corrente"];
         $this->debug_on_file = $ar_file["debug su file"];
     }
+
+
+ 
 
     /** folder create and file
      */
@@ -859,6 +889,19 @@ class easyuigii {
                 , 'odbc_cn' => $this->odbc_cn
                 , 'odbc_user' => $this->odbc_user
                 , 'odbc_password' => $this->odbc_password
+                , 'ck_global_var' => $this->ck_global_var
+                , 'global_var' => $this->global_var
+            ));
+        }
+        if ($this->current_driver == "pdo") {
+            $api_setup = $twig->render('/base/api/api_setup.pdo.php.twig', array(
+                'cn_name' => $this->pdo_name
+                , 'pdo_cn_var' => $this->pdo_cn_var
+                , 'pdo_user_var' => $this->pdo_user_var
+                , 'pdo_password_var' => $this->pdo_password_var
+                , 'pdo_cn' => $this->pdo_cn
+                , 'pdo_user' => $this->pdo_user
+                , 'pdo_password' => $this->pdo_password
                 , 'ck_global_var' => $this->ck_global_var
                 , 'global_var' => $this->global_var
             ));

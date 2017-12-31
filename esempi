@@ -1,18 +1,13 @@
-
-var values = {};
-$.each($('#dg_fm').serializeArray(), function(i, field) {
-    values[field.name] = field.value;
-});
-
-$('#dg_fm').form('load', dg1_filter);
-
-var dg1_filter = {};
-$.each($('#dg_fm').serializeArray(), function(_, kv) {
-  if (dg1_filter.hasOwnProperty(kv.name)) {
-    dg1_filter[kv.name] = $.makeArray(dg1_filter[kv.name]);
-    dg1_filter[kv.name].push(kv.value);
-  }
-  else {
-    dg1_filter[kv.name] = kv.value;
-  }
-});
+        if ($this->current_driver == "pdo") {
+            $api_setup = $twig->render('/base/api/api_setup.pdo.php.twig', array(
+                'cn_name' => $this->pdo_name
+                , 'pdo_cn_var' => $this->pdo_cn_var
+                , 'pdo_user_var' => $this->pdo_user_var
+                , 'pdo_password_var' => $this->pdo_password_var
+                , 'pdo_cn' => $this->pdo_cn
+                , 'pdo_user' => $this->pdo_user
+                , 'pdo_password' => $this->pdo_password
+                , 'ck_global_var' => $this->ck_global_var
+                , 'global_var' => $this->global_var
+            ));
+        }
