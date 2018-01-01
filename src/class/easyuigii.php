@@ -35,6 +35,12 @@ class easyuigii {
     private $pdo_cn = ""; //current connection string for driver pdo
     private $pdo_user = ""; //current user for driver pdo
     private $pdo_password = ""; //current psw for driver pdo
+    private $pdo_options = ""; //pdo option for code generated
+    private $pdo_options_gii = [
+        PDO::ATTR_EMULATE_PREPARES => false, // turn off emulation mode for "real" prepared statements
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, //turn on errors in the form of exceptions
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, //make the default fetch be an associative array
+    ]; // for pdo gii
     private $pdo_name = ""; //name connection
     private $pdo_production = ""; //true|false
     private $pdo_cn_var = "";
@@ -165,13 +171,8 @@ class easyuigii {
             }
 
             if ($this->current_driver == "pdo") {
-                $options = [
-                    PDO::ATTR_EMULATE_PREPARES => false, // turn off emulation mode for "real" prepared statements
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, //turn on errors in the form of exceptions
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, //make the default fetch be an associative array
-                ];
                 $tableList = [];
-                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password, $options);
+                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password, $this->pdo_options_gii);
                 $result = $dbh->query("SHOW TABLES");
                 while ($row = $result->fetch(PDO::FETCH_NUM)) {
                     $tableList[]["TEXT"] = $row[0];
@@ -685,6 +686,7 @@ class easyuigii {
                 $this->pdo_cn = $ar_db["stringa di connessione PDO"]; //
                 $this->pdo_user = $ar_db["utente database"]; //user
                 $this->pdo_password = $ar_db["password database"]; //password
+                $this->pdo_options = $ar_db["parametri PDO"]; //option Pdo
                 $this->pdo_production = $ar_db["in produzione"]; //in production
                 //for code generated
                 $this->pdo_user_var = $ar_db["variabile utente"]; //user var
@@ -1763,20 +1765,41 @@ class easyuigii {
                 $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
                 $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
                 $data_r4 = $this->set_width_for_field_form_crud($data_r3);
-
-                //save json model
-                //$json = json_encode($data);
-                //$file = $this->root_gii . $this->template_root_path . "/crud/model/model_from_db.json";
-                //file_put_contents($file, $json);
                 return $data_r4;
             }
             if (($this->current_driver == "pdo") && ($this->type_db == "mysql")) {
 
                 $sql = "
+                    SELECT
+                        A.COLUMN_NAME COL
+                        ,A.COLUMN_NAME TILTE
+                        ,case A.DATA_TYPE when 'INT' then  'numberbox'
+                                          when 'VARCHAR' then  'textbox'
+                                          when 'DATE' then 'datebox'
+                                          else A.DATA_TYPE END TYPE
+                        ,(
+                        SELECT
+                          CASE WHEN B.REFERENCED_TABLE_NAME IS NOT NULL THEN \"FOREIGN_KEY\" ELSE \"PRIMARY_KEY\" end CONSTRAINT_TYPE
+                        FROM
+                            INFORMATION_SCHEMA.KEY_COLUMN_USAGE B
+                        WHERE 1=1
+                            AND B.TABLE_SCHEMA = DATABASE()
+                                AND B.TABLE_NAME = '$table'
+                                AND B.COLUMN_NAME=A.COLUMN_NAME
+                        ) CONSTRAINT_TYPE
+                        ,CASE WHEN IS_NULLABLE=\"NO\" THEN 1 ELSE 0 END REQUIRED
+                        #COLUMN_COMMENT
+                        FROM INFORMATION_SCHEMA.COLUMNS A
+                        WHERE A.TABLE_SCHEMA = DATABASE() AND A.TABLE_NAME = '$table'
                         
                          ";
-                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
-                $data = $dbh->query($sql, PDO::FETCH_ASSOC);
+                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password, $this->pdo_options_gii);
+                $data = $dbh->query($sql);
+                $data_r = $this->set_title_model_from_ar_setting($data);
+                $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
+                $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
+                $data_r4 = $this->set_width_for_field_form_crud($data_r3);
+                return $data_r4;
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
