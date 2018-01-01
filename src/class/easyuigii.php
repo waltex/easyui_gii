@@ -1794,7 +1794,9 @@ class easyuigii {
                         
                          ";
                 $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password, $this->pdo_options_gii);
-                $data = $dbh->query($sql);
+                $sth = $dbh->prepare($sql);
+                $sth->execute();
+                $data = $sth->fetchAll();
                 $data_r = $this->set_title_model_from_ar_setting($data);
                 $data_r2 = $this->set_flag_onoff_model_from_ar_setting($data_r);
                 $data_r3 = $this->set_flag_hide_model_from_ar_setting($data_r2);
@@ -1881,7 +1883,9 @@ class easyuigii {
                 error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
                 $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password, $this->pdo_options_gii);
-                $data = $dbh->query($sql, PDO::FETCH_ASSOC);
+                $sth = $dbh->prepare($sql);
+                $sth->execute();
+                $data = $sth->fetchAll();
 
                 if (Count($data) > 0) {
                     $pk = $data[0]['COLUMN_NAME'];
@@ -2059,63 +2063,125 @@ class easyuigii {
         try {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
 
-            if ($this->ck_custom_sql == 1) {
-                $sql_select = $this->custom_sql;
-                $sql_select = ($this->enable_filter_dg == 1) ? $this->set_filter2sql($sql_select) : $sql_select;
-            } else {
-                $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
-                $sql_select = ($this->enable_filter_dg == 1) ? $this->set_filter2sql($sql_select) : $sql_select;
+            if ($this->current_driver == "oci") {
+
+                if ($this->ck_custom_sql == 1) {
+                    $sql_select = $this->custom_sql;
+                    $sql_select = ($this->enable_filter_dg == 1) ? $this->set_filter2sql($sql_select) : $sql_select;
+                } else {
+                    $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
+                    $sql_select = ($this->enable_filter_dg == 1) ? $this->set_filter2sql($sql_select) : $sql_select;
+                }
+
+                $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
+                $sql_insert = $this->get_sql_for_insert(); //for template
+                $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
+                $bind_insert = $this->get_param_for_bind_insert_update(false);
+                $param_return = $this->get_param_insert_update_return();
+                $param_api_upd = $this->get_param_api_for_insert_update(true); //for template
+                $param_log_update = $this->get_param_sql_for_log_insert_update(true);
+                $sql_update = $this->get_sql_for_update();
+                $bind_update = $this->get_param_for_bind_insert_update(true);
+
+                $var_combo = $this->get_code_var_return_combo();
+                $int_xls = ($this->ck_model_xls == 1) ? $this->get_field_intestation_for_xls() : "";
+
+                //build template html
+                $root_template = $this->root_gii . $this->template_root_path;
+                $loader = new Twig_Loader_Filesystem($root_template);
+                $twig = new Twig_Environment($loader);
+
+                $php = $twig->render('/crud/api/crud.api.oci.php.twig', array(
+                    'api_fn_name' => $api_fn_name
+                    , 'sql_select' => $sql_select
+                    , 'var_combo' => $var_combo
+                    , 'sql_insert' => $sql_insert
+                    , 'table' => $this->table_name
+                    , 'pk' => $this->primary_key
+                    , 'param_api_ins' => $param_api_ins
+                    , 'param_log_insert' => $param_log_insert
+                    , 'bind_insert' => $bind_insert
+                    , 'param_return' => $param_return
+                    , 'param_api_upd' => $param_api_upd
+                    , 'param_log_update' => $param_log_update
+                    , 'sql_update' => $sql_update
+                    , 'bind_update' => $bind_update
+                    , 'drv_cn_var' => $this->oci_cn_var
+                    , 'drv_user_var' => $this->oci_user_var
+                    , 'drv_password_var' => $this->oci_password_var
+                    , 'drv_charset' => $this->oci_charset
+                    , 'str_filter' => $this->str_filter_dg
+                    , 'enable_filter' => $this->enable_filter_dg
+                    , 'load_dg' => $this->ck_load_dg
+                    , 'crud_c' => $this->crud_c
+                    , 'crud_r' => $this->crud_r
+                    , 'crud_u' => $this->crud_u
+                    , 'crud_d' => $this->crud_d
+                    , 'int_xls' => $int_xls
+                    , 'ck_model_xls' => $this->ck_model_xls
+                ));
+                $php = str_replace("<?php", "", $php);
+                return $php;
             }
+            if (($this->current_driver == "pdo") && ($this->type_db == "mysql")) {
 
-            $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
-            $sql_insert = $this->get_sql_for_insert(); //for template
-            $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
-            $bind_insert = $this->get_param_for_bind_insert_update(false);
-            $param_return = $this->get_param_insert_update_return();
-            $param_api_upd = $this->get_param_api_for_insert_update(true); //for template
-            $param_log_update = $this->get_param_sql_for_log_insert_update(true);
-            $sql_update = $this->get_sql_for_update();
-            $bind_update = $this->get_param_for_bind_insert_update(true);
+                if ($this->ck_custom_sql == 1) {
+                    $sql_select = $this->custom_sql;
+                    $sql_select = ($this->enable_filter_dg == 1) ? $this->set_filter2sql($sql_select) : $sql_select;
+                } else {
+                    $sql_select = $this->get_sql_for_select($this->table_name, $this->table_model); //for template
+                    $sql_select = ($this->enable_filter_dg == 1) ? $this->set_filter2sql($sql_select) : $sql_select;
+                }
 
-            $var_combo = $this->get_code_var_return_combo();
-            $int_xls = ($this->ck_model_xls == 1) ? $this->get_field_intestation_for_xls() : "";
+                $param_api_ins = $this->get_param_api_for_insert_update(false); //for template
+                $sql_insert = $this->get_sql_for_insert(); //for template
+                $param_log_insert = $this->get_param_sql_for_log_insert_update(false);
+                $bind_insert = $this->get_param_for_bind_insert_update(false);
+                $param_return = $this->get_param_insert_update_return();
+                $param_api_upd = $this->get_param_api_for_insert_update(true); //for template
+                $param_log_update = $this->get_param_sql_for_log_insert_update(true);
+                $sql_update = $this->get_sql_for_update();
+                $bind_update = $this->get_param_for_bind_insert_update(true);
 
-            //build template html
-            $root_template = $this->root_gii . $this->template_root_path;
-            $loader = new Twig_Loader_Filesystem($root_template);
-            $twig = new Twig_Environment($loader);
+                $var_combo = $this->get_code_var_return_combo();
+                $int_xls = ($this->ck_model_xls == 1) ? $this->get_field_intestation_for_xls() : "";
 
-            $php = $twig->render('/crud/api/crud.api.oci.php.twig', array(
-                'api_fn_name' => $api_fn_name
-                , 'sql_select' => $sql_select
-                , 'var_combo' => $var_combo
-                , 'sql_insert' => $sql_insert
-                , 'table' => $this->table_name
-                , 'pk' => $this->primary_key
-                , 'param_api_ins' => $param_api_ins
-                , 'param_log_insert' => $param_log_insert
-                , 'bind_insert' => $bind_insert
-                , 'param_return' => $param_return
-                , 'param_api_upd' => $param_api_upd
-                , 'param_log_update' => $param_log_update
-                , 'sql_update' => $sql_update
-                , 'bind_update' => $bind_update
-                , 'drv_cn_var' => $this->oci_cn_var
-                , 'drv_user_var' => $this->oci_user_var
-                , 'drv_password_var' => $this->oci_password_var
-                , 'drv_charset' => $this->oci_charset
-                , 'str_filter' => $this->str_filter_dg
-                , 'enable_filter' => $this->enable_filter_dg
-                , 'load_dg' => $this->ck_load_dg
-                , 'crud_c' => $this->crud_c
-                , 'crud_r' => $this->crud_r
-                , 'crud_u' => $this->crud_u
-                , 'crud_d' => $this->crud_d
-                , 'int_xls' => $int_xls
-                , 'ck_model_xls' => $this->ck_model_xls
-            ));
-            $php = str_replace("<?php", "", $php);
-            return $php;
+                //build template html
+                $root_template = $this->root_gii . $this->template_root_path;
+                $loader = new Twig_Loader_Filesystem($root_template);
+                $twig = new Twig_Environment($loader);
+
+                $php = $twig->render('/crud/api/crud.api.pdo.php.twig', array(
+                    'api_fn_name' => $api_fn_name
+                    , 'sql_select' => $sql_select
+                    , 'var_combo' => $var_combo
+                    , 'sql_insert' => $sql_insert
+                    , 'table' => $this->table_name
+                    , 'pk' => $this->primary_key
+                    , 'param_api_ins' => $param_api_ins
+                    , 'param_log_insert' => $param_log_insert
+                    , 'bind_insert' => $bind_insert
+                    , 'param_return' => $param_return
+                    , 'param_api_upd' => $param_api_upd
+                    , 'param_log_update' => $param_log_update
+                    , 'sql_update' => $sql_update
+                    , 'bind_update' => $bind_update
+                    , 'drv_cn_var' => $this->pdo_cn_var
+                    , 'drv_user_var' => $this->pdo_user_var
+                    , 'drv_password_var' => $this->pdo_password_var
+                    , 'str_filter' => $this->str_filter_dg
+                    , 'enable_filter' => $this->enable_filter_dg
+                    , 'load_dg' => $this->ck_load_dg
+                    , 'crud_c' => $this->crud_c
+                    , 'crud_r' => $this->crud_r
+                    , 'crud_u' => $this->crud_u
+                    , 'crud_d' => $this->crud_d
+                    , 'int_xls' => $int_xls
+                    , 'ck_model_xls' => $this->ck_model_xls
+                ));
+                $php = str_replace("<?php", "", $php);
+                return $php;
+            }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
             throw new Exception(message_err($e));
@@ -2190,16 +2256,29 @@ class easyuigii {
                         $loader = new Twig_Loader_Filesystem($root_template);
                         $twig = new Twig_Environment($loader);
 
-                        $php = $twig->render('/crud/api/combobox.api.oci.php.twig', array(
-                            'api_fn_name' => $api_fn_name
-                            , 'sql_select' => $sql_select
-                            , 'table' => $table
-                            , 'col' => $col
-                            , 'drv_cn_var' => $this->oci_cn_var
-                            , 'drv_user_var' => $this->oci_user_var
-                            , 'drv_password_var' => $this->oci_password_var
-                            , 'drv_charset' => $this->oci_charset
-                        ));
+                        if ($this->current_driver == "oci") {
+                            $php = $twig->render('/crud/api/combobox.api.oci.php.twig', array(
+                                'api_fn_name' => $api_fn_name
+                                , 'sql_select' => $sql_select
+                                , 'table' => $table
+                                , 'col' => $col
+                                , 'drv_cn_var' => $this->oci_cn_var
+                                , 'drv_user_var' => $this->oci_user_var
+                                , 'drv_password_var' => $this->oci_password_var
+                                , 'drv_charset' => $this->oci_charset
+                            ));
+                        }
+                        if (($this->current_driver == "pdo") && ($this->type_db == "mysql")) {
+                            $php = $twig->render('/crud/api/combobox.api.pdo.php.twig', array(
+                                'api_fn_name' => $api_fn_name
+                                , 'sql_select' => $sql_select
+                                , 'table' => $table
+                                , 'col' => $col
+                                , 'drv_cn_var' => $this->pdo_cn_var
+                                , 'drv_user_var' => $this->pdo_user_var
+                                , 'drv_password_var' => $this->pdo_password_var
+                            ));
+                        }
 
                         $return[] = $php;
                     }

@@ -1372,7 +1372,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
         checked: true,
         onText: T('si'), offText: T('no'),
     });
-    $("#sb_load_dg_label").html(T("se non sono impostati i FILTRI, NON esequire la query"));
+    $("#sb_load_dg_label").html(T("se non sono impostati i FILTRI, NON esequire la query su avvio"));
     $("#sb_load_dg").switchbutton({
         checked: true,
         onText: T('si'), offText: T('no'),

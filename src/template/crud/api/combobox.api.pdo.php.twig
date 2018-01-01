@@ -1,0 +1,38 @@
+
+
+/**
+ * combo for crud
+ */
+ function {{api_fn_name}}() {
+ try {
+        $app = Slim\Slim::getInstance();
+        include 'api_setup.php';
+
+
+
+            $sql = "
+            {{sql_select|raw}}
+            ";
+
+            if ($debug) {
+                error_log(LogTime() . ' Sql, combo select for crud {{table|raw}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+            }
+
+            $dbh = new PDO({{drv_cn_var|raw}}, {{drv_user_var|raw}}, {{drv_password_var|raw}});
+            $sth = $dbh->prepare($sql);
+            $sth->execute();
+            $data = $sth->fetchAll();
+
+            $json = json_encode($data);
+            file_put_contents("data/combo_{{table|raw}}__{{col|raw}}.json", $json);
+
+            $app->response()->body(json_encode($data));
+
+            return $data;
+
+
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . ' errore - combo select for crud {{table|raw}}: ' . $e->getMessage() . PHP_EOL, 3, 'error.log');
+    }
+}

@@ -1,0 +1,161 @@
+<?php
+
+/**
+ * Crud  generate
+ */
+ function {{api_fn_name}} ($command) {
+ try {
+        $app = Slim\Slim::getInstance();
+        include 'api_setup.php';
+
+        if ($command == 'SELECT') {
+            {% if (enable_filter==1) %}
+                $filter = $app->request->params('filter'); // Param from Post user
+            {% endif %}
+            {% if (load_dg==1) %}
+                $data = [];
+                if (isset($filter)) {
+            {% endif %}
+            {{str_filter|raw}}
+
+            $sql = "
+            {{sql_select|raw}}
+            ";
+
+            if ($debug) {
+                error_log(LogTime() . ' Sql, crud select {{table|raw}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+            }
+
+            $dbh = new PDO({{drv_cn_var|raw}}, {{drv_user_var|raw}}, {{drv_password_var|raw}});
+            $sth = $dbh->prepare($sql);
+            $sth->execute();
+            $data = $sth->fetchAll();
+            {% if (load_dg==1) %}
+            }
+            {% endif %}
+            {{var_combo|raw}}
+            {% if (ck_model_xls==1) %}
+            $ar_int = [{{int_xls|raw}}];
+            gii_export_array2xls($data, "data/", "{{api_fn_name}}.xls", $ar_int, []);
+            {% endif %}
+            
+
+            $app->response()->body(json_encode($data));
+
+    }
+        {% if (crud_d==1) %}
+        if ($command == 'DELETE') {
+            //retun lower id
+            $ID = $app->request->params('id'); // Param from Post user
+
+            $sql = "DELETE FROM {{table|raw}} WHERE {{pk|raw}} IN ($ID)";
+            
+            if ($debug) {
+                error_log(LogTime() . ' Sql, crud delete {{table|raw}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+            }
+
+            $conn = oci_connect({{drv_user_var|raw}}, {{drv_password_var|raw}}, {{drv_cn_var|raw}}, '{{drv_charset|raw}}');
+            $db = oci_parse($conn, $sql);
+
+            $rs = oci_execute($db);
+            $app->render(200, ['success' => true, 'rows affected' => oci_num_rows($db)]);
+        }
+        {% endif %}
+        {% if (crud_u==1) %}
+        if ($command == 'UPDATE') {
+            {#
+            $ID = $app->request->params('ID'); // Param from Post user
+            $NOME_CATEGORIA = $app->request->params('NOME_CATEGORIA'); // Param from Post user
+            #}
+            {{param_api_upd|raw}}
+            
+            $parm_sql = [
+                {#
+                ':ID' => $ID,
+                ':NOME_CATEGORIA' => $NOME_CATEGORIA,
+                #}
+                {{param_log_update|raw}}
+            ];
+
+            $sql = "
+                     {{sql_update|raw}}
+                 ";
+
+            if ($debug) {
+                if (isset($parm_sql) & isset($sql)) {
+                    error_log(LogTime() . 'update {{table|raw}}, sql: ' . PHP_EOL . print_r($parm_sql, true) . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+                }
+            }
+
+            $conn = oci_connect({{drv_user_var|raw}}, {{drv_password_var|raw}}, {{drv_cn_var|raw}}, '{{drv_charset|raw}}');
+            $db = oci_parse($conn, $sql);
+            {#
+            oci_bind_by_name($db, ":ID", $ID, -1);
+            oci_bind_by_name($db, ":NOME_CATEGORIA", $NOME_CATEGORIA, -1);
+            #}
+            {{bind_update|raw}}
+
+            $rs = oci_execute($db);
+
+            $data_r = [
+                {#'ID' => $ID,#}
+                {{param_return|raw}}
+            ];
+            $app->response()->body(json_encode($data_r));
+        }
+        {% endif %}
+        {% if (crud_c==1) %}
+        if ($command == 'INSERT') {
+             
+            {# $NOME_CATEGORIA = $app->request->params('NOME_CATEGORIA'); // Param from Post user #}
+            {{param_api_ins|raw}}
+
+            {#
+            $sql = "
+                        DECLARE
+                        ID_SEQ NUMBER(15,0) := NULL;
+                        BEGIN
+                            SELECT ABB_MAG_CATEGORIE_SEQ.NEXTVAL INTO ID_SEQ FROM DUAL;
+                            INSERT INTO ABB_MAG_CATEGORIE (ID, NOME_CATEGORIA, DT_INS)
+                            VALUES (ID_SEQ, :NOME_CATEGORIA, SYSDATE)
+                            RETURNING ID_SEQ  INTO :ID;
+                        END;
+                        ";
+            #}
+            $sql = "
+            {{sql_insert|raw}}
+                   ";
+
+            $parm_sql = [
+                {# ':NOME_CATEGORIA' => $NOME_CATEGORIA,  #}
+                {{param_log_insert|raw}}
+            ];
+
+            if ($debug) {
+                if (isset($parm_sql) & isset($sql)) {
+                    error_log(LogTime() . 'insert {{table|raw}}, sql: ' . PHP_EOL . print_r($parm_sql, true) . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
+                }
+            }
+
+
+            $conn = oci_connect({{drv_user_var|raw}}, {{drv_password_var|raw}}, {{drv_cn_var|raw}}, '{{drv_charset|raw}}');
+            $db = oci_parse($conn, $sql);
+            {#
+            oci_bind_by_name($db, ":ID", $ID, OCI_B_ROWID);
+            oci_bind_by_name($db, ":NOME_CATEGORIA", $NOME_CATEGORIA, -1);
+            #}
+            {{bind_insert|raw}}
+
+            $rs = oci_execute($db);
+            $data_r = [
+                {#'ID' => $ID,#}
+                {{param_return|raw}}
+            ];
+            $app->response()->body(json_encode($data_r));
+        }
+        {% endif %}
+    } catch (Exception $e) {
+        $app->render(200, ['isError' => true, 'msg' => $e->getMessage()]);
+        error_log(LogTime() . ' errore - crud {{table|raw}}: ' . $e->getMessage() . PHP_EOL, 3, 'error.log');
+    }
+}
