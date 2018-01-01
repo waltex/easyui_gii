@@ -170,7 +170,7 @@ class easyuigii {
                 return $result;
             }
 
-            if ($this->current_driver == "pdo") {
+            if (($this->current_driver == "pdo") && ($this->type_db == "mysql")) {
                 $tableList = [];
                 $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password, $this->pdo_options_gii);
                 $result = $dbh->query("SHOW TABLES");
@@ -1880,7 +1880,7 @@ class easyuigii {
 
                 error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
-                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
+                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password, $this->pdo_options_gii);
                 $data = $dbh->query($sql, PDO::FETCH_ASSOC);
 
                 if (Count($data) > 0) {
