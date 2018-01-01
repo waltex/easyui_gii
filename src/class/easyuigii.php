@@ -1771,13 +1771,12 @@ class easyuigii {
                 return $data_r4;
             }
             if (($this->current_driver == "pdo") && ($this->type_db == "mysql")) {
-       
-                    $sql = "
+
+                $sql = "
                         
                          ";
                 $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
-                    $data = $dbh->query($sql, PDO::FETCH_ASSOC);
-                
+                $data = $dbh->query($sql, PDO::FETCH_ASSOC);
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
