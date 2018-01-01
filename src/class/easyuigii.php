@@ -35,6 +35,7 @@ class easyuigii {
     private $pdo_cn = ""; //current connection string for driver pdo
     private $pdo_user = ""; //current user for driver pdo
     private $pdo_password = ""; //current psw for driver pdo
+    private $pdo_options_var = ""; //var for pdo option
     private $pdo_options = ""; //pdo option for code generated
     private $pdo_options_gii = [
         PDO::ATTR_EMULATE_PREPARES => false, // turn off emulation mode for "real" prepared statements
@@ -692,6 +693,7 @@ class easyuigii {
                 $this->pdo_user_var = $ar_db["variabile utente"]; //user var
                 $this->pdo_password_var = $ar_db["variabile password"]; //password var
                 $this->pdo_cn_var = $ar_db["variabile stringa di connessione"]; //name var of tsname.ora
+                $this->pdo_options_var = $ar_db["variabile opzioni connessione PDO"]; //name var of tsname.ora
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
@@ -905,9 +907,11 @@ class easyuigii {
                 , 'pdo_cn_var' => $this->pdo_cn_var
                 , 'pdo_user_var' => $this->pdo_user_var
                 , 'pdo_password_var' => $this->pdo_password_var
+                , 'pdo_options_var' => $this->pdo_options_var
                 , 'pdo_cn' => $this->pdo_cn
                 , 'pdo_user' => $this->pdo_user
                 , 'pdo_password' => $this->pdo_password
+                , 'pdo_options' => $this->pdo_options
                 , 'ck_global_var' => $this->ck_global_var
                 , 'global_var' => $this->global_var
             ));
@@ -1789,6 +1793,7 @@ class easyuigii {
                         ) CONSTRAINT_TYPE
                         ,CASE WHEN IS_NULLABLE=\"NO\" THEN 1 ELSE 0 END REQUIRED
                         #COLUMN_COMMENT
+                        , 0 SKIP
                         FROM INFORMATION_SCHEMA.COLUMNS A
                         WHERE A.TABLE_SCHEMA = DATABASE() AND A.TABLE_NAME = '$table'
                         
@@ -2169,6 +2174,7 @@ class easyuigii {
                     , 'drv_cn_var' => $this->pdo_cn_var
                     , 'drv_user_var' => $this->pdo_user_var
                     , 'drv_password_var' => $this->pdo_password_var
+                    , 'drv_options_var' => $this->pdo_options_var
                     , 'str_filter' => $this->str_filter_dg
                     , 'enable_filter' => $this->enable_filter_dg
                     , 'load_dg' => $this->ck_load_dg
@@ -2277,6 +2283,7 @@ class easyuigii {
                                 , 'drv_cn_var' => $this->pdo_cn_var
                                 , 'drv_user_var' => $this->pdo_user_var
                                 , 'drv_password_var' => $this->pdo_password_var
+                                , 'drv_options_var' => $this->pdo_options_var
                             ));
                         }
 

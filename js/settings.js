@@ -63,6 +63,11 @@ function init_app() {
                 var ed = $(this).datagrid('getEditor', {index: index, field: "val"});
                 $(ed.target).textbox({multiline: true, height: 150});
             }
+            var find = row.name;
+            if (find.search("parametri PDO") > -1) {
+                var ed = $(this).datagrid('getEditor', {index: index, field: "val"});
+                $(ed.target).textbox({multiline: true, height: 150});
+            }
 
         },
         groupFormatter: function (value, rows) {

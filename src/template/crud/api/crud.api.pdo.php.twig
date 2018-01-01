@@ -26,7 +26,7 @@
                 error_log(LogTime() . ' Sql, crud select {{table|raw}}: ' . PHP_EOL . $sql . PHP_EOL, 3, 'debug.log');
             }
 
-            $dbh = new PDO({{drv_cn_var|raw}}, {{drv_user_var|raw}}, {{drv_password_var|raw}});
+            $dbh = new PDO({{drv_cn_var|raw}}, {{drv_user_var|raw}}, {{drv_password_var|raw}}, {{drv_options_var|raw}});
             $sth = $dbh->prepare($sql);
             $sth->execute();
             $data = $sth->fetchAll();
