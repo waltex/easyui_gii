@@ -52,6 +52,7 @@
     "#4 utente database": "root",
     "#4 password database": "",
     "#4 stringa di connessione PDO": "mysql:host=localhost;dbname=test;charset=utf8mb4;",
+    "#4 parametri PDO": "  PDO::ATTR_EMULATE_PREPARES   => false, \/\/ turn off emulation mode for \"real\" prepared statements   PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, \/\/turn on errors in the form of exceptions   PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, \/\/make the default fetch be an associative array",
     "#4 variabile utente": "$db10_user",
     "#4 variabile password": "$db10_psw",
     "#4 variabile stringa di connessione": "$db10_mysql",

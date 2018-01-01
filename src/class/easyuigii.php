@@ -165,8 +165,13 @@ class easyuigii {
             }
 
             if ($this->current_driver == "pdo") {
+                $options = [
+                    PDO::ATTR_EMULATE_PREPARES => false, // turn off emulation mode for "real" prepared statements
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, //turn on errors in the form of exceptions
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, //make the default fetch be an associative array
+                ];
                 $tableList = [];
-                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
+                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password, $options);
                 $result = $dbh->query("SHOW TABLES");
                 while ($row = $result->fetch(PDO::FETCH_NUM)) {
                     $tableList[]["TEXT"] = $row[0];
@@ -1765,15 +1770,14 @@ class easyuigii {
                 //file_put_contents($file, $json);
                 return $data_r4;
             }
-            if ($this->current_driver == "pdo") {
-                if ($this->type_db == "mysql") {
-                    $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
-                    $sql = "";
-                    $result = $dbh->query("SHOW TABLES");
-                    while ($row = $result->fetch(PDO::FETCH_NUM)) {
-                        $tableList[]["TEXT"] = $row[0];
-                    }
-                }
+            if (($this->current_driver == "pdo") && ($this->type_db == "mysql")) {
+       
+                    $sql = "
+                        
+                         ";
+                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
+                    $data = $dbh->query($sql, PDO::FETCH_ASSOC);
+                
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
@@ -1807,10 +1811,10 @@ class easyuigii {
     private function get_primary_key() {
         try {
             ($this->debug_on_file) ? error_log(logTime() . basename(__FILE__) . "   " . __FUNCTION__ . PHP_EOL, 3, 'logs/fn.log') : false;
-
-            $app = Slim\Slim::getInstance();
-            $table = $this->table_name;
-            $sql = "
+            if ($this->current_driver == "oci") {
+                $app = Slim\Slim::getInstance();
+                $table = $this->table_name;
+                $sql = "
                 SELECT cols.table_name,
                 cols.column_name,
                 cons.constraint_type
@@ -1823,22 +1827,47 @@ class easyuigii {
                 ORDER BY cols.table_name,cols.position
                 ";
 
-            error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+                error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
 
 
-            //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
-            $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
-            $db = oci_parse($conn, $sql);
-            $rs = oci_execute($db);
+                //$conn = oci_connect($db4_user, $db4_psw, $db4_GOLD, 'UTF8');
+                $conn = oci_connect($this->oci_user, $this->oci_password, $this->oci_cn, $this->oci_charset);
+                $db = oci_parse($conn, $sql);
+                $rs = oci_execute($db);
 
-            oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
+                oci_fetch_all($db, $data, null, null, OCI_ASSOC + OCI_FETCHSTATEMENT_BY_ROW);
 
-            if (Count($data) > 0) {
-                $pk = $data[0]['COLUMN_NAME'];
-                return $pk;
-            } else {
-                // error not find primary key
-                throw new Exception($this->T('Errore - non è possibile recuperare la primary key'));
+                if (Count($data) > 0) {
+                    $pk = $data[0]['COLUMN_NAME'];
+                    return $pk;
+                } else {
+                    // error not find primary key
+                    throw new Exception($this->T('Errore - non è possibile recuperare la primary key'));
+                }
+            }
+            if (($this->current_driver == "pdo") && ($this->type_db == "mysql")) {
+                $app = Slim\Slim::getInstance();
+                $table = $this->table_name;
+                $sql = "
+                    SELECT COLUMN_NAME
+                    FROM INFORMATION_SCHEMA.COLUMNS
+                    WHERE TABLE_SCHEMA = DATABASE()
+                       AND TABLE_NAME = '$table'
+                       AND COLUMN_KEY = 'PRI';
+                ";
+
+                error_log(LogTime() . ' Sql, get primary key: ' . PHP_EOL . $sql . PHP_EOL, 3, 'logs/sql.log');
+
+                $dbh = new PDO($this->pdo_cn, $this->pdo_user, $this->pdo_password);
+                $data = $dbh->query($sql, PDO::FETCH_ASSOC);
+
+                if (Count($data) > 0) {
+                    $pk = $data[0]['COLUMN_NAME'];
+                    return $pk;
+                } else {
+                    // error not find primary key
+                    throw new Exception($this->T('Errore - non è possibile recuperare la primary key'));
+                }
             }
         } catch (Exception $e) {
             error_log(LogTime() . " " . message_err($e), 3, 'logs/error.log');
