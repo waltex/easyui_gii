@@ -1352,25 +1352,24 @@ class easyuigii {
 
             $col = $row["COL"];
             $title = $row["TITLE"];
-            $type = $row["TYPE"];
+            $type = isset($row["TYPE"]) ? $row["TYPE"] : "textbox";
             $width_field = $row["WIDTH"];
-            $type_pk_fk = $row["CONSTRAINT_TYPE"];
+            $type_pk_fk = isset($row["CONSTRAINT_TYPE"]) ? $row["CONSTRAINT_TYPE"] : "";
 
             $readonly = isset($row["READONLY"]) ? $row["READONLY"] : 0;
             $edit = ($this->dg_inline == 1) ? !$readonly : "0";
-
-            $sortable = ($row["SORTABLE"] == 1) ? "sortable: true," : "sortable: false,";
-            $required = ($row["REQUIRED"] == 1) ? "required: true," : "required: false,";
-            $table_ext = $row["NAME_TABLE_EXT"]; //table external for combobox
-            $value_field = $row["VALUE_FIELD"]; // value for combobox
-            $text_field = $row["TEXT_FIELD"];   // text for combobox
+            $sortable = ($this->is_array_gii($row, "SORTABLE", 1, 0) == 1) ? "sortable: true," : "sortable: false,";
+            $required = ($this->is_array_gii($row, "REQUIRED", 1, 0) == 1) ? "required: true," : "required: false,";
+            $table_ext = isset($row["NAME_TABLE_EXT"]) ? $row["NAME_TABLE_EXT"] : ""; //table external for combobox
+            $value_field = isset($row["VALUE_FIELD"]) ? $row["VALUE_FIELD"] : ""; // value for combobox
+            $text_field = isset($row["TEXT_FIELD"]) ? $row["TEXT_FIELD"] : "";   // text for combobox
             $ck_limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
             $limit2list = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "limitToList: true," : "";
             $limit2list_combogrid = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "editable: false," : "";
             $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
             $n_dg = $this->html_prefix;
             $hiden = ($row["HIDE"] == "1") ? "hidden:true," : "";
-            $list = $row["LIST"];
+            $list = isset($row["LIST"]) ? $row["LIST"] : "";
             $cat = isset($row["LIST_CAT"]) ? $row["LIST_CAT"] : "";
             $cat = ($cat == "1") ? "groupField: 'cat'," : "";
             $icon = isset($row["LIST_ICON"]) ? $row["LIST_ICON"] : "";
@@ -1397,7 +1396,7 @@ class easyuigii {
                 return $ck . "{field: '$col', title: '$colt', $width $sortable $hiden}," . PHP_EOL;
             }
 
-            if ($row["CK"] == "1") {
+            if ($this->is_array_gii($row, "CK", 1, 0) == 1) {
                 $editor = ($edit == "1") ? "editor: {type: 'checkbox', options: {on: '1', off: '0'}}," : "";
                 return "{field: '$col', title: '$colt', $editor formatter: mycheck, $required $sortable $hiden}," . PHP_EOL;
             }
