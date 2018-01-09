@@ -348,6 +348,7 @@ function init_app() {
                     {field: "TEXT_FIELD", title: T('Campo TEXT') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_LIMIT2LIST", title: T('Limita Lista') + '<br> ' + 'combobox', editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "FIELDS", title: 'combogrid' + '<br> ' + T('lista campi'), width: 150, editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "PANEL_WIDTH", title: BR(T('Larghezza Combo')), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "N_ROW_TEXTAREA", title: T('N° righe') + '<br>' + T('textarea'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "LIST", title: 'combobox' + '<br> ' + T('Dati Locali'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "LIST_CAT", title: T('lista valori') + '<br> ' + T('campo categoria'), editor: {type: 'textbox', options: {}}, hidden: true},
@@ -440,7 +441,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN', 'CK_DT_MAX', 'LABEL_POSITION', 'LABEL_ALIGN'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN', 'CK_DT_MAX', 'LABEL_POSITION', 'LABEL_ALIGN', 'PANEL_WIDTH'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -1502,6 +1503,10 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
                     $(ed.target).textbox('setValue', ck_limit2list);
 
+                    var new_panel_width = $('#tb_panel_width').textbox('getValue');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'PANEL_WIDTH'});
+                    $(ed.target).textbox('setValue', new_panel_width);
+
                     var ck_sql_combo = $("#sb_custom_sql_combo").switchbutton('options').checked
                     ck_sql_combo = (ck_sql_combo) ? 1 : 0;
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_SQL_COMBO'});
@@ -1522,6 +1527,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var current_val_text = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
             var current_limit2list = ($(ed.target).textbox('getValue') == "") ? 1 : $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'PANEL_WIDTH'});
+            var current_panel_width = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_SQL_COMBO'});
             var current_val_ck_sql_combo = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'SQL_COMBO'});
@@ -1535,6 +1542,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 <div style="margin-top:5px"><input id="cc_id"></div>\n\
                 <div style="margin-top:5px"><input id="cc_text"></div>\n\
                 <div style="margin-top:5px"><input id="sb_limit2list"><label style="margin-left:5px">' + txt_label2 + '</label></div>\n\
+                <div style="margin-top:5px"><input id="tb_panel_width"></div>\n\
                 <div style="margin-top:5px"><input id="sb_custom_sql_combo"><label style="margin-left:5px">' + txt_label + '</label></div>\n\
                 <div id="div_sql_combo" display:none;width:100%>\n\
                     <div style="margin-top:5px"><a id="bt_imp_sql_combo"></a></div>\n\
@@ -1572,6 +1580,19 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 onText: T('si'), offText: T('no'),
                 checked: (current_limit2list == 1) ? true : false,
             });
+
+            $('#tb_panel_width').textbox({
+                width: '390px',
+                label: T('larghezza pannello'),
+                value: (current_panel_width == "") ? '250px' : current_panel_width,
+                labelWidth: '180px',
+                buttonText: '<i class="fa fa-refresh" aria-hidden="true"></i>',
+                buttonAlign: 'left',
+                onClickButton: function () {
+                    $(this).textbox('setValue', '250px');
+                }
+            });
+
             dlg_msg.find('.messager-input').combobox({
                 url: 'api/list/table/db',
                 width: '390px',
@@ -1671,6 +1692,10 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
                     $(ed.target).textbox('setValue', ck_limit2list);
 
+                    var new_panel_width = $('#tb_panel_width').textbox('getValue');
+                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'PANEL_WIDTH'});
+                    $(ed.target).textbox('setValue', new_panel_width);
+
                     var new_val_fields_ar = $('#dg_fields').datagrid('getRows');
                     var new_val_fields = "";
                     if (new_val_fields_ar.length > 0) {
@@ -1700,6 +1725,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var current_val_text = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_LIMIT2LIST'});
             var current_limit2list = ($(ed.target).textbox('getValue') == "") ? 1 : $(ed.target).textbox('getValue');
+            var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'PANEL_WIDTH'});
+            var current_panel_width = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'FIELDS'});
             var current_val_fields_ar = $(ed.target).textbox('getValue');
             var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'CK_SQL_COMBO'});
@@ -1713,6 +1740,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             var input_cel = '<div style="margin-top:5px"><input id="cc_id"></div>\n\
                             <div style="margin-top:5px"><input id="cc_text"></div>\n\
                             <div style="margin-top:5px"><input id="sb_limit2list"><label style="margin-left:5px">' + txt_label2 + '</label></div>\n\
+                            <div style="margin-top:5px"><input id="tb_panel_width"></div>\n\
                             <div style="margin-top:5px"><table id="dg_fields"></table></div>\n\
                             <div style="margin-top:5px"><input id="sb_custom_sql_combo"><label style="margin-left:5px">' + txt_label + '</label></div>\n\
                             <div id="div_sql_combo" display:none;width:100%>\n\
@@ -1754,6 +1782,19 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 onText: T('si'), offText: T('no'),
                 checked: (current_limit2list == 1) ? true : false,
             });
+
+            $('#tb_panel_width').textbox({
+                width: '390px',
+                label: T('larghezza pannello'),
+                value: (current_panel_width == "") ? '250px' : current_panel_width,
+                labelWidth: '180px',
+                buttonText: '<i class="fa fa-refresh" aria-hidden="true"></i>',
+                buttonAlign: 'left',
+                onClickButton: function () {
+                    $(this).textbox('setValue', '250px');
+                }
+            });
+
             dlg_msg.find('.messager-input').combobox({
                 url: 'api/list/table/db',
                 width: '390px',

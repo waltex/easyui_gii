@@ -1228,6 +1228,9 @@ class easyuigii {
         $ck_limit2list = (isset($row["CK_LIMIT2LIST"])) ? $row["CK_LIMIT2LIST"] : "";
         $limit2list = (($ck_limit2list == "1") || ($ck_limit2list == "")) ? "limitToList: true," : "";
 
+        $panel_width = isset($row["PANEL_WIDTH"]) ? $row["PANEL_WIDTH"] : "";
+        $panel_width = (($panel_width == "") || ($panel_width == "250px")) ? "" : "panelWidth:'$panel_width',";
+
         $url_combobox = "api/data/combo_$table_ext" . "__" . $col . ".json"; //url api combobox
         $n_dg = $this->html_prefix;
         $n_row = $row["N_ROW_TEXTAREA"];
@@ -1323,7 +1326,7 @@ class easyuigii {
         }
         if ($type == "combobox") {
             if ($type_pk_fk == "FOREIGN_KEY") {
-                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label $label_align $label_position valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required panelWidth: 250, $limit2list $readonly $multiple});" . PHP_EOL;
+                $editor = "$id_object" . "combobox({" . PHP_EOL . "$width $label $label_align $label_position valueField: '$value_field',textField: '$text_field', method: 'get',url: '$url_combobox',$required $panel_width $limit2list $readonly $multiple});" . PHP_EOL;
 
                 $editor = str_replace(",", "," . PHP_EOL, $editor);
                 return $editor;
@@ -1337,7 +1340,7 @@ class easyuigii {
         if ($type == "combogrid") {
             if ($type_pk_fk == "FOREIGN_KEY") {
                 $filter = PHP_EOL . "$id_object combogrid('grid').datagrid('enableFilter');";
-                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label $label_align $label_position valueField: '$value_field', textField: '$text_field', idField: '$value_field', method: 'get', url: '$url_combobox', $required panelWidth: 250, $readonly $limit2list $readonly reserved:true, $on_select_combogrid $multiple #columns});$filter" . PHP_EOL;
+                $editor = "$id_object" . "combogrid({" . PHP_EOL . "$width $label $label_align $label_position valueField: '$value_field', textField: '$text_field', idField: '$value_field', method: 'get', url: '$url_combobox', $required $panel_width $readonly $limit2list $readonly reserved:true, $on_select_combogrid $multiple #columns});$filter" . PHP_EOL;
                 $editor = str_replace(", ", "," . PHP_EOL, $editor);
                 $editor = str_replace("#columns", $columns, $editor);
                 return $editor;
