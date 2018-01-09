@@ -2520,7 +2520,7 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 
 
         $('#cc_label_position').combobox({
-            width: '390px',
+            width: '300px',
             label: T('posizione label'),
             value: (current_label_position == "") ? "before" : current_label_position,
             data: [{value: 'before', text: T('prima')}, {value: 'after', text: T('dopo')}, {value: 'top', text: T('alto')}],
@@ -2530,10 +2530,15 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             required: true,
             panelWidth: 250,
             editable: true,
+            buttonText: '<i class="fa fa-refresh" aria-hidden="true"></i>',
+            buttonAlign: 'left',
+            onClickButton: function () {
+                $(this).combobox('setValue', 'before');
+            }
         });
 
         $('#cc_label_align').combobox({
-            width: '390px',
+            width: '300px',
             label: T('allinea label'),
             value: (current_label_align == "") ? "left" : current_label_align,
             data: [{value: 'left', text: T('sinistra')}, {value: 'right', text: T('destra')}],
@@ -2543,6 +2548,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             required: true,
             panelWidth: 250,
             editable: true,
+            buttonText: '<i class="fa fa-refresh" aria-hidden="true"></i>',
+            buttonAlign: 'left',
+            onClickButton: function () {
+                $(this).combobox('setValue', 'left');
+            }
         });
 
 
