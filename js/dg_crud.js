@@ -300,8 +300,22 @@ function init_app() {
                 ]],
             columns: [[
                     {field: "WIDTH", title: BR(T('Larghezza Campo')), editor: "text"},
-                    {field: "WIDTH_FORM", title: T('Larghezza') + '<br>' + T('Campo Form'), editor: "text"},
+                    {field: "WIDTH_FORM", title: T('Larghezza') + '<br>' + T('Campo Form'),
+                        editor: {type: 'textbox', options: {
+                                buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+                                buttonAlign: 'right',
+                                onClickButton: function () {
+                                    var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
+                                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TYPE'});
+                                    var type = $(ed.target).textbox('getValue');
+                                    open_opt_label(type, index);
+                                }
+                            }
+                        }
+                    },
                     {field: "WIDTH_LABEL", title: T('Larghezza') + '<br>' + T('Campo Etichetta'), editor: "text"},
+                    {field: "LABEL_POSITION", title: T('Posizione label') + '<br> ' + T('form'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "LABEL_ALIGN", title: T('Allinea label') + '<br> ' + T('form'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "SKIP", title: BR(T('Escludi Campo')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "HIDE_FORM", title: T('Campo Form') + '<br>' + T('Nascosto'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "HIDE", title: BR(T('Campo Nascosto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
@@ -312,8 +326,8 @@ function init_app() {
                     {field: "REQUIRED", title: BR(T('Campo Richiesto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "SORTABLE", title: BR(T('Campo Ordinabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "CK_FILTER", title: BR(T('Filtri<br>Avanzati')), editor: {type: 'combobox', options: {
-                        valueField:'value',
-                                textField:'text',
+                                valueField: 'value',
+                                textField: 'text',
                                 data: [{value: 0, text: '-'}, {value: 1, text: '√'}],
                                 hasDownArrow: false,
                                 panelHeight: 50,
@@ -339,7 +353,7 @@ function init_app() {
                     {field: "LIST_CAT", title: T('lista valori') + '<br> ' + T('campo categoria'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "LIST_ICON", title: T('lista valori') + '<br> ' + T('campo conCls'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_SQL_COMBO", title: T('sql personalizzato') + '<br> ' + T('abilita'), editor: {type: 'textbox', options: {}}, hidden: true},
-                    {field: "SQL_COMBO", title: T('sql personalizzato') + '<br> ' + T('stringa sql'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "SQL_COMBO", title: T('sql personalizzato') + '<br> ' + T('combo'), width: 150, editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_LIKE", title: T('Filtro') + '<br> ' + T('Contiene'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_REQUIRED", title: T('Filtro') + '<br> ' + T('Richiesto'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_MULTIPLE", title: T('Filtro') + '<br> ' + T('Sel. Multipla'), editor: {type: 'textbox', options: {}}, hidden: true},
@@ -426,7 +440,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN', 'CK_DT_MAX'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN', 'CK_DT_MAX', 'LABEL_POSITION', 'LABEL_ALIGN'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -1019,11 +1033,11 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             //$(this).combobox({url: 'api/get/field/from/model'});
         },
         /*
-        columns: [[
-                {field: 'COL', title: T('Nome Campo'), sortable: true, hidden: true, },
-                {field: 'TITLE', title: T('Titolo Campo'), sortable: true, },
-            ]],
-        */
+         columns: [[
+         {field: 'COL', title: T('Nome Campo'), sortable: true, hidden: true, },
+         {field: 'TITLE', title: T('Titolo Campo'), sortable: true, },
+         ]],
+         */
     });
     $('#cc_lock_col').combobox({
         //url: 'api/dg/model/read/db/' + $('#tb_table_name').textbox('getValue'),
@@ -2387,15 +2401,15 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             }
             /*
              handler: function () {          
-                var table = $('#tb_table_name').combobox('getValue');
-                if (table != "") {
-                    $('#dg_model_xls').datagrid('options').url = 'api/dg/model/read/db/' + table;
-                    $('#dg_model_xls').datagrid('reload');
-                } else {
-                    $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
-                }
-            }
-            */
+             var table = $('#tb_table_name').combobox('getValue');
+             if (table != "") {
+             $('#dg_model_xls').datagrid('options').url = 'api/dg/model/read/db/' + table;
+             $('#dg_model_xls').datagrid('reload');
+             } else {
+             $.messager.alert(T('attenzione'), T('Impostare il nome della tabella'), 'warning');
+             }
+             }
+             */
         }];
 
     function load_dg_model_xls() {
@@ -2468,6 +2482,70 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
                 },
                 op: ['equal']
             }]);
+    }
+
+    function open_opt_label(type, index) {
+
+        var dlg_msg = $.messager.prompt({
+            id: 'dlg_label',
+            title: T('label'),
+            msg: T('imposta i parametri delle etichette:'),
+            incon: 'info',
+            width: '60%',
+            height: '520px',
+            maximizable: true,
+            resizable: true,
+            fn: function () {
+                var label_position = $("#cc_label_position").combobox('getValue');
+                var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LABEL_POSITION'});
+                $(ed.target).textbox('setValue', label_position);
+
+                var label_align = $("#cc_label_align").combobox('getValue');
+                var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LABEL_ALIGN'});
+                $(ed.target).textbox('setValue', label_align);
+            }
+        });
+
+        dlg_msg.find('.messager-input').remove();
+        var input_cel = '\
+                        <div style="margin-top:5px"><input id="cc_label_position"></div>\n\
+                        <div style="margin-top:5px"><input id="cc_label_align"></div>\n\
+                    ';
+        dlg_msg.find('div').end().append(input_cel);
+
+        var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LABEL_POSITION'});
+        var current_label_position = $(ed.target).textbox('getValue');
+        var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'LABEL_ALIGN'});
+        var current_label_align = $(ed.target).textbox('getValue');
+
+
+        $('#cc_label_position').combobox({
+            width: '390px',
+            label: T('posizione label'),
+            value: (current_label_position == "") ? "before" : current_label_position,
+            data: [{value: 'before', text: T('prima')}, {value: 'after', text: T('dopo')}, {value: 'top', text: T('alto')}],
+            labelWidth: '150px',
+            valueField: 'value',
+            textField: 'text',
+            required: true,
+            panelWidth: 250,
+            editable: true,
+        });
+
+        $('#cc_label_align').combobox({
+            width: '390px',
+            label: T('allinea label'),
+            value: (current_label_align == "") ? "left" : current_label_align,
+            data: [{value: 'left', text: T('sinistra')}, {value: 'right', text: T('destra')}],
+            labelWidth: '150px',
+            valueField: 'value',
+            textField: 'text',
+            required: true,
+            panelWidth: 250,
+            editable: true,
+        });
+
+
     }
 
     //auto open project from link
