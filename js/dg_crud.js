@@ -2642,8 +2642,8 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
 
         $('#bt_bind2var').textbox({
             width: '500px',
-            labelWidth: '300px',
-            label: T('associa campo a valore fisso o variabile globale'),
+            labelWidth: '350px',
+            label: T('associa a valore fisso o variabile globale su INSERT/UPDATE'),
             buttonText: '<i class="fa fa-refresh" aria-hidden="true"></i>',
             buttonAlign: 'left',
             value: current_bind2var,
