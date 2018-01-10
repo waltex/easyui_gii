@@ -325,7 +325,7 @@ function init_app() {
                     {field: "EDIT", title: T('scrivi su') + '<br>' + T('database'), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "REQUIRED", title: BR(T('Campo Richiesto')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
                     {field: "SORTABLE", title: BR(T('Campo Ordinabile')), editor: {type: 'checkbox', options: {on: '1', off: '0'}}, formatter: mycheck, required: true},
-                    {field: "CK_FILTER", title: BR(T('Filtri<br>Avanzati')), editor: {type: 'combobox', options: {
+                    {field: "CK_FILTER", title: BR(T('Filtri Avanzati')), editor: {type: 'combobox', options: {
                                 valueField: 'value',
                                 textField: 'text',
                                 data: [{value: 0, text: '-'}, {value: 1, text: '√'}],
@@ -338,10 +338,24 @@ function init_app() {
                                     var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
                                     var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TYPE'});
                                     var type = $(ed.target).textbox('getValue');
-                                    edit_filter(type, index);
+                                    open_opt_label(type, index);
                                 }
                             }
                         }, formatter: mycheck, required: true},
+                    {field: "FIELD_OPT", title: BR(T('Altre Opzioni')), formatter: function (value, row, index) {
+                            return '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                        }, editor: {type: 'textbox', options: {
+                                editable: false,
+                                buttonText: '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>',
+                                buttonAlign: 'left',
+                                onClickButton: function () {
+                                    var index = $(this).closest('tr.datagrid-row').attr('datagrid-row-index');
+                                    var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'TYPE'});
+                                    var type = $(ed.target).textbox('getValue');
+                                    open_opt_generic(type, index);
+                                }
+                            }
+                        }},
                     {field: "EMPTY", title: ' ', },
                     {field: "NAME_TABLE_EXT", title: T('Nome') + '<br>' + T('Tabella Collegata'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "VALUE_FIELD", title: T('Campo ID ') + '<br>' + T('associato'), editor: {type: 'textbox', options: {}}, hidden: true},
@@ -361,6 +375,7 @@ function init_app() {
                     {field: "CK_FILTER_IDTEXT", title: T('Filtro') + '<br> ' + T('ID testo'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_FILTER_BETWEEN", title: T('Filtro') + '<br> ' + T('intervallo date'), editor: {type: 'textbox', options: {}}, hidden: true},
                     {field: "CK_DT_MAX", title: T('Abilita pulsante') + '<br> ' + T('data massima'), editor: {type: 'textbox', options: {}}, hidden: true},
+                    {field: "BIND2VAR", title: T('Associa valore') + '<br> ' + T('al campo'), editor: {type: 'textbox', options: {}}, hidden: true},
                 ]],
         });
         $('#dg_model').datagrid('enableFilter');
@@ -441,7 +456,7 @@ function init_app() {
     }
     function show_par() {
         g_param_show = !g_param_show;
-        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN', 'CK_DT_MAX', 'LABEL_POSITION', 'LABEL_ALIGN', 'PANEL_WIDTH'];
+        var field = ['N_ROW_TEXTAREA', 'TEXT_FIELD', 'FIELDS', 'VALUE_FIELD', 'NAME_TABLE_EXT', 'LIST', 'LIST_CAT', 'LIST_ICON', 'CK_SQL_COMBO', 'SQL_COMBO', 'CK_FILTER_REQUIRED', 'CK_FILTER_MULTIPLE', 'CK_FILTER_IDTEXT', 'CK_FILTER_BETWEEN', 'CK_DT_MAX', 'LABEL_POSITION', 'LABEL_ALIGN', 'PANEL_WIDTH', 'BIND2VAR'];
         for (var i = 0; i < field.length; i++) {
             (g_param_show) ? $('#dg_model').datagrid('showColumn', field[i]) : $('#dg_model').datagrid('hideColumn', field[i]);
         }
@@ -2593,6 +2608,48 @@ return \'background-color:' + color_bg + '; color:' + color + '\';\n\
             buttonAlign: 'left',
             onClickButton: function () {
                 $(this).combobox('setValue', 'left');
+            }
+        });
+    }
+
+    function open_opt_generic(type, index) {
+
+        var dlg_msg = $.messager.prompt({
+            id: 'dlg_generic',
+            title: T('opzioni generiche'),
+            msg: T('imposta i parametri:'),
+            incon: 'info',
+            width: '60%',
+            height: '520px',
+            maximizable: true,
+            resizable: true,
+            fn: function () {
+                var bind2var = $("#bt_bind2var").textbox('getValue');
+                var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'BIND2VAR'});
+                $(ed.target).textbox('setValue', bind2var);
+            }
+        });
+
+        dlg_msg.find('.messager-input').remove();
+        var input_cel = '\
+                        <div style="margin-top:5px"><input id="bt_bind2var"></div>\n\
+                    ';
+        dlg_msg.find('div').end().append(input_cel);
+
+        var ed = $('#dg_model').datagrid('getEditor', {index: index, field: 'BIND2VAR'});
+        var current_bind2var = $(ed.target).textbox('getValue');
+
+
+        $('#bt_bind2var').textbox({
+            width: '500px',
+            labelWidth: '300px',
+            label: T('associa campo a valore fisso o variabile globale'),
+            buttonText: '<i class="fa fa-refresh" aria-hidden="true"></i>',
+            buttonAlign: 'left',
+            value: current_bind2var,
+            prompt: T('non impostato'),
+            onClickButton: function () {
+                $(this).textbox('setValue', '');
             }
         });
 
