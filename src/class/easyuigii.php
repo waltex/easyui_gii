@@ -2493,7 +2493,12 @@ class easyuigii {
                 $col = $value["COL"];
                 if ($col != $this->primary_key) {
                     if ($value["SKIP"] == "0") {
-                        $code .= "\$$col= \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
+                        $bind2var = (isset($value["BIND2VAR"])) ? $value["BIND2VAR"] : "";
+                        if ($bind2var != "") {
+                            $code .= "\$$col= \"$bind2var\"; // Param from Post user" . PHP_EOL;
+                        } else {
+                            $code .= "\$$col= \$app->request->params('$col'); // Param from Post user" . PHP_EOL;
+                        }
                     }
                 } else {
                     if ($add_id) { //primary key
